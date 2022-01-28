@@ -2,13 +2,15 @@
 // Created by 夏侯臻 on 2022/1/14.
 //
 #include <string>
+
 #ifndef CAMPUSCARDBACKEND_CARD_H
 #define CAMPUSCARDBACKEND_CARD_H
-#define defaultDate 20240715 //默认的卡号有效期
-#define balanceCeiling 999.99 //账户余额上限
+
+#define DEFAULT_DATE 20240715 //默认的卡号有效期
+#define BALANCE_CEILING 999.99 //账户余额上限
 using namespace std;
-class Card
-{
+
+class Card {
 private:
     int cid;     //卡号
     int uid;     //学号
