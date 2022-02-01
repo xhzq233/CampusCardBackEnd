@@ -4,7 +4,6 @@
 
 #include "Card.h"
 
-#include <utility>
 
 Card::Card(unsigned int uid, string name, unsigned int serialNumber) {
     this->uid = uid;
