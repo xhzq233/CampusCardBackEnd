@@ -3,3 +3,8 @@
 //
 
 #include "Cafe.h"
+
+Cafe::Cafe(unsigned int uid, const string& name) {
+    this->name = name;
+    this->uid = uid;
+}

@@ -12,13 +12,13 @@ using namespace std;
 
 class Card {
 private:
-    int cid;     //卡号
-    int uid;     //学号
+    unsigned int cid;     //卡号
+    unsigned int uid;     //学号
     string name; //姓名
-    int date;    //有效日期
-    int balance; //账户余额
+    unsigned int date;    //有效日期
+    unsigned int balance; //账户余额
 public:
-    Card(int, string, int); // card的构造函数
+    Card(unsigned int uid, string name,unsigned int serialNumber); // card的构造函数
     void recharge(int);     //充值
 };
 

@@ -4,10 +4,13 @@
 
 #ifndef CAMPUSCARDBACKEND_CAFE_H
 #define CAMPUSCARDBACKEND_CAFE_H
-
+#include <string>
+using namespace std;
 
 class Cafe {
-
+    unsigned int uid;
+    string name;
+    Cafe(unsigned int uid, const string& name);
 };
 
 
