@@ -1,0 +1,14 @@
+//
+// Created by 夏侯臻 on 2022/1/14.
+//
+
+#ifndef CAMPUSCARDBACKEND_CARDMANAGE_H
+#define CAMPUSCARDBACKEND_CARDMANAGE_H
+
+
+class CardManage {
+
+};
+
+
+#endif //CAMPUSCARDBACKEND_CARDMANAGE_H
