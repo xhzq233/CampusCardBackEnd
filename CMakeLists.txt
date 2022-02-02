@@ -3,4 +3,4 @@ project(CampusCardBackEnd)
 
 set(CMAKE_CXX_STANDARD 17)
 
-add_executable(CampusCardBackEnd main.cpp Card.cpp Card.h CardManage.cpp CardManage.h CardDataAnalyze.cpp CardDataAnalyze.h Cafe.cpp Cafe.h FileManager.cpp FileManager.h Consume.cpp Consume.h)
+add_executable(CampusCardBackEnd main.cpp lib/Card.cpp lib/Card.h lib/CardManage.cpp lib/CardManage.h lib/CardDataAnalyze.cpp lib/CardDataAnalyze.h lib/Cafe.cpp lib/Cafe.h lib/FileManager.cpp lib/FileManager.h lib/Consume.cpp lib/Consume.h)
