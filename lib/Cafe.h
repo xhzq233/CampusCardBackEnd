@@ -5,12 +5,11 @@
 #ifndef CAMPUSCARDBACKEND_CAFE_H
 #define CAMPUSCARDBACKEND_CAFE_H
 #include <string>
-using namespace std;
 
 class Cafe {
-    unsigned int uid;
-    string name;
-    Cafe(unsigned int uid, const string& name);
+    unsigned int uid;   //唯一辨识id 表现为窗口号
+    unsigned int position;  //位置
+    Cafe(unsigned int uid, unsigned int position);
 };
 
 

@@ -4,7 +4,7 @@
 
 #include "Cafe.h"
 
-Cafe::Cafe(unsigned int uid, const string& name) {
-    this->name = name;
+Cafe::Cafe(unsigned int uid, unsigned int position) {
+    this->position = position;
     this->uid = uid;
 }
