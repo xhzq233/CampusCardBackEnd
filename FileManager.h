@@ -4,7 +4,7 @@
 
 #ifndef CAMPUSCARDBACKEND_FILEMANAGER_H
 #define CAMPUSCARDBACKEND_FILEMANAGER_H
-
+#include <iostream>
 #include <string>
 #include <vector>
 #include <fstream>
@@ -15,7 +15,7 @@
 class FileManager {
 public:
     /*默认数据路径*/
-    constexpr static const char DEFAULT_DATA_PATH[] = "./data";
+    constexpr static const char DEFAULT_DATA_PATH[] = "../data";
     /* 批量开户申请数据文件（kh001.txt）*/
     constexpr static const char OPEN_ACCOUNT_PATH[] = "/kh001.txt";
     /* 批量卡片操作申请数据文件（cz002.txt）*/

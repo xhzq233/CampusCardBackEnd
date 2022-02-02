@@ -12,6 +12,7 @@ FileManager &FileManager::getInstance() {
 
 bool FileManager::getStringDataSourceByLine(std::vector<std::string> &container, const std::string &source,
                                             const std::string &path) {
+    std::cout<<path+source<<std::endl;
     std::ifstream infile(path+source,std::ios::in);
     if(!infile.is_open())
         //read failed
