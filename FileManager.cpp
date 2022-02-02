@@ -10,16 +10,16 @@ FileManager &FileManager::getInstance() {
     return instance;
 }
 
-std::vector<std::string> FileManager::getStringDataSourceByLine(const std::string &source, const std::string &path) {
+bool FileManager::getStringDataSourceByLine(std::vector<std::string> &container, const std::string &source,
+                                            const std::string &path) {
     std::ifstream infile(path+source,std::ios::in);
     if(!infile.is_open())
         //read failed
-        return {};
+        return false;
 
     std::string buffer;
-    std::vector<std::string> res;
     while (std::getline(infile,buffer)){
-        res.push_back(buffer);
+        container.push_back(buffer);
     }
-    return res;
+    return true;
 }

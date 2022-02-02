@@ -74,43 +74,43 @@ build cmake_object_order_depends_target_CampusCardBackEnd: phony || CMakeFiles/C
 
 build CMakeFiles/CampusCardBackEnd.dir/main.cpp.o: CXX_COMPILER__CampusCardBackEnd_Debug /Users/xhz/Desktop/Xcode/Clion.nosync/CampusCardBackEnd/main.cpp || cmake_object_order_depends_target_CampusCardBackEnd
   DEP_FILE = CMakeFiles/CampusCardBackEnd.dir/main.cpp.o.d
-  FLAGS = -g -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX12.1.sdk -std=gnu++14
+  FLAGS = -g -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX12.1.sdk -std=gnu++17
   OBJECT_DIR = CMakeFiles/CampusCardBackEnd.dir
   OBJECT_FILE_DIR = CMakeFiles/CampusCardBackEnd.dir
 
 build CMakeFiles/CampusCardBackEnd.dir/Card.cpp.o: CXX_COMPILER__CampusCardBackEnd_Debug /Users/xhz/Desktop/Xcode/Clion.nosync/CampusCardBackEnd/Card.cpp || cmake_object_order_depends_target_CampusCardBackEnd
   DEP_FILE = CMakeFiles/CampusCardBackEnd.dir/Card.cpp.o.d
-  FLAGS = -g -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX12.1.sdk -std=gnu++14
+  FLAGS = -g -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX12.1.sdk -std=gnu++17
   OBJECT_DIR = CMakeFiles/CampusCardBackEnd.dir
   OBJECT_FILE_DIR = CMakeFiles/CampusCardBackEnd.dir
 
 build CMakeFiles/CampusCardBackEnd.dir/CardManage.cpp.o: CXX_COMPILER__CampusCardBackEnd_Debug /Users/xhz/Desktop/Xcode/Clion.nosync/CampusCardBackEnd/CardManage.cpp || cmake_object_order_depends_target_CampusCardBackEnd
   DEP_FILE = CMakeFiles/CampusCardBackEnd.dir/CardManage.cpp.o.d
-  FLAGS = -g -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX12.1.sdk -std=gnu++14
+  FLAGS = -g -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX12.1.sdk -std=gnu++17
   OBJECT_DIR = CMakeFiles/CampusCardBackEnd.dir
   OBJECT_FILE_DIR = CMakeFiles/CampusCardBackEnd.dir
 
 build CMakeFiles/CampusCardBackEnd.dir/CardDataAnalyze.cpp.o: CXX_COMPILER__CampusCardBackEnd_Debug /Users/xhz/Desktop/Xcode/Clion.nosync/CampusCardBackEnd/CardDataAnalyze.cpp || cmake_object_order_depends_target_CampusCardBackEnd
   DEP_FILE = CMakeFiles/CampusCardBackEnd.dir/CardDataAnalyze.cpp.o.d
-  FLAGS = -g -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX12.1.sdk -std=gnu++14
+  FLAGS = -g -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX12.1.sdk -std=gnu++17
   OBJECT_DIR = CMakeFiles/CampusCardBackEnd.dir
   OBJECT_FILE_DIR = CMakeFiles/CampusCardBackEnd.dir
 
 build CMakeFiles/CampusCardBackEnd.dir/Cafe.cpp.o: CXX_COMPILER__CampusCardBackEnd_Debug /Users/xhz/Desktop/Xcode/Clion.nosync/CampusCardBackEnd/Cafe.cpp || cmake_object_order_depends_target_CampusCardBackEnd
   DEP_FILE = CMakeFiles/CampusCardBackEnd.dir/Cafe.cpp.o.d
-  FLAGS = -g -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX12.1.sdk -std=gnu++14
+  FLAGS = -g -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX12.1.sdk -std=gnu++17
   OBJECT_DIR = CMakeFiles/CampusCardBackEnd.dir
   OBJECT_FILE_DIR = CMakeFiles/CampusCardBackEnd.dir
 
 build CMakeFiles/CampusCardBackEnd.dir/FileManager.cpp.o: CXX_COMPILER__CampusCardBackEnd_Debug /Users/xhz/Desktop/Xcode/Clion.nosync/CampusCardBackEnd/FileManager.cpp || cmake_object_order_depends_target_CampusCardBackEnd
   DEP_FILE = CMakeFiles/CampusCardBackEnd.dir/FileManager.cpp.o.d
-  FLAGS = -g -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX12.1.sdk -std=gnu++14
+  FLAGS = -g -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX12.1.sdk -std=gnu++17
   OBJECT_DIR = CMakeFiles/CampusCardBackEnd.dir
   OBJECT_FILE_DIR = CMakeFiles/CampusCardBackEnd.dir
 
 build CMakeFiles/CampusCardBackEnd.dir/Consume.cpp.o: CXX_COMPILER__CampusCardBackEnd_Debug /Users/xhz/Desktop/Xcode/Clion.nosync/CampusCardBackEnd/Consume.cpp || cmake_object_order_depends_target_CampusCardBackEnd
   DEP_FILE = CMakeFiles/CampusCardBackEnd.dir/Consume.cpp.o.d
-  FLAGS = -g -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX12.1.sdk -std=gnu++14
+  FLAGS = -g -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX12.1.sdk -std=gnu++17
   OBJECT_DIR = CMakeFiles/CampusCardBackEnd.dir
   OBJECT_FILE_DIR = CMakeFiles/CampusCardBackEnd.dir
 

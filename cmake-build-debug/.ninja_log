@@ -1,0 +1,18 @@
+# ninja log v5
+1	300	1643776267947163947	CMakeFiles/CampusCardBackEnd.dir/FileManager.cpp.o	cc35d6e5391a9835
+0	41	1643776375965996312	build.ninja	afb360dd28704be
+2	298	1643776247540009465	CMakeFiles/CampusCardBackEnd.dir/main.cpp.o	b5e908456245460c
+2	29	1643776247271911293	CMakeFiles/CampusCardBackEnd.dir/CardManage.cpp.o	362f3efebf8d9d9e
+300	331	1643776267980175313	CampusCardBackEnd	cf7ab676d9d5ffe6
+3	186	1643776247428047599	CMakeFiles/CampusCardBackEnd.dir/Cafe.cpp.o	198305ffbec91d0e
+3	26	1643776247268928509	CMakeFiles/CampusCardBackEnd.dir/Consume.cpp.o	ae739913c17eb29f
+2	178	1643776247420136591	CMakeFiles/CampusCardBackEnd.dir/Card.cpp.o	eff4247e32547040
+2	24	1643776247264361398	CMakeFiles/CampusCardBackEnd.dir/CardDataAnalyze.cpp.o	2f10588d215f524b
+1	33	1643776394046703221	CMakeFiles/CampusCardBackEnd.dir/CardManage.cpp.o	bbc79e44fcff273a
+2	36	1643776394050499189	CMakeFiles/CampusCardBackEnd.dir/CardDataAnalyze.cpp.o	21515d761172a7f8
+3	39	1643776394054301239	CMakeFiles/CampusCardBackEnd.dir/Consume.cpp.o	f3bf7ffbd531917b
+2	247	1643776394259506252	CMakeFiles/CampusCardBackEnd.dir/Cafe.cpp.o	a58d715c0b6e0609
+1	261	1643776394276032997	CMakeFiles/CampusCardBackEnd.dir/Card.cpp.o	6e5a7f4e27a7e0e0
+1	352	1643776394367305913	CMakeFiles/CampusCardBackEnd.dir/main.cpp.o	1183bf1c8228221c
+2	403	1643776394418344476	CMakeFiles/CampusCardBackEnd.dir/FileManager.cpp.o	f07fc133715b1eaa
+403	435	1643776394451028809	CampusCardBackEnd	e4c48487371ff89f

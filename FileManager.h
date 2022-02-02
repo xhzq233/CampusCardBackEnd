@@ -13,11 +13,7 @@
  * Singleton FileManager
  * */
 class FileManager {
-
-private:
-    //make these constructors not accessible
-    FileManager() = default;
-    ~FileManager() = default;
+public:
     /*默认数据路径*/
     constexpr static const char DEFAULT_DATA_PATH[] = "./data";
     /* 批量开户申请数据文件（kh001.txt）*/
@@ -30,6 +26,11 @@ private:
     constexpr static const char CONSUME_PATH[] = "/xf014.txt";
     /* 测试数据文件（chk10.txt）*/
     constexpr static const char TEST_DATA_PATH[] = "/chk10.txt";
+private:
+    //make these constructors not accessible
+    FileManager() = default;
+    ~FileManager() = default;
+
 public:
     //delete these copy methods
     FileManager(const FileManager &) = delete;
@@ -47,7 +48,7 @@ public:
      * datasource split by '\n'
      * Return type: array of string
      * */
-    std::vector<std::string> getStringDataSourceByLine(const std::string& source = OPEN_ACCOUNT_PATH,const std::string& path = DEFAULT_DATA_PATH);
+    bool getStringDataSourceByLine(std::vector<std::string>& container,const std::string& source = OPEN_ACCOUNT_PATH,const std::string& path = DEFAULT_DATA_PATH);
 };
 
 
