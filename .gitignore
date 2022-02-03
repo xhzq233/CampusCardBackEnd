@@ -48,7 +48,7 @@ include/divisible/*
 .idea/*.xml
 
 build/**/*
-
+log/*
 include/*
 bin/*
 test/test_runner

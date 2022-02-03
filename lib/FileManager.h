@@ -10,6 +10,8 @@
 #include <vector>
 #include <fstream>
 #include <sstream>
+#include <ctime>
+#include <numeric>
 
 /*
  * Singleton FileManager
@@ -18,6 +20,9 @@ class FileManager {
 public:
     /* 默认数据路径 */
     constexpr static const char DEFAULT_DATA_PATH[] = "../data";
+    /* 默认log路径 */
+    constexpr static const char DEFAULT_LOG_PATH[] = "../log";
+
     /* 批量开户申请数据文件（kh001.txt）*/
     constexpr static const char OPEN_ACCOUNT_PATH[] = "/kh001.txt";
     /* 批量卡片操作申请数据文件（cz002.txt）*/
@@ -36,13 +41,23 @@ public:
     /* 基于位置分成了多个CSV文件，格式为W{\d}.csv */
     constexpr static const char CONSUME_CSV_DICTIONARY[] = "/xf";
 
+    /* 根据position获取wz CSV文件路径 */
     static std::string CONSUME_CSV(unsigned int position);
 
 private:
     //make these constructors not accessible
-    FileManager() = default;
+    FileManager();
+
+    char *startUpTime = nullptr;
 
     ~FileManager() = default;
+
+    /*
+     * use lambda function simply wrap the process of prepare IOStream.
+     * note that stream need to be referenced to avoid unnecessary copied memory.
+     * */
+    bool prepareIOStream(const std::function<void(std::fstream &)> &func, const std::string &path,
+                         char mode = std::ios::in);
 
 public:
     //delete these copy methods
@@ -58,7 +73,7 @@ public:
     static FileManager &getInstance();
 
     /* IO管理 */
-    std::ifstream IOStream;
+    std::fstream IOStream;
 
     /*
      * datasource split by '\n'
@@ -79,6 +94,22 @@ public:
     bool getCSVDataSource(std::vector<std::vector<std::string>> &container, const std::string &source,
                           const std::string &path = DEFAULT_DATA_PATH);
 
+    /* 向制定路径写入一行string，返回是否成功 */
+    bool writeStringByLine(std::string &content, const std::string &source,
+                           const std::string &path);
+
+    /* 向指定路径写入一串string，返回是否成功 */
+    bool writeStrings(std::vector<std::string> &container, const std::string &source,
+                      const std::string &path);
+
+    /* 向指定路径写入csv，返回是否成功 */
+    bool writeCSVData(std::vector<std::vector<std::string>> &container, const std::string &sourceName,
+                      const std::string &path = DEFAULT_DATA_PATH);
+
+    /* literally */
+    bool log(std::string &content);
+
+    bool logs(std::vector<std::string> &container);
 };
 
 
