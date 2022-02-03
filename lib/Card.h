@@ -20,7 +20,7 @@ public:
     unsigned int uid; //学号
     int balance;      //账户余额
     bool condition;   //卡的状态
-
+    unsigned int password      //密码
     Card(unsigned int, const string &, unsigned int); // card的构造函数
 };
 
