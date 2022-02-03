@@ -21,9 +21,10 @@ int main() {
         else std::cout << "err1" << std::endl;
 
         std::cout << "the first:" << s[0][0]<<" ,length:" << std::to_string(s.size()) << std::endl;
-        FileManager::getInstance().log(s[0][0]);FileManager::getInstance().log(s[0][0]);FileManager::getInstance().log(s[0][0]);
-        if (FileManager::getInstance().writeCSVData(s, "xhzq.csv", "../csv/"));
-        else std::cout << "err2" << std::endl;
+
+        FileManager::getInstance()<<s[0][0]<<s[0][0]<<s[0][0]<< "xhzq.xyz";
+
+//        if (FileManager::getInstance().writeCSVData(s, "xhzq.csv", "../adjygvjsafvj/"));
     });
 
     return 0;

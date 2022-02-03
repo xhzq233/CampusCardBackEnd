@@ -23,11 +23,11 @@ bool FileManager::prepareIOStream(const std::function<void(std::fstream &)> &fun
         IOStream.close();
         system(("mkdir " + path).c_str());
         IOStream.open(path + source, mode);
-    }
-    if (!IOStream.is_open()) {
-        //read failed
-        IOStream.close();
-        return false;
+        if (!IOStream.is_open()) {
+            //read failed
+            IOStream.close();
+            return false;
+        }
     }
     func(IOStream);
 
@@ -119,4 +119,9 @@ bool FileManager::writeCSVData(std::vector<std::vector<std::string>> &container,
 
 
     return writeStrings(transform, sourceName, path, std::ios::out | std::ios::trunc);
+}
+
+FileManager &operator<<(FileManager &o, const std::string &content) {
+    o.log(content);
+    return o;
 }

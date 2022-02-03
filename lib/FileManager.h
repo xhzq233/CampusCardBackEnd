@@ -119,6 +119,9 @@ public:
     bool log(const std::string &content);
 
     bool logs(std::vector<std::string> &container);
+
+    /* log的简便形式 */
+    friend FileManager& operator <<(FileManager& o,const std::string& content);
 };
 
 
