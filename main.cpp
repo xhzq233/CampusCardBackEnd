@@ -9,12 +9,12 @@ void testTimeWrapper(const std::function<void(void)> &func) {
 
     auto t2 = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double, std::milli> ms = t2 - t1;
-    std::cout << "use time: " << ms.count() << std::endl;
+    std::cout << "use time: " << ms.count() << " ms." << std::endl;
 }
 
 int main() {
 
-    testTimeWrapper([&](){
+    testTimeWrapper([&]() {
         std::vector<std::vector<std::string>> s{{}};
         if (FileManager::getInstance().getCSVDataSource(s, FileManager::CONSUME_CSV(56)))
             for (const auto &str: s) {
@@ -22,6 +22,8 @@ int main() {
                     std::cout << i << std::endl;
             }
         else std::cout << "err" << std::endl;
+
+        FileManager::getInstance().writeCSVData(s, "xhzq.csv");
     });
 
     return 0;

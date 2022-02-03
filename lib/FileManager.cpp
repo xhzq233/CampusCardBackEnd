@@ -50,7 +50,10 @@ bool FileManager::getStringDataSourceByLine(std::vector<std::string> &container,
 
 std::string FileManager::CONSUME_CSV(unsigned int position) {
     std::string res(CONSUME_CSV_DICTIONARY);
-    return res + "/W" + std::to_string(position) + ".csv";
+    res.append("W");
+    res.append(std::to_string(position));
+    res.append(".csv");
+    return res;
 }
 
 bool FileManager::getCSVDataSource(std::vector<std::vector<std::string>> &container, const std::string &source,
@@ -108,7 +111,7 @@ bool FileManager::writeCSVData(std::vector<std::vector<std::string>> &container,
                                const std::string &path) {
     std::vector<std::string> transform(container.size());
     for (const auto &row: container)
-        transform.emplace_back(std::reduce(row.begin(), row.end(), "", [](const std::string &r,
+        transform.emplace_back(std::reduce(row.begin(), row.end(), std::string (""), [](const std::string &r,//init 参数需要显示转换为string
                                                                           const std::string &l) -> std::string {
             std::string s(r);
             s.append(",");
