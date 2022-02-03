@@ -50,7 +50,7 @@ private:
     FileManager();
 
     /* instance 初始化的时间，用于给log data取名 */
-    char *startUpTime = nullptr;
+    std::string startUpTime;
 
     ~FileManager() = default;
 
@@ -58,8 +58,9 @@ private:
      * use lambda function simply wrap the process of prepare IOStream.
      * note that stream need to be referenced to avoid unnecessary copied memory.
      * */
-    bool prepareIOStream(const std::function<void(std::fstream &)> &func, const std::string &path,
-                         char mode = std::ios::in);
+    bool
+    prepareIOStream(const std::function<void(std::fstream &)> &func, const std::string &path, const std::string &source,
+                    char mode = std::ios::in);
 
 public:
     //delete these copy methods
@@ -98,12 +99,14 @@ public:
                           const std::string &path = DEFAULT_DATA_PATH);
 
     /* 向指定路径写入一行string，返回是否成功 */
-    bool writeStringByLine(std::string &content, const std::string &source,
-                           const std::string &path);
+    bool writeStringByLine(const std::string &content, const std::string &source,
+                           const std::string &path,
+                           char mode = std::ios::app);
 
     /* 向指定路径写入一串string，返回是否成功 */
     bool writeStrings(std::vector<std::string> &container, const std::string &source,
-                      const std::string &path);
+                      const std::string &path,
+                      char mode = std::ios::app);
 
     /*
      * 向指定路径写入csv文件，
@@ -113,7 +116,7 @@ public:
                       const std::string &path = DEFAULT_DATA_PATH);
 
     /* literally */
-    bool log(std::string &content);
+    bool log(const std::string &content);
 
     bool logs(std::vector<std::string> &container);
 };

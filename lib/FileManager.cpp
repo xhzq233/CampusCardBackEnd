@@ -16,8 +16,14 @@ FileManager &FileManager::getInstance() {
 }
 
 bool FileManager::prepareIOStream(const std::function<void(std::fstream &)> &func, const std::string &path,
+                                  const std::string &source,
                                   const char mode) {
-    IOStream.open(path, mode);
+    IOStream.open(path + source, mode);
+    if (!IOStream.is_open()) {/* check the param [path] , auto mkdir if not exist */
+        IOStream.close();
+        system(("mkdir " + path).c_str());
+        IOStream.open(path + source, mode);
+    }
     if (!IOStream.is_open()) {
         //read failed
         IOStream.close();
@@ -32,20 +38,14 @@ bool FileManager::prepareIOStream(const std::function<void(std::fstream &)> &fun
 
 bool FileManager::getStringDataSourceByLine(std::vector<std::string> &container, const std::string &source,
                                             const std::string &path) {
-    IOStream.open(path + source, std::ios::in);
-    if (!IOStream.is_open()) {
-        //read failed
-        IOStream.close();
-        return false;
-    }
+    return prepareIOStream([&](std::fstream &stream) {
 
-    std::string buffer;
-    while (std::getline(IOStream, buffer))
-        container.emplace_back(buffer);
+        std::string buffer;
 
-    //confirm IOStream steam closed
-    IOStream.close();
-    return true;
+        while (std::getline(stream, buffer))
+            container.emplace_back(buffer);
+
+    }, path, source);
 }
 
 std::string FileManager::CONSUME_CSV(unsigned int position) {
@@ -58,66 +58,65 @@ std::string FileManager::CONSUME_CSV(unsigned int position) {
 
 bool FileManager::getCSVDataSource(std::vector<std::vector<std::string>> &container, const std::string &source,
                                    const std::string &path) {
-    IOStream.open(path + source, std::ios::in);
-    if (!IOStream.is_open()) {
-        //read failed
-        IOStream.close();
-        return false;
-    }
+    return prepareIOStream([&](std::fstream &stream) {
 
-    std::string rowBuffer;//a csv row implemented in string
-    std::string metadata;//metadata in a csv row
-    std::vector<std::string> row;
+        std::string rowBuffer;//a csv row implemented in string
+        std::string metadata;//metadata in a csv row
+        std::vector<std::string> row;
 
-    while (std::getline(IOStream, rowBuffer)) {
+        while (std::getline(stream, rowBuffer)) {
 
-        std::stringstream buf(rowBuffer);//turn to a stream type
+            std::stringstream buf(rowBuffer);//turn to a stream type
 
-        while (std::getline(buf, metadata, ','))//csv use ',' as the separator
-            row.emplace_back(metadata);
+            while (std::getline(buf, metadata, ','))//csv use ',' as the separator
+                row.emplace_back(metadata);
 
-        container.emplace_back(row);
-        row.clear();
-    }
+            container.emplace_back(row);
+            row.clear();
+        }
 
-    //confirm IOStream steam closed
-    IOStream.close();
-    return true;
+    }, path, source);
 }
 
 bool FileManager::logs(std::vector<std::string> &container) {
-    return writeStrings(container, startUpTime, DEFAULT_LOG_PATH);
+    std::string logDataName = startUpTime + ".log";
+    return writeStrings(container, logDataName, DEFAULT_LOG_PATH);
 }
 
-bool FileManager::log(std::string &content) {
-    return writeStringByLine(content, startUpTime, DEFAULT_LOG_PATH);
+bool FileManager::log(const std::string &content) {
+    std::string logDataName = startUpTime + ".log";
+    return writeStringByLine(content, logDataName, DEFAULT_LOG_PATH);
 }
 
-bool FileManager::writeStringByLine(std::string &content, const std::string &source, const std::string &path) {
+bool FileManager::writeStringByLine(const std::string &content, const std::string &source, const std::string &path,
+                                    char mode) {
     return prepareIOStream([&](std::fstream &stream) {
         stream << content << std::endl;
-    }, path + source, std::ios::app);
+    }, path, source, mode);
 }
 
 bool
-FileManager::writeStrings(std::vector<std::string> &container, const std::string &source, const std::string &path) {
+FileManager::writeStrings(std::vector<std::string> &container, const std::string &source, const std::string &path,
+                          char mode) {
     return prepareIOStream([&](std::fstream &stream) {
         for (const auto &content: container)
             stream << content << std::endl;
-    }, path + source, std::ios::app);
+    }, path, source, mode);
 }
 
 bool FileManager::writeCSVData(std::vector<std::vector<std::string>> &container, const std::string &sourceName,
                                const std::string &path) {
-    std::vector<std::string> transform(container.size());
-    for (const auto &row: container)
-        transform.emplace_back(std::reduce(row.begin(), row.end(), std::string (""), [](const std::string &r,//init 参数需要显示转换为string
-                                                                          const std::string &l) -> std::string {
-            std::string s(r);
-            s.append(",");
-            s.append(l);
-            return s;
-        }));//Complexity: O(last - first) applications of binary_op.
+    std::vector<std::string> transform(container.size());//init with defined size
+    for (int i = 0; i < container.size(); ++i)
+        transform[i] = std::reduce(container[i].begin() + 1, container[i].end(), container[i][0],
+                                   [](const std::string &r,//init 参数需要显示转换为string
+                                      const std::string &l) -> std::string {
+                                       std::string s(r);
+                                       s.append(",");
+                                       s.append(l);
+                                       return s;
+                                   });//Complexity: O(last - first) applications of binary_op.
 
-    return writeStrings(transform, sourceName, path);
+
+    return writeStrings(transform, sourceName, path, std::ios::out | std::ios::trunc);
 }
