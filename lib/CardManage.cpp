@@ -76,7 +76,7 @@ void CardManage::recharge(unsigned int uid, unsigned int amount)
     {
         ;
     }
-    else if (current->balance + amount > BALANCECEILING)
+    else if (current->balance + amount > BALANCE_CEILING)
     {
         ;
     }

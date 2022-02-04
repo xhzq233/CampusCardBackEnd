@@ -5,10 +5,9 @@
 #include "Card.h"
 
 
-Card::Card(unsigned int uid, const string& name, unsigned int serialNumber, unsigned int password) {
+Card::Card(unsigned int uid, const char* name, unsigned int serialNumber, unsigned int password) {
     this->uid = uid;
-    this->name = std::move(
-            name);// Parameter 'name' is passed by value and only copied once; consider moving it to avoid unnecessary copies
+    this->name = name;
     this->balance = 0;
     this->date = DEFAULT_DATE;
     this->condition = true;

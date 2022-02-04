@@ -5,15 +5,18 @@
 #define CAMPUSCARDBACKEND_CARDMANAGE_H
 
 #include <string>
-#include <List>
+#include <list>
 #include <map>
 #include "Card.h"
 #include "FileManager.h"
 
-#define BALANCECEILING 999.99 //账户余额上限
+#define BALANCE_CEILING 999.99 //账户余额上限
 
 using namespace std;
 
+/*
+ * 可以满足10000人的校园卡管理，每位同学可以补卡100次；提供模糊匹配的姓名信息查询；形成操作日志；提供批量操作能力
+ * */
 class CardManage
 {
 private:

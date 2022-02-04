@@ -45,6 +45,8 @@ public:
     /* 根据position获取wz CSV文件路径 */
     static std::string CONSUME_CSV(unsigned int position);
 
+    /* 终止符0x11 */
+    constexpr static const char endl = 0x11;
 private:
     //make these constructors not accessible
     FileManager();
@@ -62,6 +64,8 @@ private:
     prepareIOStream(const std::function<void(std::fstream &)> &func, const std::string &path, const std::string &source,
                     char mode = std::ios::in);
 
+    //暂时储存log 的buffer
+    std::string stringLogBuf;
 public:
     //delete these copy methods
     FileManager(const FileManager &) = delete;
@@ -110,7 +114,8 @@ public:
 
     /*
      * 向指定路径写入csv文件，
-     * container格式如上。
+     * notice that csv file type should end with .csv
+     * container format defined above
      * 返回是否成功 */
     bool writeCSVData(std::vector<std::vector<std::string>> &container, const std::string &sourceName,
                       const std::string &path = DEFAULT_DATA_PATH);
@@ -121,7 +126,10 @@ public:
     bool logs(std::vector<std::string> &container);
 
     /* log的简便形式 */
-    friend FileManager& operator <<(FileManager& o,const std::string& content);
+    friend FileManager &operator<<(FileManager &o, const std::string &content);
+
+    /* 终止符0x11 which defined above */
+    friend void operator<<(FileManager &o, char);
 };
 
 

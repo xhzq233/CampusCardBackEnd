@@ -122,6 +122,16 @@ bool FileManager::writeCSVData(std::vector<std::vector<std::string>> &container,
 }
 
 FileManager &operator<<(FileManager &o, const std::string &content) {
-    o.log(content);
+    o.stringLogBuf.append(content);
     return o;
+}
+
+void operator<<(FileManager &o, const char c) {
+
+    if (o.stringLogBuf.empty()) return; // return directly if empty
+
+    if (c == FileManager::endl) {
+        o.log(o.stringLogBuf);//TODO: err handle
+    }
+    o.stringLogBuf.clear();//输出完后清空
 }
