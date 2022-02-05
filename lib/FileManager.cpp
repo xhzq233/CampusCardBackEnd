@@ -6,8 +6,13 @@
 #include "FileManager.h"
 
 FileManager::FileManager() {
-    time_t now = time(nullptr);
-    startUpTime = ctime(&now);
+    auto now = time(nullptr);
+    auto *tm = std::localtime(&now) ;
+    char buf[25];
+
+    strftime(buf, sizeof(buf), "%Y-%m-%d-%X", tm);
+
+    startUpTime.append(buf);
 }
 
 FileManager &FileManager::getInstance() {
@@ -15,7 +20,7 @@ FileManager &FileManager::getInstance() {
     return instance;
 }
 
-bool FileManager::prepareIOStream(const std::function<void(std::fstream &)> &func, const std::string &path,
+bool FileManager::prepareIOStream(streamCallBack func, const std::string &path,
                                   const std::string &source,
                                   const char mode) {
     IOStream.open(path + source, mode);

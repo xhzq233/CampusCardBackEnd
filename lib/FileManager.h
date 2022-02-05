@@ -47,6 +47,8 @@ public:
 
     /* 终止符0x11 */
     constexpr static const char endl = 0x11;
+
+    typedef const std::function<void(std::fstream &)> &streamCallBack;
 private:
     //make these constructors not accessible
     FileManager();
@@ -61,7 +63,7 @@ private:
      * note that stream need to be referenced to avoid unnecessary copied memory.
      * */
     bool
-    prepareIOStream(const std::function<void(std::fstream &)> &func, const std::string &path, const std::string &source,
+    prepareIOStream(streamCallBack func, const std::string &path, const std::string &source,
                     char mode = std::ios::in);
 
     //暂时储存log 的buffer
@@ -131,7 +133,7 @@ public:
     /* 终止符0x11 which defined above */
     friend void operator<<(FileManager &o, char);
 
-    static std::string toStandardLogString(const char *title, const char *content) ;
+    static std::string toStandardLogString(const char *title, const char *content);
 };
 
 
