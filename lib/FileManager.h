@@ -13,6 +13,7 @@
 #include <ctime>
 #include <numeric>
 #include <functional>
+#include "Utils.h"
 
 /*
  * Singleton FileManager
@@ -103,7 +104,12 @@ public:
      * */
     bool getCSVDataSource(std::vector<std::vector<std::string>> &container, const std::string &source,
                           const std::string &path = DEFAULT_DATA_PATH);
-
+    /*
+     * use pre defined size
+     * */
+    bool getCSVDataSource(std::vector<std::vector<std::string>> &container, Pair<unsigned int, unsigned int> size,
+                          const std::string &source,
+                          const std::string &path = DEFAULT_DATA_PATH);
     /* 向指定路径写入一行string，返回是否成功 */
     bool writeStringByLine(const std::string &content, const std::string &source,
                            const std::string &path,
@@ -133,7 +139,7 @@ public:
     /* 终止符0x11 which defined above */
     friend void operator<<(FileManager &o, char);
 
-    static std::string toStandardLogString(const char *title, const std::string &content);
+    static std::string toStandardLogString(const char *title, const char *content);
 
 
 };

@@ -7,7 +7,7 @@
 
 FileManager::FileManager() {
     auto now = time(nullptr);
-    auto *tm = std::localtime(&now) ;
+    auto *tm = std::localtime(&now);
     char buf[25];
 
     strftime(buf, sizeof(buf), "%Y-%m-%d-%X", tm);
@@ -141,7 +141,7 @@ void operator<<(FileManager &o, const char c) {
     o.stringLogBuf.clear();//输出完后清空
 }
 
-std::string FileManager::toStandardLogString(const char *title, const std::string &content){
+std::string FileManager::toStandardLogString(const char *title, const char *content) {
     time_t now = time(nullptr);
     std::string res{ctime(&now)};
     res.insert(res.begin(), '[');
@@ -150,4 +150,27 @@ std::string FileManager::toStandardLogString(const char *title, const std::strin
     res.append(" ] ");
     res.append(content);
     return res;
+}
+
+bool
+FileManager::getCSVDataSource(std::vector<std::vector<std::string>> &container, Pair<unsigned int, unsigned int> size,
+                              const std::string &source, const std::string &path) {
+    return prepareIOStream([&](std::fstream &stream) {
+
+        std::string rowBuffer;//a csv row implemented in string
+        std::string metadata;//metadata in a csv row
+        std::vector<std::string> row(size.second, "");
+
+        for (int i = 0; i < size.first; ++i) {
+            std::getline(stream, rowBuffer);
+            std::stringstream buf(rowBuffer);//turn to a stream type
+            for (int j = 0; j < size.second; ++j) {
+                std::getline(buf, metadata, ',');
+                row[j] = metadata;
+            }
+            container[i] = row;
+            row.clear();
+        }
+
+    }, path, source);
 }

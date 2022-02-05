@@ -34,3 +34,24 @@ bool Consume::inputPassword(Card& card)
 	if (password == card.password) return true;
 	return false;
 }
+
+
+bool Consume::init() {
+    data.reserve(MAXSIZE);
+    windows.reserve(99);
+    curIndex = 0;
+
+    vector<vector<string>> container(99, {"", ""});
+    ///预定好尺寸
+    FileManager::getInstance().getCSVDataSource(container, Pair((unsigned int) 99, (unsigned int) 2),
+                                                FileManager::CAFE_POSITION_CSV_NAME);
+    ///下标为窗口号，值为data数组下标
+    for (auto && row:container) {
+        windows[stoi(row[0])] = stoi(row[1]);
+    }
+
+    //选择窗口
+    std::cin >> curWindows;
+    //选择时间？
+    return false;
+}

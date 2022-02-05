@@ -33,6 +33,15 @@ public:
     static bool consume(Card &card, Cafe &cafe, unsigned int price);        //消费操作
     static bool inputPassword(Card &card);                                    //输入密码
 
+#define MAXSIZE 60000
+    static vector<int> data;
+    static unsigned int curIndex;
+    static unsigned int curWindows;
+
+    /*下标为窗口号，值为data数组下标*/
+    static vector<unsigned int> windows;
+    //TODO
+    static bool init();
 };
 
 

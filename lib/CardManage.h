@@ -22,11 +22,10 @@ private:
     static CardManage *instance;                        //唯一实例
     CardManage();                                       //构造函数
     ~CardManage() = default;                            //析构函数
+public:
     CardManage(const CardManage &) = delete;            //拷贝构造函数
     CardManage &operator=(const CardManage &) = delete; //拷贝赋值函数
     CardManage(CardManage &&) = delete;                 //移动构造函数
-
-public:
     static unsigned int serialNumber;                    //流水号
     static CardManage *getInstance();                    //获取实例
     static void openAccount(unsigned int, const char *); //开户

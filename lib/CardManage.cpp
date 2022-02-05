@@ -26,7 +26,7 @@ CardManage *CardManage::getInstance()
 void CardManage::openAccount(unsigned int uid, const char *name)
 {
 
-    info.insert(make_pair(uid, std::move(name)));
+    info.insert(make_pair(uid, name));
     log("Manage", "学号:" + to_string(uid) + " 姓名" + name + " 开户:succeeded");
 }
 
@@ -158,5 +158,5 @@ void CardManage::recall()
 }
 void CardManage::log(const char *title, const string &content)
 {
-    FileManager::getInstance() << FileManager::toStandardLogString(title, content);
+    FileManager::getInstance() << FileManager::toStandardLogString(title, content.c_str())<<FileManager::endl;
 }
