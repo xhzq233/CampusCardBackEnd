@@ -20,10 +20,10 @@ int main() {
         if (FileManager::getInstance().getCSVDataSource(s, FileManager::CONSUME_CSV(56)));
         else std::cout << "err1" << std::endl;
 
-        std::cout << "the first:" << s[0][0]<<" ,length:" << std::to_string(s.size()) << std::endl;
+        FileManager::getInstance() << s[0][0] << s[0][0] << s[0][0] << "xhzq.xyz" << FileManager::endl;
 
-        FileManager::getInstance()<<s[0][0]<<s[0][0]<<s[0][0]<< "xhzq.xyz";
-
+        FileManager::getInstance() << FileManager::toStandardLogString("THIS IS TITLE", "AND content here")
+                                   << FileManager::endl;
 //        if (FileManager::getInstance().writeCSVData(s, "xhzq.csv", "../adjygvjsafvj/"));
     });
 
