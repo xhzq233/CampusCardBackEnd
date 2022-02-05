@@ -5,17 +5,18 @@
 #include "Card.h"
 
 
-Card::Card(unsigned int uid, const char* name, unsigned int serialNumber, unsigned int password) {
+Card::Card(unsigned int uid, const string &name, unsigned int serialNumber)
+{
     this->uid = uid;
-    this->name = name;
+    this->name = std::move(name);
     this->balance = 0;
-    this->date = DEFAULT_DATE;
+    this->date = defaultDate;
     this->condition = true;
-    this->password = password;
     int checkNode = 0;
     //校验码,卡号校验码的计算规则：前6位数字相加的和再模10，得到一个0-9的数，然后用9减去这个数，就是最后一位校验码
-    for (int i = 0; i < 5; ++i) {
-        checkNode += (int) serialNumber % 10;
+    for (int i = 0; i < 5; ++i)
+    {
+        checkNode += serialNumber % 10;
         serialNumber /= 10;
     }
     checkNode = 9 - (checkNode + 3) % 10;

@@ -136,7 +136,7 @@ void operator<<(FileManager &o, const char c) {
     o.stringLogBuf.clear();//输出完后清空
 }
 
-std::string FileManager::toStandardLogString(const char *title, const char *content){
+std::string FileManager::toStandardLogString(const char *title, const std::string &content){
     time_t now = time(nullptr);
     std::string res{ctime(&now)};
     res.insert(res.begin(), '[');
