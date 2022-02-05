@@ -130,6 +130,8 @@ public:
 
     /* 终止符0x11 which defined above */
     friend void operator<<(FileManager &o, char);
+
+    static std::string toStandardLogString(const char *title, const char *content) ;
 };
 
 

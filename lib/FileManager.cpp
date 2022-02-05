@@ -135,3 +135,14 @@ void operator<<(FileManager &o, const char c) {
     }
     o.stringLogBuf.clear();//输出完后清空
 }
+
+std::string FileManager::toStandardLogString(const char *title, const char *content){
+    time_t now = time(nullptr);
+    std::string res{ctime(&now)};
+    res.insert(res.begin(), '[');
+    res.append(" : ");
+    res.append(title);
+    res.append(" ] ");
+    res.append(content);
+    return res;
+}
