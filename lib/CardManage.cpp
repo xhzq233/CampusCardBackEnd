@@ -4,7 +4,6 @@
 
 #include "CardManage.h"
 
-
 CardManage::CardManage()
 {
     serialNumber = 12345;
@@ -26,7 +25,7 @@ CardManage *CardManage::getInstance()
 void CardManage::openAccount(unsigned int uid, const char *name)
 {
 
-    info.insert(make_pair(uid, name));
+    info.insert(make_pair(uid, std::move(name)));
     log("Manage", "学号:" + to_string(uid) + " 姓名" + name + " 开户:succeeded");
 }
 
@@ -156,7 +155,46 @@ bool CardManage::query(unsigned int uid)
 void CardManage::recall()
 {
 }
+
 void CardManage::log(const char *title, const string &content)
 {
-    FileManager::getInstance() << FileManager::toStandardLogString(title, content.c_str())<<FileManager::endl;
+    FileManager::getInstance() << FileManager::toStandardLogString(title, content.c_str()) << FileManager::endl;
+}
+
+//根据文件kh001.txt开户
+void CardManage::openAccountByFile()
+{
+    vector<string> container;
+    FileManager::getInstance().getStringDataSourceByLine(container);
+    for (auto &info : container)
+    {
+        int uid = atoi(info.substr(0, UID_LENGTH).c_str());
+        string name = info.substr(UID_LENGTH + 1, info.size() - UID_LENGTH - 2);
+        openAccount(uid, name.c_str());
+    }
+}
+//根据文件cz002.txt操作
+void CardManage::operateByFile()
+{
+    vector<string> container;
+    FileManager::getInstance().getStringDataSourceByLine(container, FileManager::CARD_MANAGE_NAME);
+    for (auto &info : container)
+    {
+        int uid = atoi(info.substr(info.find_last_of(',') + 1, 11).c_str());
+        if (info.find("挂失") != string::npos)
+        {
+        }
+        else if (info.find("充值") != string::npos)
+        {
+            /* code */
+        }
+        else if (info.find("销户") != string::npos)
+        {
+            /* code */
+        }
+        else if (info.find("解挂") != string::npos)
+        {
+            /* code */
+        }
+    }
 }

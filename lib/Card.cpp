@@ -10,7 +10,7 @@ Card::Card(unsigned int uid, const string &name, unsigned int serialNumber)
     this->uid = uid;
     this->name = std::move(name);
     this->balance = 0;
-    this->date = defaultDate;
+    this->date = DEFAULT_DATE;
     this->condition = true;
     int checkNode = 0;
     //校验码,卡号校验码的计算规则：前6位数字相加的和再模10，得到一个0-9的数，然后用9减去这个数，就是最后一位校验码

@@ -6,7 +6,8 @@
 
 #include <string>
 
-#define defaultDate 20240715 //默认的卡号有效期
+#define DEFAULT_DATE 20240715 //默认的卡号有效期
+#define UID_LENGTH 10   //学号长度
 using namespace std;
 
 class Card

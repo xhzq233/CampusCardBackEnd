@@ -5,7 +5,7 @@
 #define CAMPUSCARDBACKEND_CARDMANAGE_H
 
 #include <string>
-#include <List>
+#include <list>
 #include <map>
 #include "Card.h"
 #include "FileManager.h"
@@ -17,16 +17,17 @@ using namespace std;
 class CardManage
 {
 private:
-    static map<unsigned int, string> info;              //系统内的用户
-    static map<unsigned int, list<Card *> *> v;         //系统内的卡
-    static CardManage *instance;                        //唯一实例
-    CardManage();                                       //构造函数
-    ~CardManage() = default;                            //析构函数
+    static map<unsigned int, string> info;      //系统内的用户
+    static map<unsigned int, list<Card *> *> v; //系统内的卡
+    static CardManage *instance;                //唯一实例
+    CardManage();                               //构造函数
+    ~CardManage() = default;                    //析构函数
+
 public:
-    CardManage(const CardManage &) = delete;            //拷贝构造函数
-    CardManage &operator=(const CardManage &) = delete; //拷贝赋值函数
-    CardManage(CardManage &&) = delete;                 //移动构造函数
     static unsigned int serialNumber;                    //流水号
+    CardManage(const CardManage &) = delete;             //拷贝构造函数
+    CardManage &operator=(const CardManage &) = delete;  //拷贝赋值函数
+    CardManage(CardManage &&) = delete;                  //移动构造函数
     static CardManage *getInstance();                    //获取实例
     static void openAccount(unsigned int, const char *); //开户
     static void deleteAccount(unsigned int);             //销户
@@ -38,6 +39,8 @@ public:
     bool query(unsigned int);                            //账户查询
     static void recall();                                //日志回溯
     static void log(const char *, const string &);       //日志记录
+    static void openAccountByFile();                     //批量开户
+    static void operateByFile();                         //批量操作
 };
 
 #endif // CAMPUSCARDBACKEND_CARDMANAGE_H
