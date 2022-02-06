@@ -59,13 +59,16 @@ private:
 
     ~FileManager() = default;
 
+    /* type of std::ios::openmode is unsigned int */
+    typedef unsigned int openmode;
+
     /*
      * use lambda function simply wrap the process of prepare IOStream.
      * note that stream need to be referenced to avoid unnecessary copied memory.
      * */
     bool
     prepareIOStream(streamCallBack func, const std::string &path, const std::string &source,
-                    char mode = std::ios::in);
+                    openmode mode = std::ios::in);
 
     //暂时储存log 的buffer
     std::string stringLogBuf;
@@ -104,21 +107,23 @@ public:
      * */
     bool getCSVDataSource(std::vector<std::vector<std::string>> &container, const std::string &source,
                           const std::string &path = DEFAULT_DATA_PATH);
+
     /*
      * use pre defined size
      * */
     bool getCSVDataSource(std::vector<std::vector<std::string>> &container, Pair<unsigned int, unsigned int> size,
                           const std::string &source,
                           const std::string &path = DEFAULT_DATA_PATH);
+
     /* 向指定路径写入一行string，返回是否成功 */
     bool writeStringByLine(const std::string &content, const std::string &source,
                            const std::string &path,
-                           char mode = std::ios::app);
+                           openmode mode = std::ios::app);
 
     /* 向指定路径写入一串string，返回是否成功 */
     bool writeStrings(std::vector<std::string> &container, const std::string &source,
                       const std::string &path,
-                      char mode = std::ios::app);
+                      openmode mode = std::ios::app);
 
     /*
      * 向指定路径写入csv文件，
@@ -141,6 +146,13 @@ public:
 
     static std::string toStandardLogString(const char *title, const char *content);
 
+    /* 自定义时间字符串的StandardLog */
+    static std::string toStandardLogString(const char *title, const char *content, const char *time);
+
+    /* 自定义时间time_t指针的StandardLog */
+    static std::string toStandardLogString(const char *title, const char *content, const time_t &time);
+
 
 };
+
 #endif //CAMPUSCARDBACKEND_FILEMANAGER_H

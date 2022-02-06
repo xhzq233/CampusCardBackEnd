@@ -22,7 +22,7 @@ FileManager &FileManager::getInstance() {
 
 bool FileManager::prepareIOStream(streamCallBack func, const std::string &path,
                                   const std::string &source,
-                                  const char mode) {
+                                  const openmode mode) {
     IOStream.open(path + source, mode);
     if (!IOStream.is_open()) {/* check the param [path] , auto mkdir if not exist */
         IOStream.close();
@@ -94,7 +94,7 @@ bool FileManager::log(const std::string &content) {
 }
 
 bool FileManager::writeStringByLine(const std::string &content, const std::string &source, const std::string &path,
-                                    char mode) {
+                                    const openmode mode) {
     return prepareIOStream([&](std::fstream &stream) {
         stream << content << std::endl;
     }, path, source, mode);
@@ -102,7 +102,7 @@ bool FileManager::writeStringByLine(const std::string &content, const std::strin
 
 bool
 FileManager::writeStrings(std::vector<std::string> &container, const std::string &source, const std::string &path,
-                          char mode) {
+                          const openmode mode) {
     return prepareIOStream([&](std::fstream &stream) {
         for (const auto &content: container)
             stream << content << std::endl;
@@ -173,4 +173,28 @@ FileManager::getCSVDataSource(std::vector<std::vector<std::string>> &container, 
         }
 
     }, path, source);
+}
+
+std::string FileManager::toStandardLogString(const char *title, const char *content, const char *time) {
+
+    std::string res{time};
+    res.insert(res.begin(), '[');
+    res.append(" : ");
+    res.append(title);
+    res.append(" ] ");
+    res.append(content);
+
+    return res;
+}
+
+std::string FileManager::toStandardLogString(const char *title, const char *content, const time_t &time) {
+
+    std::string res{ctime(&time)};
+    res.insert(res.begin(), '[');
+    res.append(" : ");
+    res.append(title);
+    res.append(" ] ");
+    res.append(content);
+
+    return res;
 }
