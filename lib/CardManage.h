@@ -24,23 +24,23 @@ private:
     ~CardManage() = default;                    //析构函数
 
 public:
-    static unsigned int serialNumber;                    //流水号
-    CardManage(const CardManage &) = delete;             //拷贝构造函数
-    CardManage &operator=(const CardManage &) = delete;  //拷贝赋值函数
-    CardManage(CardManage &&) = delete;                  //移动构造函数
-    static CardManage *getInstance();                    //获取实例
-    static void openAccount(unsigned int, const char *); //开户
-    static void deleteAccount(unsigned int);             //销户
-    static void distribute(unsigned int);                //发卡
-    static void setLost(unsigned int);                   //挂失
-    static void unsetLost(unsigned int);                 //解挂
-    static void reissue(unsigned int);                   //补卡
-    static void recharge(unsigned int, unsigned int);    //充值
-    bool query(unsigned int);                            //账户查询
-    static void recall();                                //日志回溯
-    static void log(const char *, const string &);       //日志记录
-    static void openAccountByFile();                     //批量开户
-    static void operateByFile();                         //批量操作
+    static unsigned int serialNumber;                                    //流水号
+    CardManage(const CardManage &) = delete;                             //拷贝构造函数
+    CardManage &operator=(const CardManage &) = delete;                  //拷贝赋值函数
+    CardManage(CardManage &&) = delete;                                  //移动构造函数
+    static CardManage *getInstance();                                    //获取实例
+    static void openAccount(unsigned int, const char *, const string &); //开户
+    static void deleteAccount(unsigned int, const string &);             //销户
+    static void distribute(unsigned int, const string &);                //发卡
+    static void setLost(unsigned int, const string &);                   //挂失
+    static void unsetLost(unsigned int, const string &);                 //解挂
+    static void reissue(unsigned int, const string &);                   //补卡
+    static void recharge(unsigned int, unsigned int, const string &);    //充值
+    bool query(unsigned int);                                            //账户查询
+    static void recall();                                                //日志回溯
+    static void log(const char *, const string &, const string &);       //日志记录
+    static void openAccountByFile();                                     //批量开户
+    static void operateByFile();                                         //批量操作
 };
 
 #endif // CAMPUSCARDBACKEND_CARDMANAGE_H
