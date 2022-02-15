@@ -6,7 +6,7 @@
 
 bool Consume::consume(Card& card, Cafe& cafe, unsigned int price)
 {
-	if (card.condition && card.balance > price) {
+	if (card.condition && card.getBalance() > price) {
 		//获得当前时间
 		time_t now = time(nullptr);
 		tm* gmtm = gmtime(&now);
@@ -31,7 +31,7 @@ bool Consume::inputPassword(Card& card)
 {
 	unsigned int password;
 	std::cin >> password;
-	if (password == card.password) return true;
+	if (card.checkPassword(password)) return true;
 	return false;
 }
 

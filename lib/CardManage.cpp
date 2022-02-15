@@ -14,7 +14,7 @@ CardManage::CardManage()
 //返回一个CardManage实例
 CardManage *CardManage::getInstance()
 {
-    if (instance == nullptr)
+    if (!instance)
     {
         instance = new CardManage();
     }
@@ -32,7 +32,7 @@ void CardManage::openAccount(unsigned int uid, const char *name, const string &t
 //删除学号等数据项，或进行标识，只有经过恢复开户后才能恢复到开户状态；
 void CardManage::deleteAccount(unsigned int uid, const string &time = "")
 {
-    if (info.count(uid) != 0)
+    if (info.count(uid))
     {
         info.erase(uid);
         //将销户的所有卡号状态设置为禁用
@@ -48,7 +48,7 @@ void CardManage::deleteAccount(unsigned int uid, const string &time = "")
 //依据开户信息，初次分配唯一卡号；如果已经分配过卡号的，则属于补卡功能；
 void CardManage::distribute(unsigned int uid, const string &time = "")
 {
-    if (info.count(uid) != 0 && v.count(uid) == 0)
+    if (info.count(uid) && !v.count(uid))
     {
         Card *card = new Card(uid, info[uid], ++serialNumber);
         list<Card *> *l = new list<Card *>({card});
@@ -64,7 +64,7 @@ void CardManage::distribute(unsigned int uid, const string &time = "")
 //设置当前学号最新分配的卡号的卡片为禁用的状态；
 void CardManage::setLost(unsigned int uid, const string &time = "")
 {
-    if (info.count(uid) == 0)
+    if (!info.count(uid))
     {
         log("Manage", "学号:" + to_string(uid) + " 解挂:failed 备注:非系统用户", time);
         return;
@@ -84,7 +84,7 @@ void CardManage::setLost(unsigned int uid, const string &time = "")
 //设置当前学号最新分配的卡号的卡片为正常的状态；
 void CardManage::unsetLost(unsigned int uid, const string &time = "")
 {
-    if (info.count(uid) == 0)
+    if (!info.count(uid))
     {
         log("Manage", "学号:" + to_string(uid) + " 解挂:failed 备注:非系统用户", time);
         return;
@@ -104,7 +104,7 @@ void CardManage::unsetLost(unsigned int uid, const string &time = "")
 //为当前学号分配新的卡号，即发放新的校园卡；该学号关联的其他卡片同时全部处于挂失禁用状态；
 void CardManage::reissue(unsigned int uid, const string &time = "")
 {
-    if (info.count(uid) == 0)
+    if (!info.count(uid))
     {
         log("Manage", "学号:" + to_string(uid) + " 补卡:failed 备注:非系统用户", time);
         return;
@@ -119,7 +119,7 @@ void CardManage::reissue(unsigned int uid, const string &time = "")
     //如果之前有卡,将之前卡的余额给新补的卡
     if (!v[uid]->empty())
     {
-        card->balance = (*v[uid]->begin())->balance;
+        card->recharge((*v[uid]->begin())->getBalance());
     }
     //将之前卡的状态设置为禁用状态
     setLost(uid);
@@ -135,14 +135,14 @@ void CardManage::recharge(unsigned int uid, unsigned int amount, const string &t
     {
         log("Manage", "学号:" + to_string(uid) + " 姓名" + info[uid] + "卡号: " + to_string(card->cid) + " 充值:failed", time);
     }
-    else if (card->balance + amount > BALANCECEILING)
+    else if (card->getBalance() + amount > BALANCECEILING)
     {
         log("Manage", "学号:" + to_string(uid) + " 姓名" + info[uid] + "卡号: " + to_string(card->cid) + " 充值:failed 备注:卡内余额达到上限", time);
     }
     else
     {
-        log("Manage", "学号:" + to_string(uid) + " 姓名" + info[uid] + "卡号: " + to_string(card->cid) + " 充值前余额:" + to_string(card->balance) + " 充值后余额:" + to_string(card->balance + amount), time);
-        card->balance += amount;
+        log("Manage", "学号:" + to_string(uid) + " 姓名" + info[uid] + "卡号: " + to_string(card->cid) + " 充值前余额:" + to_string(card->getBalance()) + " 充值后余额:" + to_string(card->getBalance() + amount), time);
+        card->recharge(amount);
     }
 }
 
@@ -158,7 +158,7 @@ void CardManage::recall()
 
 void CardManage::log(const char *title, const string &content, const string &time = "")
 {
-    if (time.size() == 0)
+    if (!time.size())
     {
         FileManager::getInstance() << FileManager::toStandardLogString(title, content.c_str()) << FileManager::endl;
     }

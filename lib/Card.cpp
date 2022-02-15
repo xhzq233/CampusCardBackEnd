@@ -4,14 +4,8 @@
 
 #include "Card.h"
 
-
-Card::Card(unsigned int uid, const string &name, unsigned int serialNumber)
+Card::Card(unsigned int uid, const string &name, unsigned int serialNumber) : uid(uid), name(std::move(name)), balance(0), date(DEFAULT_DATE), condition(true), password(DEFAULT_PASSWORD)
 {
-    this->uid = uid;
-    this->name = std::move(name);
-    this->balance = 0;
-    this->date = DEFAULT_DATE;
-    this->condition = true;
     int checkNode = 0;
     //校验码,卡号校验码的计算规则：前6位数字相加的和再模10，得到一个0-9的数，然后用9减去这个数，就是最后一位校验码
     for (int i = 0; i < 5; ++i)
@@ -21,4 +15,32 @@ Card::Card(unsigned int uid, const string &name, unsigned int serialNumber)
     }
     checkNode = 9 - (checkNode + 3) % 10;
     this->cid = (3000000 + serialNumber) * 10 + checkNode;
+}
+
+void Card::consume(unsigned int price)
+{
+    this->balance -= price;
+}
+
+unsigned int Card::getBalance()
+{
+    return this->balance;
+}
+
+void Card::recharge(unsigned int amount)
+{
+    this->balance += amount;
+}
+
+void Card::changePassword()
+{
+    if (this->condition)
+    {
+        cin >> this->password;
+    }
+}
+
+bool Card::checkPassword(unsigned int inputPassword)
+{
+    return this->password == inputPassword;
 }
