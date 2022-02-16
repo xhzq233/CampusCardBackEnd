@@ -8,8 +8,11 @@
 #include <ctime>
 #include <iostream>
 #include "Card.h"
+#include "CardManage.h"
 #include "Cafe.h"
 #include "FileManager.h"
+
+#define MAXSIZE 60000 //数据最大数量
 
 /*
  * 运行食堂应用模块，可以设定当前时间和消费窗口，对指定的校园卡进行收费
@@ -28,21 +31,25 @@
  *  + 食堂窗口收费设备单独记录本窗口的数据
  *  + 数据最多保存6万条，循环覆盖保存，程序开始运行的前一次保存位置可以通过配置文件进行读入与保存
  * */
-class Consume {
+class Consume
+{
 public:
-    static bool consume(Card &card, Cafe &cafe, unsigned int price);        //消费操作
-    static bool inputPassword(Card &card);                                    //输入密码
+    static Consume *instance;
+    Consume *getInstance();
+    static bool consume(Card &card, unsigned int price, int date, int time); //消费操作
+    static bool inputPassword(Card &card);                                   //输入密码
 
-#define MAXSIZE 60000
+private:
     static vector<int> data;
     static unsigned int curIndex;
-    static unsigned int curWindows;
-
+    static unsigned int curWindow;
     /*下标为窗口号，值为data数组下标*/
     static vector<unsigned int> windows;
-    //TODO
+    // TODO
+    Consume();
     static bool init();
+    static void initPosition();
+    static void consumeByFile();
 };
 
-
-#endif //CAMPUSCARDBACKEND_CONSUME_H
+#endif // CAMPUSCARDBACKEND_CONSUME_H

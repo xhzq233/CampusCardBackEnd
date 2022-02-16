@@ -147,7 +147,15 @@ void CardManage::recharge(unsigned int uid, unsigned int amount, const string &t
 }
 
 //查询和学号匹配的卡
-bool CardManage::query(unsigned int uid)
+void CardManage::queryById(const string &uid)
+{
+}
+
+void CardManage::queryByName(const string &name)
+{
+}
+
+Card &CardManage::getCardByCid(unsigned int cid)
 {
 }
 

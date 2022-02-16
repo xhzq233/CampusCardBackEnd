@@ -17,11 +17,12 @@ using namespace std;
 class CardManage
 {
 private:
-    static map<unsigned int, string> info;      //系统内的用户
-    static map<unsigned int, list<Card *> *> v; //系统内的卡
-    static CardManage *instance;                //唯一实例
-    CardManage();                               //构造函数
-    ~CardManage() = default;                    //析构函数
+    static map<unsigned int, string> info;                         //系统内的用户
+    static map<unsigned int, list<Card *> *> v;                    //系统内的卡
+    static CardManage *instance;                                   //唯一实例
+    CardManage();                                                  //构造函数
+    ~CardManage() = default;                                       //析构函数
+    static void log(const char *, const string &, const string &); //日志记录
 
 public:
     static unsigned int serialNumber;                                    //流水号
@@ -36,9 +37,10 @@ public:
     static void unsetLost(unsigned int, const string &);                 //解挂
     static void reissue(unsigned int, const string &);                   //补卡
     static void recharge(unsigned int, unsigned int, const string &);    //充值
-    bool query(unsigned int);                                            //账户查询
+    static void queryById(const string &);                               //用id查询
+    static void queryByName(const string &);                             //用姓名查询
+    static Card &getCardByCid(unsigned int);                             //用卡id返回卡
     static void recall();                                                //日志回溯
-    static void log(const char *, const string &, const string &);       //日志记录
     static void openAccountByFile();                                     //批量开户
     static void operateByFile();                                         //批量操作
 };
