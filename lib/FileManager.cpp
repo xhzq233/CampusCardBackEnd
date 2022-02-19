@@ -198,3 +198,10 @@ std::string FileManager::toStandardLogString(const char *title, const char *cont
 
     return res;
 }
+
+std::regex FileManager::QueryPhaser::customRegex2CommonRegexSyntax(const std::string& regex) {
+    std::regex customRegex(regex);
+
+
+    return ;
+}

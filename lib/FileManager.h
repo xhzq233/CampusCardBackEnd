@@ -14,6 +14,7 @@
 #include <numeric>
 #include <functional>
 #include "Utils.h"
+#include <regex>
 
 /*
  * Singleton FileManager
@@ -152,6 +153,17 @@ public:
     /* 自定义时间time_t指针的StandardLog */
     static std::string toStandardLogString(const char *title, const char *content, const time_t &time);
 
+
+    class QueryPhaser {
+    public:
+        /**
+         * #模糊匹配的格式中，？代表一个字符或一个汉字，*表示多个字符或多个汉字，或代表空；
+         * 汉字：[\u4e00-\u9fa5]
+         * 将?替换成 .
+         * 将*替换成 .{2,}
+        * */
+        static std::regex customRegex2CommonRegexSyntax(const std::string& regex);
+    };
 
 };
 
