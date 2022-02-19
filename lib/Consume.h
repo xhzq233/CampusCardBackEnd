@@ -36,8 +36,10 @@ class Consume
 public:
     static Consume *instance;
     Consume *getInstance();
-    static bool consume(Card &card, unsigned int price, int date, int time); //消费操作
-    static bool inputPassword(Card &card);                                   //输入密码
+    static bool consume(Card &card, float price, int date, int time); //消费操作
+    static bool consume(Card &card, float price);
+    static bool inputPassword(Card &card); //输入密码
+    static void consumeByFile();
 
 private:
     static vector<int> data;
@@ -49,7 +51,8 @@ private:
     Consume();
     static bool init();
     static void initPosition();
-    static void consumeByFile();
+    static void log(const string &, const string &, const time_t &);
+    static void log(const string &, const string &, const char *);
 };
 
 #endif // CAMPUSCARDBACKEND_CONSUME_H
