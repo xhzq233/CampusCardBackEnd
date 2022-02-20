@@ -50,7 +50,9 @@ public:
     /* 终止符0x11 */
     constexpr static const char endl = 0x11;
 
-    typedef const std::function<void(std::fstream &)> &streamCallBack;
+    typedef const std::function<void(std::fstream &)> &StreamCallBack;
+    typedef std::vector<std::vector<std::string>> CSV;
+    typedef std::vector<std::string> Strings;
 private:
     //make these constructors not accessible
     FileManager();
@@ -68,7 +70,7 @@ private:
      * note that stream need to be referenced to avoid unnecessary copied memory.
      * */
     bool
-    prepareIOStream(streamCallBack func, const std::string &path, const std::string &source,
+    prepareIOStream(StreamCallBack func, const std::string &path, const std::string &source,
                     openmode mode = std::ios::in);
 
     //暂时储存log 的buffer
@@ -97,7 +99,7 @@ public:
      *   - path: select the storing-data path. DEFAULT is DEFAULT_DATA_PATH.
      * - Return type: array of string
      * */
-    bool getStringDataSourceByLine(std::vector<std::string> &container, const std::string &source = OPEN_ACCOUNT_NAME,
+    bool getStringDataSourceByLine(Strings &container, const std::string &source = OPEN_ACCOUNT_NAME,
                                    const std::string &path = DEFAULT_DATA_PATH);
 
     /*
@@ -106,13 +108,13 @@ public:
      * the second dimension is rows.
      * DEFAULT storing-data path is DEFAULT_DATA_PATH.
      * */
-    bool getCSVDataSource(std::vector<std::vector<std::string>> &container, const std::string &source,
+    bool getCSVDataSource(CSV &container, const std::string &source,
                           const std::string &path = DEFAULT_DATA_PATH);
 
     /*
      * use pre defined size
      * */
-    bool getCSVDataSource(std::vector<std::vector<std::string>> &container, Pair<unsigned int, unsigned int> size,
+    bool getCSVDataSource(CSV &container, Pair<unsigned int, unsigned int> size,
                           const std::string &source,
                           const std::string &path = DEFAULT_DATA_PATH);
 
@@ -122,22 +124,20 @@ public:
                            openmode mode = std::ios::app);
 
     /* 向指定路径写入一串string，返回是否成功 */
-    bool writeStrings(std::vector<std::string> &container, const std::string &source,
-                      const std::string &path,
-                      openmode mode = std::ios::app);
+    bool
+    writeStrings(Strings &container, const std::string &source, const std::string &path, openmode mode = std::ios::app);
 
     /*
      * 向指定路径写入csv文件，
      * notice that csv file type should end with .csv
      * container format defined above
      * 返回是否成功 */
-    bool writeCSVData(std::vector<std::vector<std::string>> &container, const std::string &sourceName,
-                      const std::string &path = DEFAULT_DATA_PATH);
+    bool writeCSVData(CSV &container, const std::string &sourceName, const std::string &path = DEFAULT_DATA_PATH);
 
     /* literally */
     bool log(const std::string &content);
 
-    bool logs(std::vector<std::string> &container);
+    bool logs(Strings &container);
 
     /* log的简便形式 */
     friend FileManager &operator<<(FileManager &o, const std::string &content);
@@ -162,7 +162,7 @@ public:
          * 将?替换成 .
          * 将*替换成 .{2,}
         * */
-        static std::regex customRegex2CommonRegexSyntax(const std::string& regex);
+        static std::regex customRegex2CommonRegexSyntax(std::string &regex);
     };
 
 };

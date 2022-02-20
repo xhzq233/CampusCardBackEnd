@@ -20,7 +20,7 @@ FileManager &FileManager::getInstance() {
     return instance;
 }
 
-bool FileManager::prepareIOStream(streamCallBack func, const std::string &path,
+bool FileManager::prepareIOStream(StreamCallBack func, const std::string &path,
                                   const std::string &source,
                                   const openmode mode) {
     IOStream.open(path + source, mode);
@@ -41,7 +41,7 @@ bool FileManager::prepareIOStream(streamCallBack func, const std::string &path,
     return true;
 }
 
-bool FileManager::getStringDataSourceByLine(std::vector<std::string> &container, const std::string &source,
+bool FileManager::getStringDataSourceByLine(Strings &container, const std::string &source,
                                             const std::string &path) {
     return prepareIOStream([&](std::fstream &stream) {
 
@@ -61,13 +61,13 @@ std::string FileManager::CONSUME_CSV(unsigned int position) {
     return res;
 }
 
-bool FileManager::getCSVDataSource(std::vector<std::vector<std::string>> &container, const std::string &source,
+bool FileManager::getCSVDataSource(CSV &container, const std::string &source,
                                    const std::string &path) {
     return prepareIOStream([&](std::fstream &stream) {
 
         std::string rowBuffer;//a csv row implemented in string
         std::string metadata;//metadata in a csv row
-        std::vector<std::string> row;
+        Strings row;
 
         while (std::getline(stream, rowBuffer)) {
 
@@ -83,7 +83,7 @@ bool FileManager::getCSVDataSource(std::vector<std::vector<std::string>> &contai
     }, path, source);
 }
 
-bool FileManager::logs(std::vector<std::string> &container) {
+bool FileManager::logs(Strings &container) {
     std::string logDataName = startUpTime + ".log";
     return writeStrings(container, logDataName, DEFAULT_LOG_PATH);
 }
@@ -100,18 +100,17 @@ bool FileManager::writeStringByLine(const std::string &content, const std::strin
     }, path, source, mode);
 }
 
-bool
-FileManager::writeStrings(std::vector<std::string> &container, const std::string &source, const std::string &path,
-                          const openmode mode) {
+bool FileManager::writeStrings(Strings &container, const std::string &source, const std::string &path,
+                               const openmode mode) {
     return prepareIOStream([&](std::fstream &stream) {
         for (const auto &content: container)
             stream << content << std::endl;
     }, path, source, mode);
 }
 
-bool FileManager::writeCSVData(std::vector<std::vector<std::string>> &container, const std::string &sourceName,
+bool FileManager::writeCSVData(CSV &container, const std::string &sourceName,
                                const std::string &path) {
-    std::vector<std::string> transform(container.size());//init with defined size
+    Strings transform(container.size());//init with defined size
     for (int i = 0; i < container.size(); ++i)
         transform[i] = std::reduce(container[i].begin() + 1, container[i].end(), container[i][0],
                                    [](const std::string &r,//init 参数需要显示转换为string
@@ -152,14 +151,13 @@ std::string FileManager::toStandardLogString(const char *title, const char *cont
     return res;
 }
 
-bool
-FileManager::getCSVDataSource(std::vector<std::vector<std::string>> &container, Pair<unsigned int, unsigned int> size,
-                              const std::string &source, const std::string &path) {
+bool FileManager::getCSVDataSource(CSV &container, Pair<unsigned int, unsigned int> size,
+                                   const std::string &source, const std::string &path) {
     return prepareIOStream([&](std::fstream &stream) {
 
         std::string rowBuffer;//a csv row implemented in string
         std::string metadata;//metadata in a csv row
-        std::vector<std::string> row(size.second, "");
+        Strings row(size.second, "");
 
         for (int i = 0; i < size.first; ++i) {
             std::getline(stream, rowBuffer);
@@ -199,9 +197,8 @@ std::string FileManager::toStandardLogString(const char *title, const char *cont
     return res;
 }
 
-std::regex FileManager::QueryPhaser::customRegex2CommonRegexSyntax(const std::string& regex) {
-    std::regex customRegex(regex);
-
-
-    return ;
+std::regex FileManager::QueryPhaser::customRegex2CommonRegexSyntax(std::string &regex) {
+    regex.replace(regex.find('?'), 1, ".");
+    regex.replace(regex.find('*'), 1, ".{2,}");
+    return std::regex(regex);
 }
