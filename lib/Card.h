@@ -24,12 +24,12 @@ public:
     unsigned int uid;                                 //学号
     unsigned int cid;                                 //卡号
     bool condition;                                   //卡的状态
-    Card(unsigned int, const string &, unsigned int); // card的构造函数
+    Card(unsigned int, string , unsigned int);        // card的构造函数
     inline void consume(unsigned int);                //消费
-    inline unsigned int getBalance();                 //查看余额
+    inline unsigned int getBalance() const;                 //查看余额
     inline void recharge(unsigned int);               //充值
     void changePassword();                            //修改密码
-    inline bool checkPassword(unsigned int);                 //验证密码
+    inline bool checkPassword(unsigned int) const;                 //验证密码
 };
 
 #endif // CARD_H

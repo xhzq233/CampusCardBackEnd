@@ -25,7 +25,7 @@ CardManage *CardManage::getInstance()
 void CardManage::openAccount(unsigned int uid, const char *name, const string &time = "")
 {
 
-    info.insert(make_pair(uid, std::move(name)));
+    info.insert(make_pair(uid, name));
     log("Manage", "学号:" + to_string(uid) + " 姓名" + name + " 开户:succeeded", time);
 }
 
@@ -166,7 +166,7 @@ void CardManage::recall()
 
 void CardManage::log(const char *title, const string &content, const string &time = "")
 {
-    if (!time.size())
+    if (time.empty())
     {
         FileManager::getInstance() << FileManager::toStandardLogString(title, content.c_str()) << FileManager::endl;
     }
@@ -183,7 +183,7 @@ void CardManage::openAccountByFile()
     FileManager::getInstance().getStringDataSourceByLine(container);
     for (auto &info : container)
     {
-        int uid = atoi(info.substr(0, UID_LENGTH).c_str());
+        int uid = stoi(info.substr(0, UID_LENGTH));
         string name = info.substr(UID_LENGTH + 1, info.size() - UID_LENGTH - 2);
         openAccount(uid, name.c_str());
     }
@@ -195,7 +195,7 @@ void CardManage::operateByFile()
     FileManager::getInstance().getStringDataSourceByLine(container, FileManager::CARD_MANAGE_NAME);
     for (auto &info : container)
     {
-        int uid = atoi(info.substr(info.find_last_of(',') + 1, UID_LENGTH + 1).c_str());
+        int uid = stoi(info.substr(info.find_last_of(',') + 1, UID_LENGTH + 1));
         string time = info.substr(0, info.find(','));
         if (info.find("挂失") != string::npos)
         {
@@ -204,7 +204,7 @@ void CardManage::operateByFile()
         else if (info.find("充值") != string::npos)
         {
             int amount = uid;
-            uid = atoi(info.substr(info.find("充值") + 5, 10).substr().c_str());
+            uid = stoi(info.substr(info.find("充值") + 5, 10).substr());
             recharge(uid, amount, time);
         }
         else if (info.find("销户") != string::npos)

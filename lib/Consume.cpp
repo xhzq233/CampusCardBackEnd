@@ -48,8 +48,8 @@ void Consume::initPosition()
     FileManager::getInstance().getStringDataSourceByLine(container, FileManager::CAFE_POSITION_NAME);
     for (auto &&str : container)
     {
-        int index = str.find(',');
-        windows[stoi(str.substr(0, index).c_str())] = stoi(str.substr(index + 1, str.size() - index - 2).c_str());
+        int index = (int)str.find(',');
+        windows[stoi(str.substr(0, index))] = stoi(str.substr(index + 1, str.size() - index - 2));
     }
 }
 
@@ -60,10 +60,10 @@ void Consume::consumeByFile()
     int index[3] = {7, 16, 25}; //三个分隔符,的位置
     for (auto &&str : container)
     {
-        int cid = atoi(str.substr(0, index[0]).c_str());
-        int date = atoi(str.substr(index[0] + 1, index[1] - index[0] - 1).c_str());
-        int time = atoi(str.substr(index[1] + 1, index[2] - index[1] - 1).c_str());
-        float price = atof(str.substr(index[2] + 1, str.size() - index[2] - 1).c_str());
+        int cid = stoi(str.substr(0, index[0]));
+        int date = stoi(str.substr(index[0] + 1, index[1] - index[0] - 1));
+        int time = stoi(str.substr(index[1] + 1, index[2] - index[1] - 1));
+        float price = stof(str.substr(index[2] + 1, str.size() - index[2] - 1));
         consume(CardManage::getInstance()->getCardByCid(cid), price, date, time);
     }
 }

@@ -3,3 +3,11 @@
 //
 
 #include "DataStore.h"
+
+DataStore::Cafes DataStore::cafes_init() {
+    return {};
+}
+
+DataStore::Cards DataStore::cards_init() {
+    return {};
+}
