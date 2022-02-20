@@ -197,8 +197,20 @@ std::string FileManager::toStandardLogString(const char *title, const char *cont
     return res;
 }
 
-std::regex FileManager::QueryPhaser::customRegex2CommonRegexSyntax(std::string &regex) {
+std::regex FileManager::DataQuery::customRegex2CommonRegexSyntax(std::string &regex) {
     regex.replace(regex.find('?'), 1, ".");
     regex.replace(regex.find('*'), 1, ".{2,}");
     return std::regex(regex);
+}
+
+using DataQuery = FileManager::DataQuery;
+
+DataQuery::Subscripts
+DataQuery::query(FileManager::Strings &container, const std::regex &regex) {
+    return {};
+}
+
+DataQuery::Subscripts
+DataQuery::query(FileManager::CSV &container, unsigned int columnIndex, const std::regex &regex) {
+    return {};
 }
