@@ -10,10 +10,12 @@ Account::~Account() {
 
 }
 
+inline
 void Account::consume(float price) {
     this->balance -= price;
 }
 
+inline
 void Account::recharge(float amount) {
     this->balance += amount;
 }

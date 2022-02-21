@@ -65,7 +65,8 @@ private:
 
     /* type of std::ios::openmode */
 #ifdef __WIN64
-    typedef long openmode;
+//    typedef long openmode;
+    typedef std::ios_base::openmode openmode;
 #else
     typedef unsigned int openmode;
 #endif
@@ -74,7 +75,8 @@ private:
      * use lambda function simply wrap the process of prepare IOStream.
      * note that stream need to be referenced to avoid unnecessary copied memory.
      * */
-    bool prepareIOStream(StreamCallBack func, const std::string &path, const std::string &source, openmode mode = 0x08);
+//    bool prepareIOStream(StreamCallBack func, const std::string &path, const std::string &source, openmode mode = 0x08);
+    bool prepareIOStream(StreamCallBack func, const std::string &path, const std::string &source, openmode mode = std::ios::in);
 
     //暂时储存log 的buffer
     std::string stringLogBuf;
