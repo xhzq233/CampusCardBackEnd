@@ -208,9 +208,10 @@ std::regex DataQuery::customRegex2CommonRegexSyntax(std::string &regex) {
 DataQuery::Subscripts
 DataQuery::query(FileManager::Strings &container, const std::regex &regex) {
     Subscripts res;
-    std::copy_if(container.begin(), container.end(), std::back_inserter(res), [&](const std::string &s) -> bool {
-        return std::regex_match(s, regex);
-    });
+    for (unsigned int i = 0; i < container.size(); ++i) {
+        if (std::regex_match(container[i], regex))
+            res.emplace_back(i);
+    }
     return res;
 }
 
@@ -218,8 +219,9 @@ DataQuery::Subscripts
 DataQuery::query(FileManager::CSV &container, unsigned int columnIndex, const std::regex &regex) {
 
     Subscripts res;
-    std::copy_if(container.begin(), container.end(), std::back_inserter(res), [&](const Strings &s) -> bool {
-        return std::regex_match(s[columnIndex], regex);
-    });
+    for (unsigned int i = 0; i < container.size(); ++i) {
+        if (std::regex_match(container[i][columnIndex], regex))
+            res.emplace_back(i);
+    }
     return {};
 }

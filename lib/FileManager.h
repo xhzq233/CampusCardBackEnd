@@ -15,6 +15,7 @@
 #include <functional>
 #include "Utils.h"
 #include <regex>
+#include <chrono>
 
 /*
  * Singleton FileManager
@@ -63,8 +64,11 @@ private:
     ~FileManager() = default;
 
     /* type of std::ios::openmode is unsigned int */
+#ifdef __WINDOWS__
+    typedef long openmode;
+#else
     typedef unsigned int openmode;
-
+#endif
     /*
      * use lambda function simply wrap the process of prepare IOStream.
      * note that stream need to be referenced to avoid unnecessary copied memory.
