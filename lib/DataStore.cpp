@@ -9,10 +9,12 @@ using Consumes = DataStore::Consumes;
 using WindowPositions = DataStore::WindowPositions;
 
 Accounts DataStore::accounts_init() {
+
     return Accounts();
 }
 
 Consumes DataStore::consumes_init() {
+
     return Consumes(MAXSIZE);
 }
 
@@ -31,15 +33,6 @@ WindowPositions DataStore::windows_init() {
     return res;
 }
 
-template<typename T>
-void DataStore::insert(T data) {
-    static_assert(std::is_base_of<Accounts, T>::value || std::is_base_of<Consumes, T>::value, "unsupported type");
-
-    if (std::is_base_of<Accounts, T>::value) {
-        getAccounts().push_back(data);
-    } else if (std::is_base_of<Consumes, T>::value) {
-        getConsumes().push_back(data);
-    } else {
-        throw;
-    }
+DataStore::index DataStore::halfFind() {
+    return 0;
 }

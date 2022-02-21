@@ -16,9 +16,12 @@ void testTimeWrapper(const std::function<void(void)> &func) {
 
 int main() {
     testTimeWrapper([&]() {
+
         std::vector<std::vector<std::string>> s;
         if (FileManager::getInstance().getCSVDataSource(s, FileManager::CONSUME_CSV(56)));
         else std::cout << "err1" << std::endl;
+
+        DataStore::insert(Account(0,""));
 
         FileManager::getInstance() << FileManager::toStandardLogString("THIS IS TITLE", "AND content here")
                                    << FileManager::endl;

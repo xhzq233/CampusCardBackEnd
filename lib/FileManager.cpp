@@ -100,7 +100,7 @@ bool FileManager::writeStringByLine(const std::string &content, const std::strin
     }, path, source, mode);
 }
 
-bool FileManager::writeStrings(Strings &container, const std::string &source, const std::string &path,
+bool FileManager::writeStrings(const Strings &container, const std::string &source, const std::string &path,
                                const openmode mode) {
     return prepareIOStream([&](std::fstream &stream) {
         for (const auto &content: container)
@@ -108,7 +108,7 @@ bool FileManager::writeStrings(Strings &container, const std::string &source, co
     }, path, source, mode);
 }
 
-bool FileManager::writeCSVData(CSV &container, const std::string &sourceName,
+bool FileManager::writeCSVData(const CSV &container, const std::string &sourceName,
                                const std::string &path) {
     Strings transform(container.size());//init with defined size
     for (int i = 0; i < container.size(); ++i)
