@@ -8,6 +8,7 @@
 #include <vector>
 #include "Card.h"
 #include "Cafe.h"
+#include "FileManager.h"
 
 class DataStore {
 private:
@@ -18,13 +19,19 @@ private:
 
     static Cafes cafes_init();
 
+public:
+
     static Cards cards;
+
     static Cafes cafes;
 
-public:
     static void init() {
         cards = cards_init();
         cafes = cafes_init();
+    }
+
+    static void store() {
+
     }
 };
 

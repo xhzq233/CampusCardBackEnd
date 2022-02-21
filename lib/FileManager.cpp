@@ -197,20 +197,29 @@ std::string FileManager::toStandardLogString(const char *title, const char *cont
     return res;
 }
 
-std::regex FileManager::DataQuery::customRegex2CommonRegexSyntax(std::string &regex) {
+using DataQuery = FileManager::DataQuery;
+
+std::regex DataQuery::customRegex2CommonRegexSyntax(std::string &regex) {
     regex.replace(regex.find('?'), 1, ".");
     regex.replace(regex.find('*'), 1, ".{2,}");
     return std::regex(regex);
 }
 
-using DataQuery = FileManager::DataQuery;
-
 DataQuery::Subscripts
 DataQuery::query(FileManager::Strings &container, const std::regex &regex) {
-    return {};
+    Subscripts res;
+    std::copy_if(container.begin(), container.end(), std::back_inserter(res), [&](const std::string &s) -> bool {
+        return std::regex_match(s, regex);
+    });
+    return res;
 }
 
 DataQuery::Subscripts
 DataQuery::query(FileManager::CSV &container, unsigned int columnIndex, const std::regex &regex) {
+
+    Subscripts res;
+    std::copy_if(container.begin(), container.end(), std::back_inserter(res), [&](const Strings &s) -> bool {
+        return std::regex_match(s[columnIndex], regex);
+    });
     return {};
 }
