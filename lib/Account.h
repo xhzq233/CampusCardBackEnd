@@ -23,6 +23,11 @@ public:
     inline void recharge(float amount); //充值
 
     ~Account();
+
+    //用于 priority_queue
+    bool operator<(const Account &right) const {
+        return uid < right.uid; //大顶堆
+    }
 };
 
 

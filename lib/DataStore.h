@@ -11,25 +11,21 @@
 #include "FileManager.h"
 #include "Account.h"
 #include "Consume.h"
+#include <queue>
 
 class DataStore {
-private:
-    typedef std::vector<WindowPosition> WindowPositions;
-    typedef std::vector<Account> Accounts;
+public:
+    typedef const std::vector<WindowPosition> WindowPositions;
+    typedef std::priority_queue<Account, std::less<Account>> Accounts;
     typedef std::vector<Consume> Consumes;
 
-    static void consumes_init();
 
-    static void windows_init();
-
-    static void accounts_init();
-
-    constexpr static const char WINDOW_QTY = 99;
-public:
-
-    static Accounts accounts;
-    static WindowPositions windowPositions;
-    static Consumes consumes;
+    template<typename type>
+    static type &getEntity() {
+        static_assert(std::is_base_of<list, T>::value, "T must inherit from list");
+        static type entity;
+        return entity;
+    }
 
     static void init() {
         windows_init();
@@ -37,9 +33,19 @@ public:
         consumes_init();
     }
 
-    static void store() {
+    static void localize() {
 
     }
+
+private:
+
+    static void consumes_init();
+
+    static WindowPositions windows_init();
+
+    static void accounts_init();
+
+    constexpr static const char WINDOW_QTY = 99;
 };
 
 #endif //CAMPUSCARDBACKEND_DATASTORE_H

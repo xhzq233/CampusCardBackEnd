@@ -63,7 +63,7 @@ private:
 
     ~FileManager() = default;
 
-    /* type of std::ios::openmode is unsigned int */
+    /* type of std::ios::openmode */
 #ifdef __WIN64
     typedef long openmode;
 #else
