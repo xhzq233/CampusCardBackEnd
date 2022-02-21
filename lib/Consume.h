@@ -9,7 +9,7 @@
 #include <iostream>
 #include "Card.h"
 #include "CardManage.h"
-#include "Cafe.h"
+#include "Window.h"
 #include "FileManager.h"
 
 #define MAXSIZE 60000 //数据最大数量
@@ -34,6 +34,13 @@
 class Consume
 {
 public:
+    // 消费窗口
+    Window window;
+    // 消费时间
+    std::string date;
+    // 消费金钱
+    float price;
+
     static bool consume(Card &card, float price, int date, int time); //消费操作
     static bool consume(Card &card, float price);
     static bool inputPassword(Card &card); //输入密码
@@ -47,7 +54,6 @@ private:
     static vector<unsigned int> windows;
     // TODO
     Consume();
-    static bool init();
     static void initPosition();
     static void log(const string &, const string &, const time_t &);
     static void log(const string &, const string &, const char *);

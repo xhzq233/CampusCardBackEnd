@@ -146,7 +146,7 @@ std::string FileManager::toStandardLogString(const char *title, const char *cont
     res.insert(res.begin(), '[');
     res.append(" : ");
     res.append(title);
-    res.append(" ] ");
+    res.append("] ");
     res.append(content);
     return res;
 }

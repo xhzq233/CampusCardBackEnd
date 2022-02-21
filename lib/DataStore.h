@@ -7,32 +7,33 @@
 
 #include <vector>
 #include "Card.h"
-#include "Cafe.h"
+#include "Window.h"
 #include "FileManager.h"
 #include "Account.h"
+#include "Consume.h"
 
 class DataStore {
 private:
-    typedef std::vector<Card> Cards;
-    typedef std::vector<Cafe> Cafes;
+    typedef std::vector<Window> Windows;
     typedef std::vector<Account> Accounts;
+    typedef std::vector<Consume> Consumes;
 
-    static Cards cards_init();
+    static void consumes_init();
 
-    static Cafes cafes_init();
+    static void windows_init();
 
-    static Accounts accounts_init();
+    static void accounts_init();
 
 public:
 
-    static Cards cards;
     static Accounts accounts;
-    static Cafes cafes;
+    static Windows windows;
+    static Consumes consumes;
 
     static void init() {
-        cards = cards_init();
-        cafes = cafes_init();
-        accounts = accounts_init();
+        windows_init();
+        accounts_init();
+        consumes_init();
     }
 
     static void store() {
