@@ -11,19 +11,20 @@
 #include "FileManager.h"
 #include "Account.h"
 #include "Consume.h"
-#include <queue>
 
 class DataStore {
 public:
     typedef std::vector<WindowPosition> WindowPositions;
-    typedef std::priority_queue<Account> Accounts;
+    typedef std::vector<Account> Accounts;
     typedef std::vector<Consume> Consumes;
-
 
     static Accounts &getAccounts() {
         static Accounts accounts = accounts_init();
         return accounts;
     }
+
+    template<typename T>
+    static void insert(T data);
 
     static Consumes &getConsumes() {
         static Consumes consumes = consumes_init();
