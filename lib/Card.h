@@ -15,7 +15,6 @@ class Card {
 private:
     unsigned int password; //密码
 
-
 public:
     unsigned int date;                                //有效日期
     unsigned int cid;                                 //卡号
