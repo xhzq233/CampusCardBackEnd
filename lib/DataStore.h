@@ -21,6 +21,7 @@ public:
     /*
      * Notice!!!!
      * do not use accounts.insert() or push_back()
+     * use DataStore::insert instead
      * */
     static Accounts &getAccounts() {
         static Accounts accounts = accounts_init();
@@ -28,25 +29,12 @@ public:
     }
 
     /*
-     * generic insert func
+     * Account insert func
      * */
-    template<typename T>
-    static void insert(const T &data) {
-        static_assert(std::is_base_of<Account, T>::value || std::is_base_of<Consume, T>::value, "unsupported type");
-
-        if (std::is_base_of<Account, T>::value) {
-            auto itr = halfFind();
-            getAccounts().emplace(itr, data);
-        } else if (std::is_base_of<Consume, T>::value) {
-            getConsumes().push_back(data);
-        } else {
-            throw;
-        }
+    static void insertAccount(const Account &data) {
+        auto itr = getAccounts().begin();
+        getAccounts().emplace(itr, data);
     }
-
-    typedef unsigned int index;
-
-    static index halfFind();
 
     static Consumes &getConsumes() {
         static Consumes consumes = consumes_init();
@@ -59,9 +47,8 @@ public:
         return windowPositions;
     }
 
-    static void localize() {
-
-    }
+    /* localize file stored by DataStore */
+    static void localize();
 
 private:
 

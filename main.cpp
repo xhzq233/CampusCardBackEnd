@@ -21,7 +21,7 @@ int main() {
         if (FileManager::getInstance().getCSVDataSource(s, FileManager::CONSUME_CSV(56)));
         else std::cout << "err1" << std::endl;
 
-        DataStore::insert(Account(0,""));
+        DataStore::insertAccount(Account(0,""));
 
         FileManager::getInstance() << FileManager::toStandardLogString("THIS IS TITLE", "AND content here")
                                    << FileManager::endl;

@@ -33,6 +33,6 @@ WindowPositions DataStore::windows_init() {
     return res;
 }
 
-DataStore::index DataStore::halfFind() {
-    return 0;
+void DataStore::localize() {
+
 }
