@@ -11,3 +11,7 @@ DataStore::Cafes DataStore::cafes_init() {
 DataStore::Cards DataStore::cards_init() {
     return {};
 }
+
+DataStore::Accounts DataStore::accounts_init() {
+    return {};
+}

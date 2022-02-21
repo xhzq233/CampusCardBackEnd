@@ -24,15 +24,6 @@ string to_time(int date, int time) //将date和time转换为日志的标准格�
     return s.str();
 }
 
-Consume *Consume::getInstance()
-{
-    if (!instance)
-    {
-        instance = new Consume();
-    }
-    return instance;
-}
-
 Consume::Consume()
 {
     data.reserve(MAXSIZE);
