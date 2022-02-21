@@ -95,7 +95,7 @@ void CardManage::reissue(unsigned int uid, const string &time) {
     //将之前卡的状态设置为禁用状态
     setLost(uid);
     account->cards.push_back(card);
-    log("Manage", "学号:" + to_string(uid) + " 姓名" + info[uid] + "卡号: " + to_string(card->cid) + " 补卡:succeeded", time);
+    log("Manage", "学号:" + to_string(uid) + " 姓名" + account->name + "卡号: " + to_string(card->cid) + " 补卡:succeeded", time);
 }
 
 //为该学号账户充值；账户余额上限999.99元；
