@@ -17,11 +17,9 @@ class CardManage
 {
 private:
 
-    static map<unsigned int, string> info;                         //系统内的用户
-    static map<unsigned int, list<Card *> *> v;                    //系统内的卡
     CardManage();                                                  //构造函数
     ~CardManage() = default;                                       //析构函数
-    static void log(const char *, const string &, const string &); //日志记录
+    static void log(const char *, const std::string &, const std::string &); //日志记录
 
 public:
     static unsigned int serialNumber;                                    //流水号
@@ -29,15 +27,15 @@ public:
     CardManage &operator=(const CardManage &) = delete;                  //拷贝赋值函数
     CardManage(CardManage &&) = delete;                                  //移动构造函数
 
-    static void openAccount(unsigned int, const char *, const string &time = ""); //开户
-    static void deleteAccount(unsigned int, const string &time = "");             //销户
-    static void distribute(unsigned int, const string &time = "");                //发卡
-    static void setLost(unsigned int, const string &time = "");                   //挂失
-    static void unsetLost(unsigned int, const string &time = "");                 //解挂
-    static void reissue(unsigned int, const string &time = "");                   //补卡
-    static void recharge(unsigned int, unsigned int, const string &time = "");    //充值
-    static void queryById(const string &);                               //用id查询
-    static void queryByName(const string &);                             //用姓名查询
+    static void openAccount(unsigned int uid, const std::string &name, const std::string &time = ""); //开户
+    static void deleteAccount(unsigned int uid, const std::string &time = "");             //销户
+    static void distribute(unsigned int, const std::string &time = "");                //发卡
+    static void setLost(unsigned int, const std::string &time = "");                   //挂失
+    static void unsetLost(unsigned int, const std::string &time = "");                 //解挂
+    static void reissue(unsigned int, const std::string &time = "");                   //补卡
+    static void recharge(unsigned int, unsigned int, const std::string &time = "");    //充值
+    static std::vector<Account>::iterator queryById(unsigned  int uid);                               //用id查询
+    static void queryByName(const std::string &);                             //用姓名查询
     static Card &getCardByCid(unsigned int);                             //用卡id返回卡
     static void recall();                                                //日志回溯
     static void openAccountByFile();                                     //批量开户

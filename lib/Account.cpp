@@ -4,7 +4,7 @@
 
 #include "Account.h"
 
-Account::Account(unsigned int uid, std::string &name) : uid(uid), name(std::move(name)), balance(0), cards({}) {}
+Account::Account(unsigned int uid, const std::string &name) : uid(uid), name(std::move(name)), balance(0), cards({}) {}
 
 Account::~Account() {
 

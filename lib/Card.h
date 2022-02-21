@@ -20,7 +20,7 @@ public:
     unsigned int cid;                                 //卡号
     unsigned int uid;                                 //学号
     bool condition;                                   //卡的状态
-    Card(unsigned int serialNumber, unsigned int uid);        // card的构造函数
+    Card(unsigned int uid, unsigned int serialNumber);        // card的构造函数
     void changePassword();                            //修改密码
     inline bool checkPassword(unsigned int) const;                 //验证密码
 };
