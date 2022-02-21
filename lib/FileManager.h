@@ -51,7 +51,7 @@ public:
     /* 终止符0x11 */
     constexpr static const char endl = 0x11;
 
-    typedef const std::function<void(std::fstream &)> &StreamCallBack;
+    typedef const std::function<void(std::fstream &stream)> &StreamCallBack;
     typedef std::vector<std::vector<std::string>> CSV;
     typedef std::vector<std::string> Strings;
 private:
@@ -70,6 +70,7 @@ private:
 #else
     typedef unsigned int openmode;
 #endif
+
     /*
      * use lambda function simply wrap the process of prepare IOStream.
      * note that stream need to be referenced to avoid unnecessary copied memory.
@@ -129,14 +130,15 @@ public:
 
     /* 向指定路径写入一串string，返回是否成功 */
     bool
-    writeStrings(Strings &container, const std::string &source, const std::string &path, openmode mode = std::ios::app);
+    writeStrings(const Strings &container, const std::string &source, const std::string &path,
+                 openmode mode = std::ios::app);
 
     /*
      * 向指定路径写入csv文件，
      * notice that csv file type should end with .csv
      * container format defined above
      * 返回是否成功 */
-    bool writeCSVData(CSV &container, const std::string &sourceName, const std::string &path = DEFAULT_DATA_PATH);
+    bool writeCSVData(const CSV &container, const std::string &sourceName, const std::string &path = DEFAULT_DATA_PATH);
 
     /* literally */
     bool log(const std::string &content);

@@ -18,19 +18,42 @@ public:
     typedef std::vector<Account> Accounts;
     typedef std::vector<Consume> Consumes;
 
+    /*
+     * Notice!!!!
+     * do not use accounts.insert() or push_back()
+     * */
     static Accounts &getAccounts() {
         static Accounts accounts = accounts_init();
         return accounts;
     }
 
+    /*
+     * generic insert func
+     * */
     template<typename T>
-    static void insert(T data);
+    static void insert(const T &data) {
+        static_assert(std::is_base_of<Account, T>::value || std::is_base_of<Consume, T>::value, "unsupported type");
+
+        if (std::is_base_of<Account, T>::value) {
+            auto itr = halfFind();
+            getAccounts().emplace(itr, data);
+        } else if (std::is_base_of<Consume, T>::value) {
+            getConsumes().push_back(data);
+        } else {
+            throw;
+        }
+    }
+
+    typedef unsigned int index;
+
+    static index halfFind();
 
     static Consumes &getConsumes() {
         static Consumes consumes = consumes_init();
         return consumes;
     }
 
+    /* const data because it defined by file ,unmodifiable */
     static const WindowPositions &getWindowPositions() {
         static const WindowPositions windowPositions = windows_init();
         return windowPositions;
