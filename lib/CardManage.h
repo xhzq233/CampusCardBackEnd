@@ -13,15 +13,12 @@
 
 #define BALANCECEILING 999.99 //账户余额上限
 
-using namespace std;
-
 class CardManage
 {
 private:
 
     static map<unsigned int, string> info;                         //系统内的用户
     static map<unsigned int, list<Card *> *> v;                    //系统内的卡
-    static CardManage *instance;                                   //唯一实例
     CardManage();                                                  //构造函数
     ~CardManage() = default;                                       //析构函数
     static void log(const char *, const string &, const string &); //日志记录
@@ -31,7 +28,7 @@ public:
     CardManage(const CardManage &) = delete;                             //拷贝构造函数
     CardManage &operator=(const CardManage &) = delete;                  //拷贝赋值函数
     CardManage(CardManage &&) = delete;                                  //移动构造函数
-    static CardManage *getInstance();                                    //获取实例
+
     static void openAccount(unsigned int, const char *, const string &time = ""); //开户
     static void deleteAccount(unsigned int, const string &time = "");             //销户
     static void distribute(unsigned int, const string &time = "");                //发卡

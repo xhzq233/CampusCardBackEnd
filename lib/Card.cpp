@@ -18,18 +18,6 @@ Card::Card(unsigned int serialNumber, unsigned int uid) : uid(uid), date(DEFAULT
     this->cid = (3000000 + serialNumber) * 10 + checkNode;
 }
 
-void Card::consume(unsigned int price) {
-    this->balance -= price;
-}
-
-unsigned int Card::getBalance() const {
-    return this->balance;
-}
-
-void Card::recharge(unsigned int amount) {
-    this->balance += amount;
-}
-
 void Card::changePassword() {
     if (this->condition) {
         std::cin >> this->password;
