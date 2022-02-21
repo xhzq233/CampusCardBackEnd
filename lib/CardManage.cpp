@@ -95,26 +95,29 @@ void CardManage::reissue(unsigned int uid, const string &time) {
     //将之前卡的状态设置为禁用状态
     setLost(uid);
     account->cards.push_back(card);
-    log("Manage", "学号:" + to_string(uid) + " 姓名" + account->name + "卡号: " + to_string(card->cid) + " 补卡:succeeded", time);
+    log("Manage", "学号:" + to_string(uid) + " 姓名" + account->name + "卡号: " + to_string(card->cid) + " 补卡:succeeded",
+        time);
 }
 
 //为该学号账户充值；账户余额上限999.99元；
 void CardManage::recharge(unsigned int uid, unsigned int amount, const string &time) {
     auto account = queryById(uid);
     if (account == DataStore::accounts.end()) {
-    {
-        log("Manage", "学号:" + to_string(uid) + " 姓名:非系统用户 充值:failed", time);
-        return;
-    }
-    auto card = *account->cards.begin();
-    if (account->balance + amount > BALANCECEILING) {
-        log("Manage",
-            "学号:" + to_string(uid) + " 姓名" + account->name + "卡号: " + to_string(card->cid) + " 充值:failed 备注:卡内余额达到上限",
-            time);
-    } else {
-        log("Manage", "学号:" + to_string(uid) + " 姓名" + account->name + "卡号: " + to_string(card->cid) + " 充值前余额:" +
-                      to_string(account->balance) + " 充值后余额:" + to_string(account->balance + amount), time);
-        account->recharge(amount);
+        {
+            log("Manage", "学号:" + to_string(uid) + " 姓名:非系统用户 充值:failed", time);
+            return;
+        }
+        auto card = *account->cards.begin();
+        if (account->balance + amount > BALANCECEILING) {
+            log("Manage",
+                "学号:" + to_string(uid) + " 姓名" + account->name + "卡号: " + to_string(card->cid) +
+                " 充值:failed 备注:卡内余额达到上限",
+                time);
+        } else {
+            log("Manage", "学号:" + to_string(uid) + " 姓名" + account->name + "卡号: " + to_string(card->cid) + " 充值前余额:" +
+                          to_string(account->balance) + " 充值后余额:" + to_string(account->balance + amount), time);
+            account->recharge(amount);
+        }
     }
 }
 
@@ -129,7 +132,9 @@ vector<Account>::iterator CardManage::queryById(unsigned int uid) {
 }
 
 void CardManage::queryByName(const string &name) {
+    ;
 }
+
 
 Card &CardManage::getCardByCid(unsigned int cid) {
 }
