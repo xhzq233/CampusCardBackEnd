@@ -5,10 +5,6 @@
 #ifndef CAMPUSCARDBACKEND_CONSUME_H
 #define CAMPUSCARDBACKEND_CONSUME_H
 
-#include <ctime>
-#include <iostream>
-#include "Card.h"
-#include "CardManage.h"
 #include "Window.h"
 #include "FileManager.h"
 
@@ -31,6 +27,8 @@
  * */
 class Consume {
 public:
+    //卡号
+    unsigned int cid;
     // 消费窗口
     Window window;
     // 消费时间
@@ -38,6 +36,8 @@ public:
     // 消费金钱
     float price;
 
+    Consume(unsigned int cid, Window window, std::string date, float price) : window(window), date(std::move(date)),
+                                                                              price(price), cid(cid) {}
 //    static bool consume(Card &card, float price, int date, int time); //消费操作
 //    static bool consume(Card &card, float price);
 //

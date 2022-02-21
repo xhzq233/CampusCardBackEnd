@@ -5,7 +5,6 @@
 #define CARD_H
 
 #include <iostream>
-#include <string>
 
 #define DEFAULT_DATE 20240715   //默认的卡号有效期
 #define UID_LENGTH 10           //学号长度

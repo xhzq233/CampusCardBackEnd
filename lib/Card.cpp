@@ -4,8 +4,6 @@
 
 #include "Card.h"
 
-#include <utility>
-
 Card::Card(unsigned int serialNumber, unsigned int uid) : uid(uid), date(DEFAULT_DATE), condition(true),
                                                           password(DEFAULT_PASSWORD) {
     unsigned int checkNode = 0;

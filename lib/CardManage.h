@@ -4,10 +4,7 @@
 #ifndef CAMPUSCARDBACKEND_CARDMANAGE_H
 #define CAMPUSCARDBACKEND_CARDMANAGE_H
 
-#include <string>
-#include <list>
 #include <map>
-#include "Card.h"
 #include "DataStore.h"
 #include "FileManager.h"
 #include "Account.h"
