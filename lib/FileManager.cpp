@@ -143,6 +143,8 @@ void operator<<(FileManager &o, const char c) {
 std::string FileManager::toStandardLogString(const char *title, const char *content) {
     time_t now = time(nullptr);
     std::string res{ctime(&now)};
+    //remove \n
+    res.replace(res.end() - 1, res.end(), "");
     res.insert(res.begin(), '[');
     res.append(" : ");
     res.append(title);

@@ -14,7 +14,7 @@
 
 class DataStore {
 private:
-    typedef std::vector<Window> Windows;
+    typedef std::vector<WindowPosition> WindowPositions;
     typedef std::vector<Account> Accounts;
     typedef std::vector<Consume> Consumes;
 
@@ -24,10 +24,11 @@ private:
 
     static void accounts_init();
 
+    constexpr static const char WINDOW_QTY = 99;
 public:
 
     static Accounts accounts;
-    static Windows windows;
+    static WindowPositions windowPositions;
     static Consumes consumes;
 
     static void init() {
