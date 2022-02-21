@@ -16,7 +16,7 @@ public:
     std::string name;//姓名
     double balance;//卡号
     std::list<Card *> cards;//卡
-    Account(unsigned int uid, std::string &name);
+    Account(unsigned int uid, const std::string &name);
 
     inline void consume(float price); //消费
 
