@@ -45,6 +45,9 @@ public:
     /* xf.csv基于位置分成了多个CSV文件，格式为W{\d}.csv */
     constexpr static const char CONSUME_CSV_DICTIONARY[] = "xf/";
 
+    /* W{\d}.csv 文件个数 */
+    constexpr static const char CONSUME_CSV_QTY = 58;
+
     /* 根据position获取wz CSV文件路径 */
     static std::string CONSUME_CSV(unsigned int position);
 
@@ -65,8 +68,8 @@ private:
 
     /* type of std::ios::openmode */
 #ifdef __WIN64
-//    typedef long openmode;
-    typedef std::ios_base::openmode openmode;
+    //    typedef long openmode;
+        typedef std::ios_base::openmode openmode;
 #else
     typedef unsigned int openmode;
 #endif
@@ -76,7 +79,8 @@ private:
      * note that stream need to be referenced to avoid unnecessary copied memory.
      * */
 //    bool prepareIOStream(StreamCallBack func, const std::string &path, const std::string &source, openmode mode = 0x08);
-    bool prepareIOStream(StreamCallBack func, const std::string &path, const std::string &source, openmode mode = std::ios::in);
+    bool prepareIOStream(StreamCallBack func, const std::string &path, const std::string &source,
+                         openmode mode = std::ios::in);
 
     //暂时储存log 的buffer
     std::string stringLogBuf;
@@ -113,7 +117,7 @@ public:
      * the second dimension is rows.
      * DEFAULT storing-data path is DEFAULT_DATA_PATH.
      * */
-    bool getCSVDataSource(CSV &container, const std::string &source,
+    bool getCSVDataSource(CSV &container, unsigned int columnQty, const std::string &source,
                           const std::string &path = DEFAULT_DATA_PATH);
 
     /*

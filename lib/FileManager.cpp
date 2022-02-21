@@ -61,23 +61,41 @@ std::string FileManager::CONSUME_CSV(unsigned int position) {
     return res;
 }
 
-bool FileManager::getCSVDataSource(CSV &container, const std::string &source,
-                                   const std::string &path) {
+bool FileManager::getCSVDataSource(CSV &container, Pair<unsigned int, unsigned int> size,
+                                   const std::string &source, const std::string &path) {
+    // decrease copied data as possible
+    container.resize(size.first, std::vector<std::string>());
     return prepareIOStream([&](std::fstream &stream) {
 
         std::string rowBuffer;//a csv row implemented in string
         std::string metadata;//metadata in a csv row
-        Strings row;
+
+        for (int i = 0; i < size.first; ++i) {
+            std::getline(stream, rowBuffer);
+            std::stringstream buf(rowBuffer);//turn to a stream type
+            container[i].reserve(size.second);
+            while (std::getline(buf, metadata, ','))//csv use ',' as the separator
+                container[i].emplace_back(metadata);
+        }
+    }, path, source);
+}
+
+bool FileManager::getCSVDataSource(CSV &container, unsigned int columnQty,
+                                   const std::string &source, const std::string &path) {
+    return prepareIOStream([&](std::fstream &stream) {
+
+        std::string rowBuffer;//a csv row implemented in string
+        std::string metadata;//metadata in a csv row
 
         while (std::getline(stream, rowBuffer)) {
+            // decrease copied data as possible
+            container.emplace_back(Strings());
+            container.end()->reserve(columnQty);
 
             std::stringstream buf(rowBuffer);//turn to a stream type
 
             while (std::getline(buf, metadata, ','))//csv use ',' as the separator
-                row.emplace_back(metadata);
-
-            container.emplace_back(row);
-            row.clear();
+                container.end()->emplace_back(metadata);
         }
 
     }, path, source);
@@ -144,35 +162,13 @@ std::string FileManager::toStandardLogString(const char *title, const char *cont
     time_t now = time(nullptr);
     std::string res{ctime(&now)};
     //remove \n
-    res.erase(res.end()-1);
+    res.erase(res.end() - 1);
     res.insert(res.begin(), '[');
     res.append(" : ");
     res.append(title);
     res.append("] ");
     res.append(content);
     return res;
-}
-
-bool FileManager::getCSVDataSource(CSV &container, Pair<unsigned int, unsigned int> size,
-                                   const std::string &source, const std::string &path) {
-    return prepareIOStream([&](std::fstream &stream) {
-
-        std::string rowBuffer;//a csv row implemented in string
-        std::string metadata;//metadata in a csv row
-        Strings row(size.second, "");
-
-        for (int i = 0; i < size.first; ++i) {
-            std::getline(stream, rowBuffer);
-            std::stringstream buf(rowBuffer);//turn to a stream type
-            for (int j = 0; j < size.second; ++j) {
-                std::getline(buf, metadata, ',');
-                row[j] = metadata;
-            }
-            container[i] = row;
-            row.clear();
-        }
-
-    }, path, source);
 }
 
 std::string FileManager::toStandardLogString(const char *title, const char *content, const char *time) {
