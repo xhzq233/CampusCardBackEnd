@@ -4,19 +4,24 @@
 
 #ifndef CAMPUSCARDBACKEND_ACCOUNT_H
 #define CAMPUSCARDBACKEND_ACCOUNT_H
+
 #include <list>
 #include "Card.h"
 
-class Account
-{
+class Account {
 private:
     /* data */
 public:
-    unsigned int uid;
-    std::string name;
-    double balance;
-    std::list<Card*>  v;
-    Account(std::string name);
+    unsigned int uid;//学号
+    std::string name;//姓名
+    double balance;//卡号
+    std::list<Card *> cards;//卡
+    Account(unsigned int uid, std::string &name);
+
+    inline void consume(float price); //消费
+
+    inline void recharge(float amount); //充值
+
     ~Account();
 };
 

@@ -8,6 +8,7 @@
 #include <list>
 #include <map>
 #include "Card.h"
+#include "DataStore.h"
 #include "FileManager.h"
 
 #define BALANCECEILING 999.99 //账户余额上限
@@ -17,6 +18,7 @@ using namespace std;
 class CardManage
 {
 private:
+
     static map<unsigned int, string> info;                         //系统内的用户
     static map<unsigned int, list<Card *> *> v;                    //系统内的卡
     static CardManage *instance;                                   //唯一实例
