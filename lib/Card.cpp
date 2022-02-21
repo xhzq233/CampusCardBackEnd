@@ -6,7 +6,7 @@
 
 #include <utility>
 
-Card::Card(unsigned int uid, string name, unsigned int serialNumber) : uid(uid), name(std::move(name)), balance(0), date(DEFAULT_DATE), condition(true), password(DEFAULT_PASSWORD)
+Card::Card(unsigned int serialNumber) : balance(0), date(DEFAULT_DATE), condition(true), password(DEFAULT_PASSWORD)
 {
     unsigned int checkNode = 0;
     //校验码,卡号校验码的计算规则：前6位数字相加的和再模10，得到一个0-9的数，然后用9减去这个数，就是最后一位校验码
@@ -38,7 +38,7 @@ void Card::changePassword()
 {
     if (this->condition)
     {
-        cin >> this->password;
+        std::cin >> this->password;
     }
 }
 
