@@ -4,18 +4,17 @@
 
 #include "Account.h"
 
-Account::Account(unsigned int uid, const std::string &name) : uid(uid), name(std::move(name)), balance(0), cards({}) {}
 
-Account::~Account() {
+Account::Account(unsigned int uid, std::string name) : uid(uid), name(std::move(name)), balance(0), cards({}) {}
 
-}
+Account::~Account() = default;
 
-inline
+
 void Account::consume(float price) {
     this->balance -= price;
 }
 
-inline
+
 void Account::recharge(float amount) {
     this->balance += amount;
 }

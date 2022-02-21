@@ -10,6 +10,7 @@
 #include "Card.h"
 #include "DataStore.h"
 #include "FileManager.h"
+#include "Account.h"
 
 #define BALANCECEILING 999.99 //账户余额上限
 
@@ -17,7 +18,7 @@ class CardManage
 {
 private:
 
-    CardManage();                                                  //构造函数
+    CardManage() = default;                                        //构造函数
     ~CardManage() = default;                                       //析构函数
     static void log(const char *, const std::string &, const std::string &); //日志记录
 

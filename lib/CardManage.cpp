@@ -6,13 +6,11 @@
 
 using namespace std;
 
-CardManage::CardManage() {
-    serialNumber = 12345;
-}
+unsigned int CardManage::serialNumber = 12345;
 
 //系统具备正常状态的学号、姓名等信息的，即属于开户状态
 void CardManage::openAccount(unsigned int uid, const string &name, const std::string &time) {
-    DataStore::insert(Account(uid, name));
+    DataStore::insertAccount(Account(uid, name));
     log("Manage", "学号:" + to_string(uid) + " 姓名" + name + " 开户:succeeded", time);
 }
 
