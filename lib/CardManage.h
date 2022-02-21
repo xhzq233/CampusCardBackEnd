@@ -29,14 +29,13 @@ public:
 
     static void openAccount(unsigned int uid, const std::string &name, const std::string &time = ""); //开户
     static void deleteAccount(unsigned int uid, const std::string &time = "");             //销户
-    static void distribute(unsigned int, const std::string &time = "");                //发卡
-    static void setLost(unsigned int, const std::string &time = "");                   //挂失
-    static void unsetLost(unsigned int, const std::string &time = "");                 //解挂
-    static void reissue(unsigned int, const std::string &time = "");                   //补卡
-    static void recharge(unsigned int, unsigned int, const std::string &time = "");    //充值
+    static void distribute(unsigned int uid, const std::string &time = "");                //发卡
+    static void setLost(unsigned int uid, const std::string &time = "");                   //挂失
+    static void unsetLost(unsigned int uid, const std::string &time = "");                 //解挂
+    static void reissue(unsigned int uid, const std::string &time = "");                   //补卡
+    static void recharge(unsigned int uid, float amount, const std::string &time = "");    //充值
     static std::vector<Account>::iterator queryById(unsigned  int uid);                               //用id查询
     static void queryByName(const std::string &);                             //用姓名查询
-    static Card &getCardByCid(unsigned int);                             //用卡id返回卡
     static void recall();                                                //日志回溯
     static void openAccountByFile();                                     //批量开户
     static void operateByFile();                                         //批量操作

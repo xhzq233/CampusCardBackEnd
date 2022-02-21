@@ -12,8 +12,7 @@ CardManage::CardManage() {
 
 //系统具备正常状态的学号、姓名等信息的，即属于开户状态
 void CardManage::openAccount(unsigned int uid, const string &name, const std::string &time) {
-
-    DataStore::getAccounts().push(Account(uid, name));
+    DataStore::insert(Account(uid, name));
     log("Manage", "学号:" + to_string(uid) + " 姓名" + name + " 开户:succeeded", time);
 }
 
@@ -33,9 +32,9 @@ void CardManage::deleteAccount(unsigned int uid, const std::string &time) {
 void CardManage::distribute(unsigned int uid, const string &time) {
     auto account = queryById(uid);
     if (account != DataStore::getAccounts().end()) {
-        Card *card = new Card(uid, ++serialNumber);
-        account->cards.push_back(card);
-        log("Manage", "学号:" + to_string(uid) + " 姓名" + account->name + "卡号: " + to_string(card->cid) + " 发卡:succeed",
+        Card card(uid, ++serialNumber);
+        account->cards.push_front(card);
+        log("Manage", "学号:" + to_string(uid) + " 姓名" + account->name + "卡号: " + to_string(card.cid) + " 发卡:succeed",
             time);
     } else {
         log("Manage", "学号:" + to_string(uid) + " 姓名:非系统用户  发卡:failed", time);
@@ -50,12 +49,12 @@ void CardManage::setLost(unsigned int uid, const string &time) {
         return;
     }
     auto card = *account->cards.begin();
-    if (card->condition) {
-        card->condition = false;
-        log("Manage", "学号:" + to_string(uid) + " 姓名" + account->name + "卡号: " + to_string(card->cid) + " 挂失:succeed",
+    if (card.condition) {
+        card.condition = false;
+        log("Manage", "学号:" + to_string(uid) + " 姓名" + account->name + "卡号: " + to_string(card.cid) + " 挂失:succeed",
             time);
     } else {
-        log("Manage", "学号:" + to_string(uid) + " 姓名" + account->name + "卡号: " + to_string(card->cid) + " 挂失:failed",
+        log("Manage", "学号:" + to_string(uid) + " 姓名" + account->name + "卡号: " + to_string(card.cid) + " 挂失:failed",
             time);
     }
 }
@@ -68,12 +67,12 @@ void CardManage::unsetLost(unsigned int uid, const string &time) {
         return;
     }
     auto card = *account->cards.begin();
-    if (!card->condition) {
-        card->condition = true;
-        log("Manage", "学号:" + to_string(uid) + " 姓名" + account->name + "卡号: " + to_string(card->cid) + " 解挂:succeed",
+    if (!card.condition) {
+        card.condition = true;
+        log("Manage", "学号:" + to_string(uid) + " 姓名" + account->name + "卡号: " + to_string(card.cid) + " 解挂:succeed",
             time);
     } else {
-        log("Manage", "学号:" + to_string(uid) + " 姓名" + account->name + "卡号: " + to_string(card->cid) + " 解挂:failed",
+        log("Manage", "学号:" + to_string(uid) + " 姓名" + account->name + "卡号: " + to_string(card.cid) + " 解挂:failed",
             time);
     }
 }
@@ -90,31 +89,30 @@ void CardManage::reissue(unsigned int uid, const string &time) {
         log("Manage", "学号:" + to_string(uid) + " 姓名" + account->name + " 补卡:failed 备注:补卡次数达到上限", time);
         return;
     }
-    Card *card = new Card(uid, ++serialNumber);
+    Card card(uid, ++serialNumber);
     //如果之前有卡,将之前卡的余额给新补的卡
     //将之前卡的状态设置为禁用状态
     setLost(uid);
-    account->cards.push_back(card);
-    log("Manage", "学号:" + to_string(uid) + " 姓名" + account->name + "卡号: " + to_string(card->cid) + " 补卡:succeeded",
+    account->cards.push_front(card);
+    log("Manage", "学号:" + to_string(uid) + " 姓名" + account->name + "卡号: " + to_string(card.cid) + " 补卡:succeeded",
         time);
 }
 
 //为该学号账户充值；账户余额上限999.99元；
-void CardManage::recharge(unsigned int uid, unsigned int amount, const string &time) {
+void CardManage::recharge(unsigned int uid, float amount, const string &time) {
     auto account = queryById(uid);
     if (account == DataStore::getAccounts().end()) {
-        {
-            log("Manage", "学号:" + to_string(uid) + " 姓名:非系统用户 充值:failed", time);
-            return;
-        }
+        log("Manage", "学号:" + to_string(uid) + " 姓名:非系统用户 充值:failed", time);
+        return;
+    } else {
         auto card = *account->cards.begin();
         if (account->balance + amount > BALANCECEILING) {
             log("Manage",
-                "学号:" + to_string(uid) + " 姓名" + account->name + "卡号: " + to_string(card->cid) +
+                "学号:" + to_string(uid) + " 姓名" + account->name + "卡号: " + to_string(card.cid) +
                 " 充值:failed 备注:卡内余额达到上限",
                 time);
         } else {
-            log("Manage", "学号:" + to_string(uid) + " 姓名" + account->name + "卡号: " + to_string(card->cid) + " 充值前余额:" +
+            log("Manage", "学号:" + to_string(uid) + " 姓名" + account->name + "卡号: " + to_string(card.cid) + " 充值前余额:" +
                           to_string(account->balance) + " 充值后余额:" + to_string(account->balance + amount), time);
             account->recharge(amount);
         }
@@ -123,7 +121,8 @@ void CardManage::recharge(unsigned int uid, unsigned int amount, const string &t
 
 //查询和学号匹配的卡
 vector<Account>::iterator CardManage::queryById(unsigned int uid) {
-    for (vector<Account>::iterator iter = DataStore::getAccounts().begin(); iter != DataStore::getAccounts().end(); ++iter) {
+    for (auto iter = DataStore::getAccounts().begin();
+         iter != DataStore::getAccounts().end(); ++iter) {
         if (iter->uid == uid) {
             return iter;
         }
@@ -135,9 +134,6 @@ void CardManage::queryByName(const string &name) {
     ;
 }
 
-
-Card &CardManage::getCardByCid(unsigned int cid) {
-}
 
 //日志回溯
 void CardManage::recall() {
@@ -159,7 +155,7 @@ void CardManage::openAccountByFile() {
     for (auto &info: container) {
         int uid = stoi(info.substr(0, UID_LENGTH));
         string name = info.substr(UID_LENGTH + 1, info.size() - UID_LENGTH - 2);
-        openAccount(uid, name.c_str());
+        openAccount(uid, name);
     }
 }
 
@@ -173,7 +169,7 @@ void CardManage::operateByFile() {
         if (info.find("挂失") != string::npos) {
             setLost(uid, time);
         } else if (info.find("充值") != string::npos) {
-            int amount = uid;
+            float amount = stof(info.substr(info.find_last_of(',') + 1, UID_LENGTH + 1));
             uid = stoi(info.substr(info.find("充值") + 5, 10).substr());
             recharge(uid, amount, time);
         } else if (info.find("销户") != string::npos) {

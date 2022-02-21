@@ -15,23 +15,15 @@ public:
     unsigned int uid;//学号
     std::string name;//姓名
     double balance;//卡号
-    std::list<Card *> cards;//卡
+    std::list<Card> cards;//卡
     Account(unsigned int uid, const std::string &name);
 
-    inline void consume(float price); //消费
+    void consume(float price); //消费
 
-    inline void recharge(float amount); //充值
+    void recharge(float amount); //充值
 
     ~Account();
 
-    //用于 priority_queue
-    bool operator<(const Account &right) const {
-        return uid < right.uid; //大顶堆
-    }
-
-    bool operator>(const Account &right) const {
-        return uid > right.uid; //大顶堆
-    }
 };
 
 
