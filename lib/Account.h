@@ -24,6 +24,14 @@ public:
 
     ~Account();
 
+    /// comparable
+    bool operator>(const Account &right) const {
+        return uid > right.uid;
+    }
+
+    bool operator<(const Account &right) const {
+        return uid < right.uid;
+    }
 };
 
 

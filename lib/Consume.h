@@ -38,6 +38,14 @@ public:
 
     Consume(unsigned int cid, Window window, std::string date, float price) : window(window), date(std::move(date)),
                                                                               price(price), cid(cid) {}
+    /// comparable
+    bool operator>(const Consume &right) const {
+        return date > right.date;
+    }
+
+    bool operator<(const Consume &right) const {
+        return date < right.date;
+    }
 //    static bool consume(Card &card, float price, int date, int time); //消费操作
 //    static bool consume(Card &card, float price);
 //

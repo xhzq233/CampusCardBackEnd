@@ -44,7 +44,8 @@ public:
     constexpr static const char CAFE_POSITION_CSV_NAME[] = "wz.csv";
     /* xf.csv基于位置分成了多个CSV文件，格式为W{\d}.csv */
     constexpr static const char CONSUME_CSV_DICTIONARY[] = "xf/";
-
+    /* xf.csv总文件 */
+    constexpr static const char CONSUME_CSV_NAME[] = "xf/xf.csv";
     /* W{\d}.csv 文件个数 */
     constexpr static const char CONSUME_CSV_QTY = 58;
 
