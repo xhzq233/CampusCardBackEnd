@@ -60,7 +60,7 @@ std::string FileManager::CONSUME_CSV(unsigned int position) {
     res.append(".csv");
     return res;
 }
-
+// 1937 rows used time: 4.27837 ms.
 bool FileManager::getCSVDataSource(CSV &container, Pair<unsigned int, unsigned int> size,
                                    const std::string &source, const std::string &path) {
     // decrease copied data as possible
@@ -80,22 +80,23 @@ bool FileManager::getCSVDataSource(CSV &container, Pair<unsigned int, unsigned i
     }, path, source);
 }
 
+// 1937 rows used time: 4.51425 ms.
 bool FileManager::getCSVDataSource(CSV &container, unsigned int columnQty,
                                    const std::string &source, const std::string &path) {
     return prepareIOStream([&](std::fstream &stream) {
 
         std::string rowBuffer;//a csv row implemented in string
         std::string metadata;//metadata in a csv row
-
+        unsigned int row = 0;
         while (std::getline(stream, rowBuffer)) {
             // decrease copied data as possible
-            container.emplace_back(Strings());
-            container.end()->reserve(columnQty);
-
+            container.emplace_back(Strings(columnQty, ""));
             std::stringstream buf(rowBuffer);//turn to a stream type
-
-            while (std::getline(buf, metadata, ','))//csv use ',' as the separator
-                container.end()->emplace_back(metadata);
+            for (int i = 0; i < columnQty; ++i) {
+                std::getline(buf, metadata, ',');
+                container[row][i].append(metadata);
+            }
+            row++;
         }
 
     }, path, source);

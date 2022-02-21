@@ -116,6 +116,7 @@ public:
      * the first dimension is columns.
      * the second dimension is rows.
      * DEFAULT storing-data path is DEFAULT_DATA_PATH.
+     * use Pair<unsigned int, unsigned int> size instead if size already known
      * */
     bool getCSVDataSource(CSV &container, unsigned int columnQty, const std::string &source,
                           const std::string &path = DEFAULT_DATA_PATH);
