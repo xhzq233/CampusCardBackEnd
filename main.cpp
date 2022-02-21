@@ -15,8 +15,6 @@ void testTimeWrapper(const std::function<void(void)> &func) {
 }
 
 int main() {
-    DataStore::init();
-
     testTimeWrapper([&]() {
         std::vector<std::vector<std::string>> s;
         if (FileManager::getInstance().getCSVDataSource(s, FileManager::CONSUME_CSV(56)));

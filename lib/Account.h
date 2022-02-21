@@ -28,6 +28,10 @@ public:
     bool operator<(const Account &right) const {
         return uid < right.uid; //大顶堆
     }
+
+    bool operator>(const Account &right) const {
+        return uid > right.uid; //大顶堆
+    }
 };
 
 

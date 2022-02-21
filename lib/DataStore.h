@@ -16,7 +16,7 @@
 class DataStore {
 public:
     typedef std::vector<WindowPosition> WindowPositions;
-    typedef std::priority_queue<Account, std::less<Account>> Accounts;
+    typedef std::priority_queue<Account> Accounts;
     typedef std::vector<Consume> Consumes;
 
 
@@ -48,6 +48,7 @@ private:
     static Accounts accounts_init();
 
     constexpr static const char WINDOW_QTY = 99;
+    constexpr static const int MAXSIZE = 60000;
 };
 
 #endif //CAMPUSCARDBACKEND_DATASTORE_H

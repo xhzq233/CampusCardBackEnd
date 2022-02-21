@@ -12,8 +12,6 @@
 #include "Window.h"
 #include "FileManager.h"
 
-#define MAXSIZE 60000 //数据最大数量
-
 /*
  * 运行食堂应用模块，可以设定当前时间和消费窗口，对指定的校园卡进行收费
  * 每次消费支付后，收费设备显示当天该窗口累计交易次数和累计收费金额
@@ -40,20 +38,17 @@ public:
     // 消费金钱
     float price;
 
-    static bool consume(Card &card, float price, int date, int time); //消费操作
-    static bool consume(Card &card, float price);
-
-    static bool inputPassword(Card &card); //输入密码
-    static void consumeByFile();
-
-    /*下标为窗口号，值为data数组下标*/
-    static std::vector<unsigned int> windows;
-
-    static void initPosition();
-
-    static void log(const std::string &, const std::string &, const time_t &);
-
-    static void log(const std::string &, const std::string &, const char *);
+//    static bool consume(Card &card, float price, int date, int time); //消费操作
+//    static bool consume(Card &card, float price);
+//
+//    static bool inputPassword(Card &card); //输入密码
+//    static void consumeByFile();
+//
+//    static void initPosition();
+//
+//    static void log(const std::string &, const std::string &, const time_t &);
+//
+//    static void log(const std::string &, const std::string &, const char *);
 };
 
 #endif // CAMPUSCARDBACKEND_CONSUME_H

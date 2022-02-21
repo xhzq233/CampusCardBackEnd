@@ -38,7 +38,7 @@ void Consume::initPosition()
 void Consume::consumeByFile()
 {
     FileManager::Strings container;
-    FileManager::getInstance().getStringDataSourceByLine(container, FileManager::CONSUME_CSV(curWindow));
+    FileManager::getInstance().getStringDataSourceByLine(container, FileManager::CONSUME_CSV(0));
     int index[3] = {7, 16, 25}; //三个分隔符,的位置
     for (auto &&str : container)
     {
@@ -46,7 +46,7 @@ void Consume::consumeByFile()
         int date = stoi(str.substr(index[0] + 1, index[1] - index[0] - 1));
         int time = stoi(str.substr(index[1] + 1, index[2] - index[1] - 1));
         float price = stof(str.substr(index[2] + 1, str.size() - index[2] - 1));
-        consume(CardManage::getInstance()->getCardByCid(cid), price, date, time);
+        consume(CardManage::getCardByCid(cid), price, date, time);
     }
 }
 

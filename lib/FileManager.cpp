@@ -144,7 +144,7 @@ std::string FileManager::toStandardLogString(const char *title, const char *cont
     time_t now = time(nullptr);
     std::string res{ctime(&now)};
     //remove \n
-    res.replace(res.end() - 1, res.end(), "");
+    res.erase(res.end()-1);
     res.insert(res.begin(), '[');
     res.append(" : ");
     res.append(title);

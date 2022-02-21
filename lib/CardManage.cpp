@@ -13,7 +13,7 @@ CardManage::CardManage() {
 //系统具备正常状态的学号、姓名等信息的，即属于开户状态
 void CardManage::openAccount(unsigned int uid, const string &name, const std::string &time) {
 
-    DataStore::getAccounts().push_back(Account(uid, name));
+    DataStore::getAccounts().push(Account(uid, name));
     log("Manage", "学号:" + to_string(uid) + " 姓名" + name + " 开户:succeeded", time);
 }
 
