@@ -4,15 +4,19 @@
 
 #include "DataStore.h"
 
-void DataStore::accounts_init() {
-    accounts = std::vector<Account>();
+using Accounts = DataStore::Accounts;
+using Consumes = DataStore::Consumes;
+using WindowPositions = DataStore::WindowPositions;
+
+Accounts DataStore::accounts_init() {
+    return Accounts();
 }
 
-void DataStore::consumes_init() {
-    consumes = std::vector<Consume>(MAXSIZE);
+Consumes DataStore::consumes_init() {
+    return Consumes(MAXSIZE);
 }
 
-DataStore::WindowPositions DataStore::windows_init() {
+WindowPositions DataStore::windows_init() {
     std::vector<WindowPosition> res(WINDOW_QTY);
 
     FileManager::CSV container(WINDOW_QTY, {"", ""});

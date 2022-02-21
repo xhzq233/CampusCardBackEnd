@@ -27,3 +27,11 @@ void Card::changePassword() {
 bool Card::checkPassword(unsigned int inputPassword) const {
     return this->password == inputPassword;
 }
+
+void Card::consume(float d) {
+
+}
+
+float Card::getBalance() {
+    return 0;
+}

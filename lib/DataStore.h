@@ -15,22 +15,24 @@
 
 class DataStore {
 public:
-    typedef const std::vector<WindowPosition> WindowPositions;
+    typedef std::vector<WindowPosition> WindowPositions;
     typedef std::priority_queue<Account, std::less<Account>> Accounts;
     typedef std::vector<Consume> Consumes;
 
 
-    template<typename type>
-    static type &getEntity() {
-        static_assert(std::is_base_of<list, T>::value, "T must inherit from list");
-        static type entity;
-        return entity;
+    static Accounts &getAccounts() {
+        static Accounts accounts = accounts_init();
+        return accounts;
     }
 
-    static void init() {
-        windows_init();
-        accounts_init();
-        consumes_init();
+    static Consumes &getConsumes() {
+        static Consumes consumes = consumes_init();
+        return consumes;
+    }
+
+    static const WindowPositions &getWindowPositions() {
+        static const WindowPositions windowPositions = windows_init();
+        return windowPositions;
     }
 
     static void localize() {
@@ -39,11 +41,11 @@ public:
 
 private:
 
-    static void consumes_init();
+    static Consumes consumes_init();
 
     static WindowPositions windows_init();
 
-    static void accounts_init();
+    static Accounts accounts_init();
 
     constexpr static const char WINDOW_QTY = 99;
 };

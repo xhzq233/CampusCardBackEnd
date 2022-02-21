@@ -47,16 +47,13 @@ public:
     static void consumeByFile();
 
     /*下标为窗口号，值为data数组下标*/
-    static vector<unsigned int> windows;
-
-    // TODO
-    Consume();
+    static std::vector<unsigned int> windows;
 
     static void initPosition();
 
-    static void log(const string &, const string &, const time_t &);
+    static void log(const std::string &, const std::string &, const time_t &);
 
-    static void log(const string &, const string &, const char *);
+    static void log(const std::string &, const std::string &, const char *);
 };
 
 #endif // CAMPUSCARDBACKEND_CONSUME_H

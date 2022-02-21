@@ -1,6 +1,6 @@
 #include "Consume.h"
 
-string to_time(int date, int time) //将date和time转换为日志的标准格式
+std::string to_time(int date, int time) //将date和time转换为日志的标准格式
 {
     const char *week[] = {"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"};
     const char *months[] = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sept", "Oct", "Nov", "Dec"};
@@ -19,23 +19,14 @@ string to_time(int date, int time) //将date和time转换为日志的标准格�
     int hour = time / 1000000;
     int minute = time / 10000 % 100;
     int second = time % 10000 / 100;
-    stringstream s;
+    std::stringstream s;
     s << week[w] << ' ' << months[month - 1] << ' ' << day << ' ' << hour << ':' << minute << ':' << second << ' ' << year;
     return s.str();
 }
 
-Consume::Consume()
-{
-    data.reserve(MAXSIZE);
-    windows.reserve(99);
-    initPosition();
-    cout << "输入当前的窗口号:";
-    cin >> curWindow;
-}
-
 void Consume::initPosition()
 {
-    vector<string> container;
+    FileManager::Strings container;
     FileManager::getInstance().getStringDataSourceByLine(container, FileManager::CAFE_POSITION_NAME);
     for (auto &&str : container)
     {
@@ -46,7 +37,7 @@ void Consume::initPosition()
 
 void Consume::consumeByFile()
 {
-    vector<string> container;
+    FileManager::Strings container;
     FileManager::getInstance().getStringDataSourceByLine(container, FileManager::CONSUME_CSV(curWindow));
     int index[3] = {7, 16, 25}; //三个分隔符,的位置
     for (auto &&str : container)
@@ -59,12 +50,12 @@ void Consume::consumeByFile()
     }
 }
 
-void Consume::log(const string &title, const string &content, const time_t &_time)
+void Consume::log(const std::string &title, const std::string &content, const time_t &_time)
 {
     FileManager::getInstance() << FileManager::toStandardLogString(title.c_str(), content.c_str(), _time) << FileManager::endl;
 }
 
-void Consume::log(const string &title, const string &content, const char *_time)
+void Consume::log(const std::string &title, const std::string &content, const char *_time)
 {
     FileManager::getInstance() << FileManager::toStandardLogString(title.c_str(), content.c_str(), _time) << FileManager::endl;
 }
@@ -82,13 +73,13 @@ bool Consume::consume(Card &card, float price)
             if (price < 20)
             {
                 card.consume(price);
-                Consume::log("消费", string("s"), time(nullptr));
+                Consume::log("消费", std::string("s"), time(nullptr));
                 return true;
             }
             else if (price > 20 && inputPassword(card))
             {
                 card.consume(price);
-                Consume::log("消费", string("s"), time(nullptr));
+                Consume::log("消费", std::string("s"), time(nullptr));
                 return true;
             }
         }
@@ -113,13 +104,13 @@ bool Consume::consume(Card &card, float price, int date, int _time)
             if (price < 20)
             {
                 card.consume(price);
-                Consume::log("消费", string("s"), move(to_time(date, _time)).c_str());
+                Consume::log("消费", std::string("s"), move(to_time(date, _time)).c_str());
                 return true;
             }
             else if (price > 20 && inputPassword(card))
             {
                 card.consume(price);
-                Consume::log("消费", string("s"), move(to_time(date, _time)).c_str());
+                Consume::log("消费", std::string("s"), move(to_time(date, _time)).c_str());
                 return true;
             }
         }
