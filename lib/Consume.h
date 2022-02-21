@@ -31,8 +31,7 @@
  *  + 食堂窗口收费设备单独记录本窗口的数据
  *  + 数据最多保存6万条，循环覆盖保存，程序开始运行的前一次保存位置可以通过配置文件进行读入与保存
  * */
-class Consume
-{
+class Consume {
 public:
     // 消费窗口
     Window window;
@@ -43,19 +42,20 @@ public:
 
     static bool consume(Card &card, float price, int date, int time); //消费操作
     static bool consume(Card &card, float price);
+
     static bool inputPassword(Card &card); //输入密码
     static void consumeByFile();
 
-private:
-    static vector<int> data;
-    static unsigned int curIndex;
-    static unsigned int curWindow;
     /*下标为窗口号，值为data数组下标*/
     static vector<unsigned int> windows;
+
     // TODO
     Consume();
+
     static void initPosition();
+
     static void log(const string &, const string &, const time_t &);
+
     static void log(const string &, const string &, const char *);
 };
 
