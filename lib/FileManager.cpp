@@ -223,5 +223,5 @@ DataQuery::query(FileManager::CSV &container, unsigned int columnIndex, const st
         if (std::regex_match(container[i][columnIndex], regex))
             res.emplace_back(i);
     }
-    return {};
+    return res;
 }
