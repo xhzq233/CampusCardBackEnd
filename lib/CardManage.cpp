@@ -22,7 +22,7 @@ CardManage *CardManage::getInstance()
 }
 
 //系统具备正常状态的学号、姓名等信息的，即属于开户状态
-void CardManage::openAccount(unsigned int uid, const char *name, const string &time = "")
+void CardManage::openAccount(unsigned int uid, const char *name, const string &time)
 {
 
     info.insert(make_pair(uid, name));
@@ -30,7 +30,7 @@ void CardManage::openAccount(unsigned int uid, const char *name, const string &t
 }
 
 //删除学号等数据项，或进行标识，只有经过恢复开户后才能恢复到开户状态；
-void CardManage::deleteAccount(unsigned int uid, const string &time = "")
+void CardManage::deleteAccount(unsigned int uid, const string &time )
 {
     if (info.count(uid))
     {
@@ -46,7 +46,7 @@ void CardManage::deleteAccount(unsigned int uid, const string &time = "")
 }
 
 //依据开户信息，初次分配唯一卡号；如果已经分配过卡号的，则属于补卡功能；
-void CardManage::distribute(unsigned int uid, const string &time = "")
+void CardManage::distribute(unsigned int uid, const string &time )
 {
     if (info.count(uid) && !v.count(uid))
     {
@@ -62,7 +62,7 @@ void CardManage::distribute(unsigned int uid, const string &time = "")
 }
 
 //设置当前学号最新分配的卡号的卡片为禁用的状态；
-void CardManage::setLost(unsigned int uid, const string &time = "")
+void CardManage::setLost(unsigned int uid, const string &time )
 {
     if (!info.count(uid))
     {
@@ -82,7 +82,7 @@ void CardManage::setLost(unsigned int uid, const string &time = "")
 }
 
 //设置当前学号最新分配的卡号的卡片为正常的状态；
-void CardManage::unsetLost(unsigned int uid, const string &time = "")
+void CardManage::unsetLost(unsigned int uid, const string &time )
 {
     if (!info.count(uid))
     {
@@ -102,7 +102,7 @@ void CardManage::unsetLost(unsigned int uid, const string &time = "")
 }
 
 //为当前学号分配新的卡号，即发放新的校园卡；该学号关联的其他卡片同时全部处于挂失禁用状态；
-void CardManage::reissue(unsigned int uid, const string &time = "")
+void CardManage::reissue(unsigned int uid, const string &time )
 {
     if (!info.count(uid))
     {
@@ -128,7 +128,7 @@ void CardManage::reissue(unsigned int uid, const string &time = "")
 }
 
 //为该学号账户充值；账户余额上限999.99元；
-void CardManage::recharge(unsigned int uid, unsigned int amount, const string &time = "")
+void CardManage::recharge(unsigned int uid, unsigned int amount, const string &time )
 {
     Card *card = (*v[uid]->begin()); //最新的卡
     if (!card->condition)            //当前卡为禁用状态
@@ -164,7 +164,7 @@ void CardManage::recall()
 {
 }
 
-void CardManage::log(const char *title, const string &content, const string &time = "")
+void CardManage::log(const char *title, const string &content, const string &time )
 {
     if (time.empty())
     {

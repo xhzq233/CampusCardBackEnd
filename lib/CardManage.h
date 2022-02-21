@@ -30,13 +30,13 @@ public:
     CardManage &operator=(const CardManage &) = delete;                  //拷贝赋值函数
     CardManage(CardManage &&) = delete;                                  //移动构造函数
     static CardManage *getInstance();                                    //获取实例
-    static void openAccount(unsigned int, const char *, const string &); //开户
-    static void deleteAccount(unsigned int, const string &);             //销户
-    static void distribute(unsigned int, const string &);                //发卡
-    static void setLost(unsigned int, const string &);                   //挂失
-    static void unsetLost(unsigned int, const string &);                 //解挂
-    static void reissue(unsigned int, const string &);                   //补卡
-    static void recharge(unsigned int, unsigned int, const string &);    //充值
+    static void openAccount(unsigned int, const char *, const string &time = ""); //开户
+    static void deleteAccount(unsigned int, const string &time = "");             //销户
+    static void distribute(unsigned int, const string &time = "");                //发卡
+    static void setLost(unsigned int, const string &time = "");                   //挂失
+    static void unsetLost(unsigned int, const string &time = "");                 //解挂
+    static void reissue(unsigned int, const string &time = "");                   //补卡
+    static void recharge(unsigned int, unsigned int, const string &time = "");    //充值
     static void queryById(const string &);                               //用id查询
     static void queryByName(const string &);                             //用姓名查询
     static Card &getCardByCid(unsigned int);                             //用卡id返回卡
