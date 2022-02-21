@@ -4,12 +4,20 @@
 
 #ifndef CAMPUSCARDBACKEND_ACCOUNT_H
 #define CAMPUSCARDBACKEND_ACCOUNT_H
-#include <vector>
+#include <list>
 #include "Card.h"
 
-class Account {
-    std::vector<Card> cards;
-
+class Account
+{
+private:
+    /* data */
+public:
+    unsigned int uid;
+    std::string name;
+    double balance;
+    std::list<Card*>  v;
+    Account(std::string name);
+    ~Account();
 };
 
 
