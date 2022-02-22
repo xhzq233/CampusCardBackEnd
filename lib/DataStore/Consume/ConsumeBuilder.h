@@ -8,16 +8,10 @@
 #include "Consume.h"
 #include "../Account/Card/Card.h"
 
-class ConsumeBuilder {
+namespace ConsumeBuilder {
     static bool consume(Card &card, float price, int date, int time); //消费操作
     static bool consume(Card &card, float price);
-
-    static bool inputPassword(Card &card); //输入密码
-    static void consumeByFile();
-
-    static void initPosition();
-
-    static void log(const std::string &, const std::string &, const time_t &);
+    static bool passwd_is_correct(Card &card); //输入密码
 };
 
 
