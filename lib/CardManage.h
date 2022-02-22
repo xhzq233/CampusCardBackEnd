@@ -25,6 +25,7 @@ public:
     CardManage &operator=(const CardManage &) = delete;                  //拷贝赋值函数
     CardManage(CardManage &&) = delete;                                  //移动构造函数
 
+    static std::string to_string(unsigned int uid, const std::string &name, const std::string &info);
     static void openAccount(unsigned int uid, const std::string &name, const std::string &time = ""); //开户
     static void deleteAccount(unsigned int uid, const std::string &time = "");             //销户
     static void distribute(unsigned int uid, const std::string &time = "");                //发卡
@@ -32,11 +33,10 @@ public:
     static void unsetLost(unsigned int uid, const std::string &time = "");                 //解挂
     static void reissue(unsigned int uid, const std::string &time = "");                   //补卡
     static void recharge(unsigned int uid, float amount, const std::string &time = "");    //充值
-    static std::vector<Account>::iterator queryByUid(unsigned  int uid);                               //用uid查询
-    static std::vector<Account>::iterator queryByCid(unsigned  int cid);                               //用cid查询
-    static void recall();                                                //日志回溯
-    static void openAccountByFile();                                     //批量开户
-    static void operateByFile();                                         //批量操作
+    static std::vector<Account>::iterator queryByUid(unsigned  int uid);                   //用uid查询
+    static std::vector<Account>::iterator queryByCid(unsigned  int cid);                   //用cid查询
+    static void recall();                                                                  //日志回溯
+    static void operateByFile();                                                           //批量操作
 };
 
 #endif // CAMPUSCARDBACKEND_CARDMANAGE_H
