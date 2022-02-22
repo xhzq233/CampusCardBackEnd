@@ -14,8 +14,10 @@ Accounts DataStore::accounts_init() {
     CSV temp;
     FileManager::getInstance().getCSVDataSource(temp, 2, FileManager::OPEN_ACCOUNT_CSV_NAME);
     for (auto &&j: temp) {
-        res.emplace_back(Account(std::stoi(j[0]), j[1]));
+        res.emplace_back(Account(j));
     }
+
+    std::sort(res.begin(), res.end());
     return res;
 }
 
@@ -25,13 +27,12 @@ Consumes DataStore::consumes_init() {
 
     CSV temp;
     for (unsigned int i = 0; i < FileManager::CONSUME_CSV_QTY; ++i) {
-        FileManager::getInstance().getCSVDataSource(temp, 4, FileManager::CONSUME_CSV(i));
+        FileManager::getInstance().getCSVDataSource(temp, 4, FileManager::CONSUME_CSV(i + 1));
         res[i].reserve(temp.size());
         for (auto &&j: temp) {
-            res[i].emplace_back(Consume(std::stoi(j[1]),
-                                        i, j[1] + j[2],
-                                        std::stof(j[3])));
+            res[i].emplace_back(Consume(i, j));
         }
+        std::sort(res[i].begin(), res[i].end());
         temp.clear();
     }
     return res;
@@ -76,7 +77,7 @@ Accounts &DataStore::getAccounts() {
 
 void DataStore::insertAccount(const Account &data) {
     auto accounts = getAccounts();
-    int left = 0, right = (int)accounts.size() - 1, mid;
+    int left = 0, right = (int) accounts.size() - 1, mid;
     //half search
     while (left <= right) {
         mid = (left + right) / 2;
@@ -86,5 +87,5 @@ void DataStore::insertAccount(const Account &data) {
             left = mid + 1;
         }
     }
-    accounts.emplace(accounts.begin()+mid, data);
+    accounts.emplace(accounts.begin() + mid, data);
 }

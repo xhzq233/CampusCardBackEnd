@@ -18,6 +18,11 @@ public:
     std::list<Card> cards;//卡
     Account(unsigned int uid, std::string name);
 
+    // from strings
+    explicit Account(const std::vector<std::string>& strings): Account(std::stoi(strings[0]),strings[1]){}
+    // to string
+    [[nodiscard]] std::string to_string() const;
+
     void consume(float price); //消费
 
     void recharge(float amount); //充值
@@ -25,6 +30,14 @@ public:
     std::string to_string() const;
     ~Account();
 
+    /// comparable
+    bool operator>(const Account &right) const {
+        return uid > right.uid;
+    }
+
+    bool operator<(const Account &right) const {
+        return uid < right.uid;
+    }
 };
 
 

@@ -31,6 +31,7 @@ bool FileManager::prepareIOStream(StreamCallBack func, const std::string &path,
         if (!IOStream.is_open()) {
             //read failed
             IOStream.close();
+            std::cout << path + source << " read failed" << std::endl;
             return false;
         }
     }
@@ -60,6 +61,7 @@ std::string FileManager::CONSUME_CSV(unsigned int position) {
     res.append(".csv");
     return res;
 }
+
 // 1937 rows used time: 4.27837 ms.
 bool FileManager::getCSVDataSource(CSV &container, Pair<unsigned int, unsigned int> size,
                                    const std::string &source, const std::string &path) {
