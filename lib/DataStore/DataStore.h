@@ -27,6 +27,12 @@ public:
     /* Account insert func, designed by half find and insert */
     static void insertAccount(const Account &data);
 
+    /* Query account by uid */
+    static std::vector<Account>::iterator queryByUid(unsigned int uid);
+
+    /* Query account by cid */
+    static std::vector<Account>::iterator queryByCid(unsigned int uid);
+
     /* Consume insert func, designed by half find and insert */
     static void insertConsume(Window window, Consume *data);
 
