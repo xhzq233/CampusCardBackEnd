@@ -6,7 +6,9 @@
 
 using namespace std;
 
-Account::Account(unsigned int uid, string name) : uid(uid), name(move(name)), balance(0), cards({}) {}
+Account::Account(unsigned int uid, string name) : uid(uid), name(move(name)), balance(0), cards({}) {
+    FileManager::getInstance() << FileManager::toStandardLogString("开户",this->to_string().c_str()) << FileManager::endl;
+}
 
 Account::~Account() = default;
 

@@ -32,8 +32,8 @@ public:
     static void unsetLost(unsigned int uid, const std::string &time = "");                 //解挂
     static void reissue(unsigned int uid, const std::string &time = "");                   //补卡
     static void recharge(unsigned int uid, float amount, const std::string &time = "");    //充值
-    static std::vector<Account>::iterator queryById(unsigned  int uid);                               //用id查询
-    static void queryByName(const std::string &);                             //用姓名查询
+    static std::vector<Account>::iterator queryByUid(unsigned  int uid);                               //用uid查询
+    static std::vector<Account>::iterator queryByCid(unsigned  int cid);                               //用cid查询
     static void recall();                                                //日志回溯
     static void openAccountByFile();                                     //批量开户
     static void operateByFile();                                         //批量操作

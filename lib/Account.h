@@ -7,6 +7,7 @@
 
 #include <list>
 #include "Card.h"
+#include "FileManager.h"
 
 class Account {
 private:
@@ -20,8 +21,6 @@ public:
 
     // from strings
     explicit Account(const std::vector<std::string>& strings): Account(std::stoi(strings[0]),strings[1]){}
-    // to string
-    [[nodiscard]] std::string to_string() const;
 
     void consume(float price); //消费
 

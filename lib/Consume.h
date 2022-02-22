@@ -5,6 +5,7 @@
 #ifndef CAMPUSCARDBACKEND_CONSUME_H
 #define CAMPUSCARDBACKEND_CONSUME_H
 
+#include "Card.h"
 #include "Window.h"
 #include "FileManager.h"
 
@@ -55,19 +56,9 @@ public:
 
     // to string
     // cid + window + date + price
+
     [[nodiscard]] std::string to_string() const;
 
-//    static bool consume(Card &card, float price, int date, int time); //消费操作
-//    static bool consume(Card &card, float price);
-//
-//    static bool inputPassword(Card &card); //输入密码
-//    static void consumeByFile();
-//
-//    static void initPosition();
-//
-//    static void log(const std::string &, const std::string &, const time_t &);
-//
-//    static void log(const std::string &, const std::string &, const char *);
 };
 
 #endif // CAMPUSCARDBACKEND_CONSUME_H
