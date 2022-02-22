@@ -26,6 +26,12 @@ public:
     /* Account insert func */
     static void insertAccount(const Account &data);
 
+    /* Query account by uid */
+    static std::vector<Account>::iterator queryByUid(unsigned int uid);
+
+    /* Query account by cid */
+    static std::vector<Account>::iterator queryByCid(unsigned int uid);
+
     /* Account insert func */
     static void insertConsume(Window window, Consume *data);
 

@@ -116,6 +116,42 @@ void DataStore::insertAccount(const Account &data) {
     accounts.emplace(accounts.begin() + mid, data);
 }
 
+std::vector<Account>::iterator DataStore::queryByUid(unsigned int uid) {
+    auto &accounts = getAccounts();
+    int left = 0, right = (int) accounts.size() - 1, mid;
+    while (left <= right) {
+        mid = (left + right) / 2;
+        if (accounts[mid].uid > uid) {
+            right = mid - 1;
+        } else {
+            left = mid + 1;
+        }
+    }
+    if ((accounts.begin() + mid)->uid == uid) {
+        return accounts.begin() + mid;
+    } else {
+        return accounts.end();
+    }
+}
+
+std::vector<Account>::iterator DataStore::queryByCid(unsigned int cid) {
+    auto &accounts = DataStore::getAccounts();
+    int left = 0, right = (int) accounts.size() - 1, mid;
+    while (left <= right) {
+        mid = (left + right) / 2;
+        if (accounts[mid].cards.begin()->cid > cid) {
+            right = mid - 1;
+        } else {
+            left = mid + 1;
+        }
+    }
+    if ((accounts.begin() + mid)->cards.begin()->cid == cid) {
+        return accounts.begin() + mid;
+    } else {
+        return accounts.end();
+    }
+}
+
 void DataStore::insertConsume(Window window, Consume *data) {
     auto &consumes = getConsumes();
     auto &consumes_in_window = consumes[window];
@@ -131,3 +167,4 @@ void DataStore::insertConsume(Window window, Consume *data) {
     }
     consumes_in_window.emplace(consumes_in_window.begin() + mid, data);
 }
+
