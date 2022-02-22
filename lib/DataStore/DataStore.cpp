@@ -32,8 +32,8 @@ void subwork_of_init_consumes(int index, Consumes *consumes) {
     FileManager().getCSVDataSource(temp, 4, FileManager::CONSUME_CSV(index + 1));
 
     for (int i = 0; i < temp.size(); ++i) {
-        Consume consume(index + 1, temp[i]);
-        consumes->at(index)[i] = &consume;
+        auto *consume = new Consume(index + 1, temp[i]);
+        consumes->at(index)[i] = consume;
     }
     std::sort(consumes->at(index).begin(), consumes->at(index).end());
 }
@@ -107,18 +107,18 @@ void DataStore::insertAccount(const Account &data) {
     accounts.emplace(accounts.begin() + mid, data);
 }
 
-void DataStore::insertConsume(Window window, Consume &data) {
+void DataStore::insertConsume(Window window, Consume *data) {
     auto &consumes = getConsumes();
     auto &consumes_in_window = consumes[window];
     int left = 0, right = (int) consumes_in_window.size() - 1, mid;
     //half search
     while (left <= right) {
         mid = (left + right) / 2;
-        if (*(consumes_in_window[mid]) > data) {
+        if (*(consumes_in_window[mid]) > *data) {
             right = mid - 1;
         } else {
             left = mid + 1;
         }
     }
-    consumes_in_window.emplace(consumes_in_window.begin() + mid, &data);
+    consumes_in_window.emplace(consumes_in_window.begin() + mid, data);
 }

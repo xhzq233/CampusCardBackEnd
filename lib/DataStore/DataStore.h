@@ -27,7 +27,7 @@ public:
     static void insertAccount(const Account &data);
 
     /* Account insert func */
-    static void insertConsume(Window window, Consume &data);
+    static void insertConsume(Window window, Consume *data);
 
     static Consumes &getConsumes();
 

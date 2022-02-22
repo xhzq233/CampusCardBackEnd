@@ -42,9 +42,9 @@ int main() {
                 std::cout<<std::to_string(consumes.size())<<std::endl;
 
                 for (const auto & i : consumes) {
-                    if (i.empty()) continue;
+                    if (!i[0]) continue;
                     for (int j = 0; j < columns; ++j) {
-                        std::cout<<i[j].to_string()<<std::endl;
+                        std::cout<<i[j]->to_string()<<std::endl;
                     }
                 }
 //        FileManager::getInstance() << FileManager::toStandardLogString("THIS IS TITLE", "AND content here")

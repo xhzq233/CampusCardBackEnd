@@ -7,11 +7,11 @@
 using namespace std;
 
 bool ConsumeBuilder::consume(const Window &window, const Card &card, const float &price) {
-   return false;
+    return false;
 }
 
 bool ConsumeBuilder::consume(const Window &window, const Card &card, const float &price, string time) {
-    DataStore::insertConsume(window, Consume(card.cid, window, move(time), price));
+    DataStore::insertConsume(window, new Consume(card.cid, window, move(time), price));
 }
 
 bool ConsumeBuilder::passwd_is_correct(const Card &card) {

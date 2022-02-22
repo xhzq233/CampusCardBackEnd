@@ -28,8 +28,6 @@ public:
 
     void recharge(float amount); //充值
 
-    [[nodiscard]] std::string to_string() const;
-
     ~Account();
 
     /// comparable
