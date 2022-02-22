@@ -5,8 +5,8 @@
 #ifndef CAMPUSCARDBACKEND_CONSUME_H
 #define CAMPUSCARDBACKEND_CONSUME_H
 
-#include "Window.h"
-#include "FileManager.h"
+#include "../Window.h"
+#include "../../FileManager/FileManager.h"
 
 /*
  * 运行食堂应用模块，可以设定当前时间和消费窗口，对指定的校园卡进行收费
@@ -57,17 +57,6 @@ public:
     // cid + window + date + price
     [[nodiscard]] std::string to_string() const;
 
-//    static bool consume(Card &card, float price, int date, int time); //消费操作
-//    static bool consume(Card &card, float price);
-//
-//    static bool inputPassword(Card &card); //输入密码
-//    static void consumeByFile();
-//
-//    static void initPosition();
-//
-//    static void log(const std::string &, const std::string &, const time_t &);
-//
-//    static void log(const std::string &, const std::string &, const char *);
 };
 
 #endif // CAMPUSCARDBACKEND_CONSUME_H

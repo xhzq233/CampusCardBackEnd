@@ -28,7 +28,8 @@ Consumes &DataStore::consumes_init() {
     CSV temp;
     for (unsigned int i = 0; i < FileManager::CONSUME_CSV_QTY; ++i) {
         FileManager::getInstance().getCSVDataSource(temp, 4, FileManager::CONSUME_CSV(i + 1));
-        res[i].reserve(temp.size());
+//        res[i].reserve(temp.size());
+        res[i].reserve(MAXSIZE);
         for (auto &&j: temp) {
             res[i].emplace_back(Consume(i, j));
         }
