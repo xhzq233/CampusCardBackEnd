@@ -7,14 +7,13 @@
 
 
 FileManager &FileManager::getInstance() {
+    // only call once here
     static FileManager &instance = shared_init();
-
     return instance;
 }
 
 FileManager &FileManager::shared_init() {
     static FileManager instance;
-    printf("call shared_init\n");
     append_standard_time(instance.startUpTime, time(nullptr));
     return instance;
 }

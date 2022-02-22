@@ -23,9 +23,7 @@ int main() {
         if (FileManager::getInstance().getCSVDataSource(csv, Pair((unsigned int) 1937, (unsigned int) 4),
                                                         FileManager::CONSUME_CSV(1)));
         else std::cout << "err1" << std::endl;
-        FileManager s;
-        FileManager d;
-        printf("%s", FileManager::getInstance().startUpTime.c_str());
+
 //        DataStore::insertAccount(Account(0, ""));
 //        DataStore::getConsumes();
 //        FileManager::getInstance() << FileManager::toStandardLogString("THIS IS TITLE", "AND content here")
