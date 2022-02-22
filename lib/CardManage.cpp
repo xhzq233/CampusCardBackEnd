@@ -19,7 +19,7 @@ void CardManage::deleteAccount(unsigned int uid, const std::string &time) {
     auto account = queryById(uid);
     if (account != DataStore::getAccounts().end()) {
         account->cards.clear();
-        log("Manage", "学号:" + to_string(uid) + " 姓名:" + account->name + " 销户:succeeded", time);
+        log("Manage", move(account->to_string()) + " 销户:succeeded", time);
         DataStore::getAccounts().erase(account);
     } else {
         log("Manage", "学号:" + to_string(uid) + " 姓名:非系统用户 销户:failed 备注:该用户未开号", time);
@@ -32,7 +32,7 @@ void CardManage::distribute(unsigned int uid, const string &time) {
     if (account != DataStore::getAccounts().end()) {
         Card card(uid, ++serialNumber);
         account->cards.push_front(card);
-        log("Manage", "学号:" + to_string(uid) + " 姓名" + account->name + "卡号: " + to_string(card.cid) + " 发卡:succeed",
+        log("Manage", move(account->to_string()) + account->name + "卡号: " + to_string(card.cid) + " 发卡:succeed",
             time);
     } else {
         log("Manage", "学号:" + to_string(uid) + " 姓名:非系统用户  发卡:failed", time);
@@ -49,10 +49,10 @@ void CardManage::setLost(unsigned int uid, const string &time) {
     auto card = *account->cards.begin();
     if (card.condition) {
         card.condition = false;
-        log("Manage", "学号:" + to_string(uid) + " 姓名" + account->name + "卡号: " + to_string(card.cid) + " 挂失:succeed",
+        log("Manage", move(account->to_string()) + "卡号: " + to_string(card.cid) + " 挂失:succeed",
             time);
     } else {
-        log("Manage", "学号:" + to_string(uid) + " 姓名" + account->name + "卡号: " + to_string(card.cid) + " 挂失:failed",
+        log("Manage", move(account->to_string()) + "卡号: " + to_string(card.cid) + " 挂失:failed",
             time);
     }
 }
@@ -67,10 +67,10 @@ void CardManage::unsetLost(unsigned int uid, const string &time) {
     auto card = *account->cards.begin();
     if (!card.condition) {
         card.condition = true;
-        log("Manage", "学号:" + to_string(uid) + " 姓名" + account->name + "卡号: " + to_string(card.cid) + " 解挂:succeed",
+        log("Manage", move(account->to_string()) + account->name + "卡号: " + to_string(card.cid) + " 解挂:succeed",
             time);
     } else {
-        log("Manage", "学号:" + to_string(uid) + " 姓名" + account->name + "卡号: " + to_string(card.cid) + " 解挂:failed",
+        log("Manage", move(account->to_string()) + account->name + "卡号: " + to_string(card.cid) + " 解挂:failed",
             time);
     }
 }
@@ -84,7 +84,7 @@ void CardManage::reissue(unsigned int uid, const string &time) {
     }
         //最多只能补卡100次
     else if (account->cards.size() >= 100) {
-        log("Manage", "学号:" + to_string(uid) + " 姓名" + account->name + " 补卡:failed 备注:补卡次数达到上限", time);
+        log("Manage", move(account->to_string()) + " 补卡:failed 备注:补卡次数达到上限", time);
         return;
     }
     Card card(uid, ++serialNumber);
@@ -92,7 +92,7 @@ void CardManage::reissue(unsigned int uid, const string &time) {
     //将之前卡的状态设置为禁用状态
     setLost(uid);
     account->cards.push_front(card);
-    log("Manage", "学号:" + to_string(uid) + " 姓名" + account->name + "卡号: " + to_string(card.cid) + " 补卡:succeeded",
+    log("Manage", move(account->to_string()) + "卡号: " + to_string(card.cid) + " 补卡:succeeded",
         time);
 }
 
@@ -106,7 +106,7 @@ void CardManage::recharge(unsigned int uid, float amount, const string &time) {
         auto card = *account->cards.begin();
         if (account->balance + amount > BALANCECEILING) {
             log("Manage",
-                "学号:" + to_string(uid) + " 姓名" + account->name + "卡号: " + to_string(card.cid) +
+                move(account->to_string()) + "卡号: " + to_string(card.cid) +
                 " 充值:failed 备注:卡内余额达到上限",
                 time);
         } else {
@@ -150,7 +150,7 @@ void CardManage::log(const char *title, const string &content, const string &tim
 void CardManage::openAccountByFile() {
     vector<string> container;
     FileManager::getInstance().getStringDataSourceByLine(container);
-    for (auto &info: container) {
+    for (auto &&info: container) {
         int uid = stoi(info.substr(0, UID_LENGTH));
         string name = info.substr(UID_LENGTH + 1, info.size() - UID_LENGTH - 2);
         openAccount(uid, name);
@@ -161,7 +161,7 @@ void CardManage::openAccountByFile() {
 void CardManage::operateByFile() {
     vector<string> container;
     FileManager::getInstance().getStringDataSourceByLine(container, FileManager::CARD_MANAGE_NAME);
-    for (auto &info: container) {
+    for (auto &&info: container) {
         int uid = stoi(info.substr(info.find_last_of(',') + 1, UID_LENGTH + 1));
         string time = info.substr(0, info.find(','));
         if (info.find("挂失") != string::npos) {
