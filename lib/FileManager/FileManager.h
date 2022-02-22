@@ -92,6 +92,7 @@ public:
 
     // delete copy methods
     FileManager(const FileManager &) = delete;
+
     // disable copied FileManager
     FileManager &operator=(const FileManager &) = delete;
 
@@ -123,13 +124,13 @@ public:
      * DEFAULT storing-data path is DEFAULT_DATA_PATH.
      * use Pair<unsigned int, unsigned int> size instead if size already known
      * */
-    bool getCSVDataSource(CSV &container, unsigned int columnQty, const std::string &source,
+    bool getCSVDataSource(CSV &container, unsigned int columns, const std::string &source,
                           const std::string &path = DEFAULT_DATA_PATH);
 
     /*
      * use pre defined size
      * */
-    bool getCSVDataSource(CSV &container,const Pair<unsigned int, unsigned int>& size,
+    bool getCSVDataSource(CSV &container, unsigned int rows, unsigned int columns,
                           const std::string &source,
                           const std::string &path = DEFAULT_DATA_PATH);
 
@@ -164,7 +165,7 @@ public:
     static std::string toStandardLogString(const char *title, const char *content);
 
     /* 自定义时间的StandardLog */
-    static std::string toStandardLogString(const char *title, const char *content, const time_t& now);
+    static std::string toStandardLogString(const char *title, const char *content, const time_t &now);
 
     /* literally */
     static void append_standard_time(std::string &container, const time_t &now);

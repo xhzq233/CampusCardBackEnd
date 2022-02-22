@@ -55,5 +55,10 @@ int main() {
 
     testTimeWrapper(func);
 
+    //释放指针
+    for (const auto &item : DataStore::getConsumes()){
+        for (const auto &i : item)
+            delete i;
+    }
     return 0;
 }

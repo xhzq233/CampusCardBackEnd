@@ -14,7 +14,7 @@ public:
     typedef std::vector<Account> Accounts;
 
     /* each Window have consumes, use Consumes[Window] get each data */
-    typedef std::vector<std::vector<Consume>> Consumes;
+    typedef std::vector<std::vector<Consume *>> Consumes;
 
     /*
      * Notice!!!!
@@ -27,7 +27,7 @@ public:
     static void insertAccount(const Account &data);
 
     /* Account insert func */
-    static void insertConsume(Window window,const Consume &data);
+    static void insertConsume(Window window, Consume &data);
 
     static Consumes &getConsumes();
 
@@ -37,6 +37,8 @@ public:
     /* localize file stored by DataStore */
     static void localize();
 
+    constexpr static const char WINDOW_QTY = 99;
+    constexpr static const int MAXSIZE = 60000;
 private:
 
     //called if and only if initializing
@@ -47,9 +49,6 @@ private:
 
     //called if and only if initializing
     static Accounts &accounts_init();
-
-    constexpr static const char WINDOW_QTY = 99;
-    constexpr static const int MAXSIZE = 60000;
 };
 
 #endif //CAMPUSCARDBACKEND_DATASTORE_H

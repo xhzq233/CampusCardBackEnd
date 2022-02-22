@@ -61,19 +61,19 @@ std::string FileManager::CONSUME_CSV(unsigned int position) {
 }
 
 // 1937 rows used time: 4.27837 ms.
-bool FileManager::getCSVDataSource(CSV &container,const Pair<unsigned int, unsigned int>& size,
+bool FileManager::getCSVDataSource(CSV &container, unsigned int rows, unsigned int columns,
                                    const std::string &source, const std::string &path) {
     // decrease copied data as possible
-    container.resize(size.first, std::vector<std::string>());
+    container.resize(rows, std::vector<std::string>());
     return prepareIOStream([&](std::fstream &stream) {
 
         std::string rowBuffer;//a csv row implemented in string
         std::string metadata;//metadata in a csv row
 
-        for (int i = 0; i < size.first; ++i) {
+        for (int i = 0; i < rows; ++i) {
             std::getline(stream, rowBuffer);
             std::stringstream buf(rowBuffer);//turn to a stream type
-            container[i].reserve(size.second);
+            container[i].reserve(columns);
             while (std::getline(buf, metadata, ','))//csv use ',' as the separator
                 container[i].emplace_back(metadata);
         }
@@ -81,7 +81,7 @@ bool FileManager::getCSVDataSource(CSV &container,const Pair<unsigned int, unsig
 }
 
 // 1937 rows used time: 4.51425 ms.
-bool FileManager::getCSVDataSource(CSV &container, unsigned int columnQty,
+bool FileManager::getCSVDataSource(CSV &container, unsigned int columns,
                                    const std::string &source, const std::string &path) {
     return prepareIOStream([&](std::fstream &stream) {
 
@@ -90,9 +90,9 @@ bool FileManager::getCSVDataSource(CSV &container, unsigned int columnQty,
         unsigned int row = 0;
         while (std::getline(stream, rowBuffer)) {
             // decrease copied data as possible
-            container.emplace_back(Strings(columnQty, ""));
+            container.emplace_back(Strings(columns, ""));
             std::stringstream buf(rowBuffer);//turn to a stream type
-            for (int i = 0; i < columnQty; ++i) {
+            for (int i = 0; i < columns; ++i) {
                 std::getline(buf, metadata, ',');
                 container[row][i].append(metadata);
             }

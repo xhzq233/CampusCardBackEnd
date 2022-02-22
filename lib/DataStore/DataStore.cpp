@@ -30,25 +30,25 @@ void subwork_of_init_consumes(int index, Consumes *consumes) {
 //        std::cout << "This is not the main thread.\n";
     CSV temp;
     FileManager().getCSVDataSource(temp, 4, FileManager::CONSUME_CSV(index + 1));
-    consumes->at(index).reserve(temp.size());
-//        res[i].reserve(MAXSIZE);
-    for (auto &&j: temp) {
-        consumes->at(index).emplace_back(Consume(index+1, j));
+
+    for (int i = 0; i < temp.size(); ++i) {
+        Consume consume(index + 1, temp[i]);
+        consumes->at(index)[i] = &consume;
     }
     std::sort(consumes->at(index).begin(), consumes->at(index).end());
 }
 
 
 Consumes &DataStore::consumes_init() {
-
-    static Consumes res(FileManager::CONSUME_CSV_QTY, std::vector<Consume>());
+    //99 x 60000
+    static Consumes res(WINDOW_QTY, std::vector<Consume *>(MAXSIZE, nullptr));
     std::thread threads[FileManager::CONSUME_CSV_QTY];
 
     std::cout << "Spawning threads...\n";
     for (int i = 0; i < FileManager::CONSUME_CSV_QTY; ++i)
         threads[i] = std::thread(subwork_of_init_consumes, i, &res);   // move-assign threads
     std::cout << "Done spawning threads. Now waiting for them to join:\n";
-    for (auto & thread : threads)
+    for (auto &thread: threads)
         thread.join();
     std::cout << "All threads joined!\n";
 
@@ -56,11 +56,11 @@ Consumes &DataStore::consumes_init() {
 }
 
 const WindowPositions &DataStore::windows_init() {
-    static std::vector<WindowPosition> res(WINDOW_QTY);
+    static std::vector<WindowPosition> res(WINDOW_QTY, 0);
 
     FileManager::CSV container;
     ///预定好尺寸 99x2
-    FileManager::getInstance().getCSVDataSource(container, Pair((unsigned int) WINDOW_QTY, (unsigned int) 2),
+    FileManager::getInstance().getCSVDataSource(container, WINDOW_QTY, 2,
                                                 FileManager::CAFE_POSITION_CSV_NAME);
     ///下标为窗口号，值为data数组下标
 
@@ -107,19 +107,18 @@ void DataStore::insertAccount(const Account &data) {
     accounts.emplace(accounts.begin() + mid, data);
 }
 
-void DataStore::insertConsume(Window window, const Consume &data) {
+void DataStore::insertConsume(Window window, Consume &data) {
     auto &consumes = getConsumes();
     auto &consumes_in_window = consumes[window];
     int left = 0, right = (int) consumes_in_window.size() - 1, mid;
     //half search
     while (left <= right) {
         mid = (left + right) / 2;
-        if (consumes_in_window[mid] > data) {
+        if (*(consumes_in_window[mid]) > data) {
             right = mid - 1;
         } else {
             left = mid + 1;
         }
     }
-    consumes_in_window.emplace(consumes_in_window.begin() + mid, data);
+    consumes_in_window.emplace(consumes_in_window.begin() + mid, &data);
 }
-
