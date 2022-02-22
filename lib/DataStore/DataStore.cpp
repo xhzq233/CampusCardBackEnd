@@ -35,16 +35,13 @@ void subwork_of_init_consumes(int index, Consumes *consumes) {
         auto *consume = new Consume(index + 1, temp[i]);
         consumes->at(index)[i] = consume;
     }
-    std::sort(consumes->at(index).begin(), consumes->at(index).end(),[&](const Consume* l,const Consume* r)->bool {
-        if((!l && !r)||!l)
-            // if both are null or left is null
-            return false;
-        else if (!r)
-            // if right is null
-            return true;
-        else
-            return l->date > r->date;
-    });
+
+    // sort by from lower to bigger
+    // only sort where have values
+    std::sort(consumes->at(index).begin(), consumes->at(index).begin() + (int) temp.size(),
+              [&](const Consume *l, const Consume *r) -> bool {
+                  return l->date < r->date;
+              });
 }
 
 
@@ -107,7 +104,7 @@ void DataStore::insertAccount(const Account &data) {
     //half search
     while (left <= right) {
         mid = (left + right) / 2;
-        if (accounts[mid] > data) {
+        if (accounts[mid] < data) {
             right = mid - 1;
         } else {
             left = mid + 1;
@@ -123,7 +120,7 @@ void DataStore::insertConsume(Window window, Consume *data) {
     //half search
     while (left <= right) {
         mid = (left + right) / 2;
-        if (*(consumes_in_window[mid]) > *data) {
+        if (*(consumes_in_window[mid]) < *data) {
             right = mid - 1;
         } else {
             left = mid + 1;
@@ -131,3 +128,4 @@ void DataStore::insertConsume(Window window, Consume *data) {
     }
     consumes_in_window.emplace(consumes_in_window.begin() + mid, data);
 }
+

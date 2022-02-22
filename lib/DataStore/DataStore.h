@@ -17,18 +17,20 @@ public:
     typedef std::vector<std::vector<Consume *>> Consumes;
 
     /*
+     * sorted by <
      * Notice!!!!
      * do not use accounts.insert() or push_back()
      * use DataStore::insert instead
      * */
     static Accounts &getAccounts();
 
-    /* Account insert func */
+    /* Account insert func, designed by half find and insert */
     static void insertAccount(const Account &data);
 
-    /* Account insert func */
+    /* Consume insert func, designed by half find and insert */
     static void insertConsume(Window window, Consume *data);
 
+    /* sorted by < */
     static Consumes &getConsumes();
 
     /* const data because it defined by file ,unmodifiable */
