@@ -13,10 +13,9 @@ Accounts &DataStore::accounts_init() {
     static Accounts res;
     CSV temp;
     FileManager::getInstance().getCSVDataSource(temp, 2, FileManager::OPEN_ACCOUNT_CSV_NAME);
-    for (auto &&j: temp) {
-        res.emplace_back(Account(j));
+    for (auto &&info: temp) {
+        res.emplace_back(Account(info));
     }
-
     std::sort(res.begin(), res.end());
     return res;
 }

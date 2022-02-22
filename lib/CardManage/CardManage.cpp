@@ -9,14 +9,14 @@ using namespace std;
 unsigned int CardManage::serialNumber = 12345;
 
 //系统具备正常状态的学号、姓名等信息的，即属于开户状态
-void CardManage::openAccount(unsigned int uid, const string &name, const std::string &time) {
+void CardManage::openAccount(unsigned int uid, const string &name, const string &time) {
     DataStore::insertAccount(Account(uid, name));
     log("Manage", "学号:" + to_string(uid) + " 姓名" + name + " 开户:succeeded", time);
 }
 
 //删除学号等数据项，或进行标识，只有经过恢复开户后才能恢复到开户状态；
-void CardManage::deleteAccount(unsigned int uid, const std::string &time) {
-    auto account = queryById(uid);
+void CardManage::deleteAccount(unsigned int uid, const string &time) {
+    auto account = queryByUid(uid);
     if (account != DataStore::getAccounts().end()) {
         account->cards.clear();
         log("Manage", move(account->to_string()) + " 销户:succeeded", time);
@@ -28,7 +28,7 @@ void CardManage::deleteAccount(unsigned int uid, const std::string &time) {
 
 //依据开户信息，初次分配唯一卡号；如果已经分配过卡号的，则属于补卡功能；
 void CardManage::distribute(unsigned int uid, const string &time) {
-    auto account = queryById(uid);
+    auto account = queryByUid(uid);
     if (account != DataStore::getAccounts().end()) {
         Card card(uid, ++serialNumber);
         account->cards.push_front(card);
@@ -41,7 +41,7 @@ void CardManage::distribute(unsigned int uid, const string &time) {
 
 //设置当前学号最新分配的卡号的卡片为禁用的状态；
 void CardManage::setLost(unsigned int uid, const string &time) {
-    auto account = queryById(uid);
+    auto account = queryByUid(uid);
     if (account == DataStore::getAccounts().end()) {
         log("Manage", "学号:" + to_string(uid) + " 解挂:failed 备注:非系统用户", time);
         return;
@@ -59,7 +59,7 @@ void CardManage::setLost(unsigned int uid, const string &time) {
 
 //设置当前学号最新分配的卡号的卡片为正常的状态；
 void CardManage::unsetLost(unsigned int uid, const string &time) {
-    auto account = queryById(uid);
+    auto account = queryByUid(uid);
     if (account == DataStore::getAccounts().end()) {
         log("Manage", "学号:" + to_string(uid) + " 解挂:failed 备注:非系统用户", time);
         return;
@@ -77,7 +77,7 @@ void CardManage::unsetLost(unsigned int uid, const string &time) {
 
 //为当前学号分配新的卡号，即发放新的校园卡；该学号关联的其他卡片同时全部处于挂失禁用状态；
 void CardManage::reissue(unsigned int uid, const string &time) {
-    auto account = queryById(uid);
+    auto account = queryByUid(uid);
     if (account == DataStore::getAccounts().end()) {
         log("Manage", "学号:" + to_string(uid) + " 补卡:failed 备注:非系统用户", time);
         return;
@@ -98,7 +98,7 @@ void CardManage::reissue(unsigned int uid, const string &time) {
 
 //为该学号账户充值；账户余额上限999.99元；
 void CardManage::recharge(unsigned int uid, float amount, const string &time) {
-    auto account = queryById(uid);
+    auto account = queryByUid(uid);
     if (account == DataStore::getAccounts().end()) {
         log("Manage", "学号:" + to_string(uid) + " 姓名:非系统用户 充值:failed", time);
         return;
@@ -117,21 +117,43 @@ void CardManage::recharge(unsigned int uid, float amount, const string &time) {
     }
 }
 
-//查询和学号匹配的卡
-vector<Account>::iterator CardManage::queryById(unsigned int uid) {
-    for (auto iter = DataStore::getAccounts().begin();
-         iter != DataStore::getAccounts().end(); ++iter) {
-        if (iter->uid == uid) {
-            return iter;
+//查询和学号匹配的账户
+vector<Account>::iterator CardManage::queryByUid(unsigned int uid) {
+    auto accounts = DataStore::getAccounts();
+    int left = 0, right = (int) accounts.size() - 1, mid;
+    while (left <= right) {
+        mid = (left + right) / 2;
+        if (accounts[mid].uid > uid) {
+            right = mid - 1;
+        } else {
+            left = mid + 1;
         }
     }
-    return DataStore::getAccounts().end();
+    if ((accounts.begin() + mid)->uid == uid) {
+        return accounts.begin() + mid;
+    } else {
+        return accounts.end();
+    }
 }
 
-void CardManage::queryByName(const string &name) {
-    ;
+//查找和卡号匹配的账户
+vector<Account>::iterator CardManage::queryByCid(unsigned int cid) {
+    auto accounts = DataStore::getAccounts();
+    int left = 0, right = (int) accounts.size() - 1, mid;
+    while (left <= right) {
+        mid = (left + right) / 2;
+        if (accounts[mid].cards.begin()->cid  > cid) {
+            right = mid - 1;
+        } else {
+            left = mid + 1;
+        }
+    }
+    if ((accounts.begin() + mid)->cards.begin()->cid == cid) {
+        return accounts.begin() + mid;
+    } else {
+        return accounts.end();
+    }
 }
-
 
 //日志回溯
 void CardManage::recall() {
@@ -141,19 +163,8 @@ void CardManage::log(const char *title, const string &content, const string &tim
     if (time.empty()) {
         FileManager::getInstance() << FileManager::toStandardLogString(title, content.c_str()) << FileManager::endl;
     } else {
-        FileManager::getInstance() << FileManager::toStandardLogString(title, content.c_str(), time.c_str())
+        FileManager::getInstance() << FileManager::toStandardLogString(title, content.c_str(), stol(time))
                                    << FileManager::endl;
-    }
-}
-
-//根据文件kh001.txt开户
-void CardManage::openAccountByFile() {
-    vector<string> container;
-    FileManager::getInstance().getStringDataSourceByLine(container);
-    for (auto &&info: container) {
-        int uid = stoi(info.substr(0, UID_LENGTH));
-        string name = info.substr(UID_LENGTH + 1, info.size() - UID_LENGTH - 2);
-        openAccount(uid, name);
     }
 }
 

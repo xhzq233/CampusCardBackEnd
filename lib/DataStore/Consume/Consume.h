@@ -55,6 +55,7 @@ public:
 
     // to string
     // cid + window + date + price
+
     [[nodiscard]] std::string to_string() const;
 
 };
