@@ -10,8 +10,13 @@ unsigned int CardManage::serialNumber = 12345;
 
 //系统具备正常状态的学号、姓名等信息的，即属于开户状态
 void CardManage::openAccount(unsigned int uid, const string &name, const string &time) {
-    DataStore::insertAccount(Account(uid, name));
-    log("Manage", to_string(uid, name, " 开户:succeeded"), time);
+    auto account = queryByUid(uid);
+    if (account == DataStore::getAccounts().end()) {
+        DataStore::insertAccount(Account(uid, name));
+        log("Manage", to_string(uid, name, " 开户:succeeded"), time);
+    } else {
+        log("Manage", to_string(uid, "非系统用户", " 开户:failed"), time);
+    }
 }
 
 //删除学号等数据项，或进行标识，只有经过恢复开户后才能恢复到开户状态；
@@ -123,7 +128,7 @@ void CardManage::recharge(unsigned int uid, float amount, const string &time) {
 
 //查询和学号匹配的账户
 vector<Account>::iterator CardManage::queryByUid(unsigned int uid) {
-    auto accounts = DataStore::getAccounts();
+    auto &accounts = DataStore::getAccounts();
     int left = 0, right = (int) accounts.size() - 1, mid;
     while (left <= right) {
         mid = (left + right) / 2;
@@ -142,7 +147,7 @@ vector<Account>::iterator CardManage::queryByUid(unsigned int uid) {
 
 //查找和卡号匹配的账户
 vector<Account>::iterator CardManage::queryByCid(unsigned int cid) {
-    auto accounts = DataStore::getAccounts();
+    auto &accounts = DataStore::getAccounts();
     int left = 0, right = (int) accounts.size() - 1, mid;
     while (left <= right) {
         mid = (left + right) / 2;
@@ -199,7 +204,7 @@ string CardManage::to_string(unsigned int uid, const string &name, const string 
     content.append(" ");
     content.append(name);
     content.append(" ");
-    content.append(move(info));
+    content.append(info);
     return content;
 }
 

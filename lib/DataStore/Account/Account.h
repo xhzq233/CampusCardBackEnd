@@ -7,6 +7,7 @@
 
 #include <list>
 #include "Card/Card.h"
+#include "../../FileManager/FileManager.h"
 
 class Account {
 private:
@@ -14,7 +15,7 @@ private:
 public:
     unsigned int uid;//学号
     std::string name;//姓名
-    double balance;//卡号
+    float balance;//余额
     std::list<Card> cards;//卡
     Account(unsigned int uid, std::string name);
 
@@ -25,7 +26,7 @@ public:
 
     void recharge(float amount); //充值
 
-    std::string to_string() const;
+    [[nodiscard]] std::string to_string() const;
 
     ~Account();
 

@@ -4,10 +4,8 @@
 #ifndef CAMPUSCARDBACKEND_CARDMANAGE_H
 #define CAMPUSCARDBACKEND_CARDMANAGE_H
 
-#include <map>
 #include "../DataStore/DataStore.h"
 #include "../FileManager/FileManager.h"
-#include "../DataStore/Account/Account.h"
 
 #define BALANCECEILING 999.99 //账户余额上限
 

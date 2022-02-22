@@ -32,11 +32,11 @@ public:
     // 消费窗口
     Window window;
     // 消费时间
-    std::string date;
+    unsigned long long date;
     // 消费金钱
     float price;
 
-    Consume(unsigned int cid, Window window, std::string date, float price) : window(window), date(std::move(date)),
+    Consume(unsigned int cid, Window window, std::string date, float price) : window(window), date(std::stoull(std::move(date))),
                                                                               price(price), cid(cid) {}
 
     /// comparable

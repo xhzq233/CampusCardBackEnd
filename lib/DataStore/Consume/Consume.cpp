@@ -1,14 +1,15 @@
 #include "Consume.h"
 
-std::string Consume::to_string() const {
+using namespace std;
+string Consume::to_string() const {
     std::string res;
-    res.append(std::to_string(cid));    // cid
+    res.append(::to_string(cid));    // cid
     res.append(",");
-    res.append(std::to_string(window)); // window
+    res.append(::to_string(window)); // window
     res.append(",");
-    res.append(date);                       // date
+    res.append(::to_string(date));                       // date
     res.append(",");
-    res.append(std::to_string(price));  // price
+    res.append(::to_string(price));  // price
     return res;
 }
 

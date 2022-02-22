@@ -6,10 +6,10 @@
 #define CAMPUSCARDBACKEND_CONSUMEBUILDER_H
 
 #include "Consume.h"
-#include "../Account/Card/Card.h"
+#include "../../CardManage/CardManage.h"
 
 namespace ConsumeBuilder {
-    static bool consume(Card &card, float price, int date, int time); //消费操作
+    static void consume(Card &card, float price, int date, int time); //消费操作
     static bool consume(Card &card, float price);
     static bool passwd_is_correct(Card &card); //输入密码
 };
