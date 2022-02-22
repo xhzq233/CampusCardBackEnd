@@ -61,7 +61,7 @@ std::string FileManager::CONSUME_CSV(unsigned int position) {
 }
 
 // 1937 rows used time: 4.27837 ms.
-bool FileManager::getCSVDataSource(CSV &container, Pair<unsigned int, unsigned int> size,
+bool FileManager::getCSVDataSource(CSV &container,const Pair<unsigned int, unsigned int>& size,
                                    const std::string &source, const std::string &path) {
     // decrease copied data as possible
     container.resize(size.first, std::vector<std::string>());

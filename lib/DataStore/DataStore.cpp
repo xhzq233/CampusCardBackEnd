@@ -61,17 +61,17 @@ void DataStore::localize() {
 }
 
 const WindowPositions &DataStore::getWindowPositions() {
-    static const WindowPositions windowPositions = windows_init();
+    static const WindowPositions& windowPositions = windows_init();
     return windowPositions;
 }
 
 Consumes &DataStore::getConsumes() {
-    static Consumes consumes = consumes_init();
+    static Consumes& consumes = consumes_init();
     return consumes;
 }
 
 Accounts &DataStore::getAccounts() {
-    static Accounts accounts = accounts_init();
+    static Accounts& accounts = accounts_init();
     return accounts;
 }
 
