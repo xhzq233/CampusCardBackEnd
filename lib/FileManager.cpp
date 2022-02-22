@@ -5,18 +5,17 @@
 
 #include "FileManager.h"
 
-FileManager::FileManager() {
-    auto now = time(nullptr);
-    auto *tm = std::localtime(&now);
-    char buf[25];
-
-    strftime(buf, sizeof(buf), "%Y-%m-%d-%X", tm);
-
-    startUpTime.append(buf);
-}
 
 FileManager &FileManager::getInstance() {
+    static FileManager &instance = shared_init();
+
+    return instance;
+}
+
+FileManager &FileManager::shared_init() {
     static FileManager instance;
+    printf("call shared_init\n");
+    append_standard_time(instance.startUpTime, time(nullptr));
     return instance;
 }
 
@@ -105,12 +104,12 @@ bool FileManager::getCSVDataSource(CSV &container, unsigned int columnQty,
 }
 
 bool FileManager::logs(Strings &container) {
-    std::string logDataName = startUpTime + ".log";
+    std::string logDataName(startUpTime + ".log");
     return writeStrings(container, logDataName, DEFAULT_LOG_PATH);
 }
 
 bool FileManager::log(const std::string &content) {
-    std::string logDataName = startUpTime + ".log";
+    std::string logDataName(startUpTime + ".log");
     return writeStringByLine(content, logDataName, DEFAULT_LOG_PATH);
 }
 
@@ -163,10 +162,9 @@ void operator<<(FileManager &o, const char c) {
 
 std::string FileManager::toStandardLogString(const char *title, const char *content) {
     time_t now = time(nullptr);
-    std::string res{ctime(&now)};
-    //remove \n
-    res.erase(res.end() - 1);
-    res.insert(res.begin(), '[');
+    std::string res;
+    res.append("[");
+    append_standard_time(res, now);
     res.append(" : ");
     res.append(title);
     res.append("] ");
@@ -174,28 +172,22 @@ std::string FileManager::toStandardLogString(const char *title, const char *cont
     return res;
 }
 
-std::string FileManager::toStandardLogString(const char *title, const char *content, const char *time) {
-
-    std::string res{time};
-    res.insert(res.begin(), '[');
+std::string FileManager::toStandardLogString(const char *title, const char *content, const time_t &now) {
+    std::string res;
+    res.append("[");
+    append_standard_time(res, now);
     res.append(" : ");
     res.append(title);
-    res.append(" ] ");
+    res.append("] ");
     res.append(content);
-
     return res;
 }
 
-std::string FileManager::toStandardLogString(const char *title, const char *content, const time_t &time) {
-
-    std::string res{ctime(&time)};
-    res.insert(res.begin(), '[');
-    res.append(" : ");
-    res.append(title);
-    res.append(" ] ");
-    res.append(content);
-
-    return res;
+void FileManager::append_standard_time(std::string &container, const time_t &now) {
+    auto *tm = std::localtime(&now);
+    char buf[25];
+    strftime(buf, sizeof(buf), "%Y-%m-%d-%X", tm);
+    container.append(buf);
 }
 
 using DataQuery = FileManager::DataQuery;

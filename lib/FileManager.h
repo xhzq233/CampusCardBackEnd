@@ -59,14 +59,6 @@ public:
     typedef std::vector<std::vector<std::string>> CSV;
     typedef std::vector<std::string> Strings;
 private:
-    //make these constructors not accessible
-    FileManager();
-
-    /* instance 初始化的时间，用于给log data取名 */
-    std::string startUpTime;
-
-    ~FileManager() = default;
-
     /* type of std::ios::openmode */
 #ifdef __WIN64
     //    typedef long openmode;
@@ -85,10 +77,29 @@ private:
 
     //暂时储存log 的buffer
     std::string stringLogBuf;
-public:
-    //delete these copy methods
-    FileManager(const FileManager &) = delete;
 
+    // init shared instance
+    // that function called if and only if getInstance() called
+    // and only called once during the whole program lifetime
+    static FileManager &shared_init();
+
+public:
+    // multi thread
+    // not multi thread please use getInstance instead
+    FileManager() = default;
+
+    ~FileManager() = default;
+
+    /*
+     * instance initialized time，used on naming log data
+     * notice that default constructor not have startUpTime
+     * only shared instance have this value
+     * */
+    std::string startUpTime;
+
+    // delete copy methods
+    FileManager(const FileManager &) = delete;
+    // disable copied FileManager
     FileManager &operator=(const FileManager &) = delete;
 
     /*
@@ -159,12 +170,11 @@ public:
 
     static std::string toStandardLogString(const char *title, const char *content);
 
-    /* 自定义时间字符串的StandardLog */
-    static std::string toStandardLogString(const char *title, const char *content, const char *time);
-
-    /* 自定义时间time_t指针的StandardLog */
-    static std::string toStandardLogString(const char *title, const char *content, const time_t &time);
-
+    /* 自定义时间的StandardLog */
+    static std::string toStandardLogString(const char *title, const char *content, const time_t& now);
+    
+    /* literally */
+    static void append_standard_time(std::string &container, const time_t &now);
 
     class DataQuery {
     public:
