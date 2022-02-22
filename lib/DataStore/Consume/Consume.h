@@ -5,9 +5,8 @@
 #ifndef CAMPUSCARDBACKEND_CONSUME_H
 #define CAMPUSCARDBACKEND_CONSUME_H
 
-#include "Card.h"
-#include "Window.h"
-#include "FileManager.h"
+#include "../Window.h"
+#include "../../FileManager/FileManager.h"
 
 /*
  * 运行食堂应用模块，可以设定当前时间和消费窗口，对指定的校园卡进行收费

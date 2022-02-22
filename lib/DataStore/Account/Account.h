@@ -6,8 +6,7 @@
 #define CAMPUSCARDBACKEND_ACCOUNT_H
 
 #include <list>
-#include "Card.h"
-#include "FileManager.h"
+#include "Card/Card.h"
 
 class Account {
 private:

@@ -5,17 +5,7 @@
 #ifndef CAMPUSCARDBACKEND_FILEMANAGER_H
 #define CAMPUSCARDBACKEND_FILEMANAGER_H
 
-#include <iostream>
-#include <string>
-#include <vector>
-#include <fstream>
-#include <sstream>
-#include <ctime>
-#include <numeric>
-#include <functional>
-#include "Utils.h"
-#include <regex>
-#include <chrono>
+#include "../Dependencies.h"
 
 /*
  * Singleton FileManager

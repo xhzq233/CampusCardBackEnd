@@ -1,6 +1,5 @@
-#include <iostream>
-#include "lib/FileManager.h"
-#include "lib/DataStore.h"
+#include "lib/FileManager/FileManager.h"
+#include "lib/DataStore/DataStore.h"
 
 void testTimeWrapper(const std::function<void(void)> &func) {
 
