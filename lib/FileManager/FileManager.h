@@ -39,7 +39,12 @@ public:
     /* W{\d}.csv 文件个数 */
     constexpr static const char CONSUME_CSV_QTY = 58;
 
-    /* 根据position获取wz CSV文件路径 */
+    /*
+     * Get WZ CSV file path based on location ,
+     * the reason why I separate xf.csv ,
+     * first is making file MultiThread able ,
+     * second is it can optimize subsequent operation
+     * */
     static std::string CONSUME_CSV(unsigned int position);
 
     /* 终止符0x11 */
@@ -49,7 +54,7 @@ public:
     typedef std::vector<std::vector<std::string>> CSV;
     typedef std::vector<std::string> Strings;
 private:
-    /* type of std::ios::openmode */
+    /* type of std::ios::openmode, different os have different type */
 #ifdef __WIN64
     typedef std::ios_base::openmode openmode;
 #else

@@ -3,6 +3,7 @@
 //
 
 #include "DataStore.h"
+#include <thread>
 
 using Accounts = DataStore::Accounts;
 using Consumes = DataStore::Consumes;
@@ -20,21 +21,37 @@ Accounts &DataStore::accounts_init() {
     return res;
 }
 
+//  sentence under here used on debug
+//  std::thread::id main_thread_id = std::this_thread::get_id();
+void subwork_of_init_consumes(int index, Consumes *consumes) {
+//    if (main_thread_id == std::this_thread::get_id())
+//        std::cout << "This is the main thread.\n";
+//    else
+//        std::cout << "This is not the main thread.\n";
+    CSV temp;
+    FileManager().getCSVDataSource(temp, 4, FileManager::CONSUME_CSV(index + 1));
+    consumes->at(index).reserve(temp.size());
+//        res[i].reserve(MAXSIZE);
+    for (auto &&j: temp) {
+        consumes->at(index).emplace_back(Consume(index+1, j));
+    }
+    std::sort(consumes->at(index).begin(), consumes->at(index).end());
+}
+
+
 Consumes &DataStore::consumes_init() {
 
     static Consumes res(FileManager::CONSUME_CSV_QTY, std::vector<Consume>());
+    std::thread threads[FileManager::CONSUME_CSV_QTY];
 
-    CSV temp;
-    for (unsigned int i = 0; i < FileManager::CONSUME_CSV_QTY; ++i) {
-        FileManager::getInstance().getCSVDataSource(temp, 4, FileManager::CONSUME_CSV(i + 1));
-//        res[i].reserve(temp.size());
-        res[i].reserve(MAXSIZE);
-        for (auto &&j: temp) {
-            res[i].emplace_back(Consume(i, j));
-        }
-        std::sort(res[i].begin(), res[i].end());
-        temp.clear();
-    }
+    std::cout << "Spawning threads...\n";
+    for (int i = 0; i < FileManager::CONSUME_CSV_QTY; ++i)
+        threads[i] = std::thread(subwork_of_init_consumes, i, &res);   // move-assign threads
+    std::cout << "Done spawning threads. Now waiting for them to join:\n";
+    for (auto & thread : threads)
+        thread.join();
+    std::cout << "All threads joined!\n";
+
     return res;
 }
 
@@ -61,22 +78,22 @@ void DataStore::localize() {
 }
 
 const WindowPositions &DataStore::getWindowPositions() {
-    static const WindowPositions& windowPositions = windows_init();
+    static const WindowPositions &windowPositions = windows_init();
     return windowPositions;
 }
 
 Consumes &DataStore::getConsumes() {
-    static Consumes& consumes = consumes_init();
+    static Consumes &consumes = consumes_init();
     return consumes;
 }
 
 Accounts &DataStore::getAccounts() {
-    static Accounts& accounts = accounts_init();
+    static Accounts &accounts = accounts_init();
     return accounts;
 }
 
 void DataStore::insertAccount(const Account &data) {
-    auto& accounts = getAccounts();
+    auto &accounts = getAccounts();
     int left = 0, right = (int) accounts.size() - 1, mid;
     //half search
     while (left <= right) {
@@ -90,9 +107,9 @@ void DataStore::insertAccount(const Account &data) {
     accounts.emplace(accounts.begin() + mid, data);
 }
 
-void DataStore::insertConsume(Window window,const Consume &data) {
-    auto& consumes = getConsumes();
-    auto& consumes_in_window = consumes[window];
+void DataStore::insertConsume(Window window, const Consume &data) {
+    auto &consumes = getConsumes();
+    auto &consumes_in_window = consumes[window];
     int left = 0, right = (int) consumes_in_window.size() - 1, mid;
     //half search
     while (left <= right) {
@@ -105,3 +122,4 @@ void DataStore::insertConsume(Window window,const Consume &data) {
     }
     consumes_in_window.emplace(consumes_in_window.begin() + mid, data);
 }
+

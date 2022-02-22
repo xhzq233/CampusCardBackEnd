@@ -1,7 +1,9 @@
 #include "lib/FileManager/FileManager.h"
 #include "lib/DataStore/DataStore.h"
 
-void testTimeWrapper(const std::function<void(void)> &func) {
+typedef std::function<void(void)> VoidCallBack;
+
+void testTimeWrapper(const VoidCallBack &func) {
 
     auto t1 = std::chrono::high_resolution_clock::now();
 
@@ -15,20 +17,43 @@ void testTimeWrapper(const std::function<void(void)> &func) {
 
 using CSV = FileManager::CSV;
 
-int main() {
-    testTimeWrapper([&]() {
+void description(const CSV &csv){
+    auto columns = csv[0].size();
+    for (const auto & i : csv) {
+        std::string buf;
+        for (int j = 0; j < columns; ++j) {
+            buf.append(i[j]);
+        }
+        std::cout<<buf<<std::endl;
+    }
+}
 
-//        CSV csv;
-//        if (FileManager::getInstance().getCSVDataSource(csv, Pair((unsigned int) 1937, (unsigned int) 4),
-//                                                        FileManager::CONSUME_CSV(1)));
-//        else std::cout << "err1" << std::endl;
-        DataStore::getConsumes();
-//        DataStore::insertAccount(Account(0, ""));
-//        DataStore::getConsumes();
+int main() {
+    VoidCallBack func{
+            [&]() {
+//                CSV csv;
+//                if (FileManager::getInstance().getCSVDataSource(csv, Pair((unsigned int) 1937, (unsigned int) 4),
+//                                                                FileManager::CONSUME_CSV(1)));
+//                else std::cout << "err1" << std::endl;
+
+//                DataStore::insertAccount(Account(0, ""));
+                auto & consumes = DataStore::getConsumes();
+                auto columns = 1;
+                std::cout<<std::to_string(consumes.size())<<std::endl;
+
+                for (const auto & i : consumes) {
+                    if (i.empty()) continue;
+                    for (int j = 0; j < columns; ++j) {
+                        std::cout<<i[j].to_string()<<std::endl;
+                    }
+                }
 //        FileManager::getInstance() << FileManager::toStandardLogString("THIS IS TITLE", "AND content here")
 //                                   << FileManager::endl;
 //        if (FileManager::getInstance().writeCSVData(csv, "xhzq.csv", "../adjygvjsafvj/"));
-    });
+            }
+    };
+
+    testTimeWrapper(func);
 
     return 0;
 }

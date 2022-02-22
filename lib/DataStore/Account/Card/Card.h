@@ -21,7 +21,12 @@ public:
     bool condition;                                   //卡的状态
     Card(unsigned int uid, unsigned int serialNumber);        // card的构造函数
     void changePassword();                            //修改密码
-    inline bool checkPassword(unsigned int) const;                 //验证密码
+
+    //验证密码
+    [[nodiscard]] inline bool checkPassword(unsigned int another) const {
+        return this->password == another;
+    }
+
     void consume(float d);
 
     float getBalance();
