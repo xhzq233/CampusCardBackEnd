@@ -11,6 +11,7 @@
 #include <fstream>
 #include <sstream>
 #include <ctime>
+#include <list>
 #include <numeric>
 #include <functional>
 #include "Utils.h"

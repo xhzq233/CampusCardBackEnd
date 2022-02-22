@@ -4,9 +4,9 @@
 
 #include "ConsumeBuilder.h"
 
-bool ConsumeBuilder::consume(Card &card, float price) {
-
-}
+//bool ConsumeBuilder::consume(const Window &window, const Card &card, const float &price) {
+//    return false;
+//}
 
 void ConsumeBuilder::consume(Card &card, float price, int date, int time) {
     if (!card.condition) {

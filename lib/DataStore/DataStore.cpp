@@ -61,31 +61,47 @@ void DataStore::localize() {
 }
 
 const WindowPositions &DataStore::getWindowPositions() {
-    static const WindowPositions windowPositions = windows_init();
+    static const WindowPositions& windowPositions = windows_init();
     return windowPositions;
 }
 
 Consumes &DataStore::getConsumes() {
-    static Consumes consumes = consumes_init();
+    static Consumes& consumes = consumes_init();
     return consumes;
 }
 
 Accounts &DataStore::getAccounts() {
-    static Accounts accounts = accounts_init();
+    static Accounts& accounts = accounts_init();
     return accounts;
 }
 
 void DataStore::insertAccount(const Account &data) {
-    auto accounts = getAccounts();
+    auto& accounts = getAccounts();
     int left = 0, right = (int) accounts.size() - 1, mid;
     //half search
     while (left <= right) {
         mid = (left + right) / 2;
-        if (accounts[mid].uid > data.uid) {
+        if (accounts[mid] > data) {
             right = mid - 1;
         } else {
             left = mid + 1;
         }
     }
     accounts.emplace(accounts.begin() + mid, data);
+}
+
+void DataStore::insertConsume(Window window,const Consume &data) {
+    auto& consumes = getConsumes();
+    auto& consumes_in_window = consumes[window];
+    int left = 0, right = (int) consumes_in_window.size() - 1, mid;
+    //half search
+    while (left <= right) {
+        mid = (left + right) / 2;
+        if (consumes_in_window[mid] > data) {
+            right = mid - 1;
+        } else {
+            left = mid + 1;
+        }
+    }
+    consumes_in_window.emplace(consumes_in_window.begin() + mid, data);
 }

@@ -51,8 +51,7 @@ public:
 private:
     /* type of std::ios::openmode */
 #ifdef __WIN64
-    //    typedef long openmode;
-        typedef std::ios_base::openmode openmode;
+    typedef std::ios_base::openmode openmode;
 #else
     typedef unsigned int openmode;
 #endif
@@ -125,7 +124,7 @@ public:
     /*
      * use pre defined size
      * */
-    bool getCSVDataSource(CSV &container, Pair<unsigned int, unsigned int> size,
+    bool getCSVDataSource(CSV &container,const Pair<unsigned int, unsigned int>& size,
                           const std::string &source,
                           const std::string &path = DEFAULT_DATA_PATH);
 

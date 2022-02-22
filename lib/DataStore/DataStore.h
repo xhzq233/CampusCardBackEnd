@@ -26,6 +26,9 @@ public:
     /* Account insert func */
     static void insertAccount(const Account &data);
 
+    /* Account insert func */
+    static void insertConsume(Window window,const Consume &data);
+
     static Consumes &getConsumes();
 
     /* const data because it defined by file ,unmodifiable */
