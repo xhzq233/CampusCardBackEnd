@@ -23,9 +23,7 @@ public:
      * */
     static Accounts &getAccounts();
 
-    /*
-     * Account insert func
-     * */
+    /* Account insert func */
     static void insertAccount(const Account &data);
 
     static Consumes &getConsumes();
@@ -38,11 +36,14 @@ public:
 
 private:
 
-    static Consumes consumes_init();
+    //called if and only if initializing
+    static Consumes &consumes_init();
 
-    static WindowPositions windows_init();
+    //called if and only if initializing
+    static const WindowPositions &windows_init();
 
-    static Accounts accounts_init();
+    //called if and only if initializing
+    static Accounts &accounts_init();
 
     constexpr static const char WINDOW_QTY = 99;
     constexpr static const int MAXSIZE = 60000;

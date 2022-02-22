@@ -9,8 +9,8 @@ using Consumes = DataStore::Consumes;
 using WindowPositions = DataStore::WindowPositions;
 using CSV = FileManager::CSV;
 
-Accounts DataStore::accounts_init() {
-    Accounts res;
+Accounts &DataStore::accounts_init() {
+    static Accounts res;
     CSV temp;
     FileManager::getInstance().getCSVDataSource(temp, 2, FileManager::OPEN_ACCOUNT_CSV_NAME);
     for (auto &&j: temp) {
@@ -21,9 +21,9 @@ Accounts DataStore::accounts_init() {
     return res;
 }
 
-Consumes DataStore::consumes_init() {
+Consumes &DataStore::consumes_init() {
 
-    Consumes res(FileManager::CONSUME_CSV_QTY, std::vector<Consume>());
+    static Consumes res(FileManager::CONSUME_CSV_QTY, std::vector<Consume>());
 
     CSV temp;
     for (unsigned int i = 0; i < FileManager::CONSUME_CSV_QTY; ++i) {
@@ -38,8 +38,8 @@ Consumes DataStore::consumes_init() {
     return res;
 }
 
-WindowPositions DataStore::windows_init() {
-    std::vector<WindowPosition> res(WINDOW_QTY);
+const WindowPositions &DataStore::windows_init() {
+    static std::vector<WindowPosition> res(WINDOW_QTY);
 
     FileManager::CSV container;
     ///预定好尺寸 99x2
