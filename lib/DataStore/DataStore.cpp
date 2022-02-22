@@ -35,7 +35,16 @@ void subwork_of_init_consumes(int index, Consumes *consumes) {
         auto *consume = new Consume(index + 1, temp[i]);
         consumes->at(index)[i] = consume;
     }
-    std::sort(consumes->at(index).begin(), consumes->at(index).end());
+    std::sort(consumes->at(index).begin(), consumes->at(index).end(),[&](const Consume* l,const Consume* r)->bool {
+        if((!l && !r)||!l)
+            // if both are null or left is null
+            return false;
+        else if (!r)
+            // if right is null
+            return true;
+        else
+            return l->date > r->date;
+    });
 }
 
 

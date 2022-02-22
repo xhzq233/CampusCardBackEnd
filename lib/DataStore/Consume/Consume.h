@@ -36,7 +36,7 @@ public:
     // 消费金钱
     float price;
 
-    Consume(unsigned int cid, Window window, std::string date, float price) : window(window), date(std::stoull(std::move(date))),
+    Consume(unsigned int cid, Window window, const std::string& date, float price) : window(window), date(std::stoull(date)),
                                                                               price(price), cid(cid) {}
 
     /// comparable
