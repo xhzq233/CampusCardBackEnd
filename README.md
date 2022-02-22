@@ -30,7 +30,8 @@ I((CardDataAnalyze))
 G-->A
 H-->A
 I-->A
-
+B-->E
+D-->E
 E-->G
 F-->E
 B-->G
