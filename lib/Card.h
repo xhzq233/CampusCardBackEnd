@@ -5,6 +5,7 @@
 #define CARD_H
 
 #include <iostream>
+#include <vector>
 
 #define DEFAULT_DATE 20240715   //默认的卡号有效期
 #define UID_LENGTH 10           //学号长度
@@ -25,6 +26,12 @@ public:
     void consume(float d);
 
     float getBalance();
+
+    // from strings
+    explicit Card(const std::vector<std::string> &strings) : Card(std::stoi(strings[0]), std::stoi(strings[1])) {}
+
+    // to string
+    [[nodiscard]] std::string to_string() const;
 };
 
 #endif // CARD_H

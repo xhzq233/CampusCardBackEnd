@@ -19,3 +19,11 @@ void Account::recharge(float amount) {
     this->balance += amount;
 }
 
+std::string Account::to_string() const  {
+    std::string res;
+    res.append(std::to_string(uid));
+    res.append(",");
+    res.append(name);
+    return res;
+}
+

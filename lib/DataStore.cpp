@@ -15,7 +15,7 @@ Accounts DataStore::accounts_init() {
     CSV temp;
     FileManager::getInstance().getCSVDataSource(temp, 2, FileManager::OPEN_ACCOUNT_CSV_NAME);
     for (auto &&j: temp) {
-        res.emplace_back(Account(std::stoi(j[0]), j[1]));
+        res.emplace_back(Account(j));
     }
 
     std::sort(res.begin(), res.end());
@@ -31,9 +31,7 @@ Consumes DataStore::consumes_init() {
         FileManager::getInstance().getCSVDataSource(temp, 4, FileManager::CONSUME_CSV(i + 1));
         res[i].reserve(temp.size());
         for (auto &&j: temp) {
-            res[i].emplace_back(Consume(std::stoi(j[1]),
-                                        i, j[1] + j[2],
-                                        std::stof(j[3])));
+            res[i].emplace_back(Consume(i, j));
         }
         std::sort(res[i].begin(), res[i].end());
         temp.clear();

@@ -33,3 +33,11 @@ void Card::consume(float d) {
 float Card::getBalance() {
     return 0;
 }
+
+std::string Card::to_string() const {
+    std::string res;
+    res.append(std::to_string(uid));
+    res.append(",");
+    res.append(std::to_string(cid));
+    return res;
+}

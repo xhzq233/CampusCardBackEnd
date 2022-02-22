@@ -24,7 +24,7 @@ int main() {
 //                                                        FileManager::CONSUME_CSV(1)));
 //        else std::cout << "err1" << std::endl;
 //        DataStore::insertAccount(Account(0, ""));
-        DataStore::getConsumes();
+//        DataStore::getConsumes();
 //        FileManager::getInstance() << FileManager::toStandardLogString("THIS IS TITLE", "AND content here")
 //                                   << FileManager::endl;
 //        if (FileManager::getInstance().writeCSVData(csv, "xhzq.csv", "../adjygvjsafvj/"));
