@@ -22,6 +22,7 @@ public:
 
     void recharge(float amount); //充值
 
+    std::string to_string() const;
     ~Account();
 
 };

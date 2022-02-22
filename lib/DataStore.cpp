@@ -10,7 +10,6 @@ using WindowPositions = DataStore::WindowPositions;
 using CSV = FileManager::CSV;
 
 Accounts DataStore::accounts_init() {
-
     Accounts res;
     CSV temp;
     FileManager::getInstance().getCSVDataSource(temp, 2, FileManager::OPEN_ACCOUNT_CSV_NAME);

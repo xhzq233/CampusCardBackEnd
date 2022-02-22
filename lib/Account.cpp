@@ -4,8 +4,9 @@
 
 #include "Account.h"
 
+using namespace std;
 
-Account::Account(unsigned int uid, std::string name) : uid(uid), name(std::move(name)), balance(0), cards({}) {}
+Account::Account(unsigned int uid, string name) : uid(uid), name(move(name)), balance(0), cards({}) {}
 
 Account::~Account() = default;
 
@@ -18,4 +19,10 @@ void Account::consume(float price) {
 void Account::recharge(float amount) {
     this->balance += amount;
 }
+
+string Account::to_string() const {
+    return "学号:" + ::to_string(this->uid) + " 姓名:" + this->name;
+}
+
+
 
