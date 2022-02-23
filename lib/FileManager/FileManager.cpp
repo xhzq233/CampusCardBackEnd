@@ -26,6 +26,7 @@ bool FileManager::prepareIOStream(StreamCallBack func, const std::string &path,
         IOStream.close();
 #ifdef __WIN64
         std::string win = path.substr(0,path.size()-1);
+        regex_replace(win,std::regex("/"),"\\");
         system(("mkdir " + win).c_str());
 #else
         system(("mkdir " + path).c_str());
