@@ -2,7 +2,7 @@
 // Created by 夏侯臻 on 2022/2/22.
 //
 
-#include "ConsumeBuilder.h"
+#include "Consume.h"
 
 using namespace std;
 
@@ -13,10 +13,10 @@ void ConsumeBuilder::consume(const Window &window, const Card &card, const float
 void ConsumeBuilder::consume(const Window &window, const Card &card, const float &price, string time) {
     auto account = DataStore::queryByUid(card.cid);
     account->consume(price);
-    DataStore::insertConsume(window, new Consume(card.cid, window, time, price));
+    DataStore::insertConsume(window, new ConsumeLog(card.cid, window, time, price));
 }
 
-void ConsumeBuilder::consume(const Consume &log) {
+void ConsumeBuilder::consume(const ConsumeLog &log) {
     auto account = DataStore::queryByUid(log.cid);
     account->consume(log.price);
 }
