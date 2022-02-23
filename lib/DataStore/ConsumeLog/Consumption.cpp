@@ -1,7 +1,7 @@
-#include "ConsumeLog.h"
+#include "Consumption.h"
 
 using namespace std;
-string ConsumeLog::to_string() const {
+string Consumption::to_string() const {
     std::string res;
     res.append(::to_string(cid));    // cid
     res.append(",");

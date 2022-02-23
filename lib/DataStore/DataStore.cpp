@@ -33,14 +33,14 @@ void subwork_of_init_consumes(int index, Consumes *consumes) {
     FileManager().getCSVDataSource(temp, 4, FileManager::CONSUME_CSV(index + 1));
 
     for (int i = 0; i < temp.size(); ++i) {
-        auto *consume = new ConsumeLog(index + 1, temp[i]);
+        auto *consume = new Consumption(index + 1, temp[i]);
         consumes->at(index)[i] = consume;
     }
 
     // sort by from lower to bigger
     // only sort where have values
     std::sort(consumes->at(index).begin(), consumes->at(index).begin() + (int) temp.size(),
-              [&](const ConsumeLog *l, const ConsumeLog *r) -> bool {
+              [&](const Consumption *l, const Consumption *r) -> bool {
                   return l->date < r->date;
               });
 }
@@ -48,7 +48,7 @@ void subwork_of_init_consumes(int index, Consumes *consumes) {
 
 Consumes &DataStore::consumes_init() {
     //99 x 60000
-    static Consumes res(WINDOW_QTY, std::vector<ConsumeLog *>(MAXSIZE, nullptr));
+    static Consumes res(WINDOW_QTY, std::vector<Consumption *>(MAXSIZE, nullptr));
     std::thread threads[FileManager::CONSUME_CSV_QTY];
 
     std::cout << "Spawning threads...\n";
@@ -150,7 +150,7 @@ std::vector<Account>::iterator DataStore::queryByCid(unsigned int cid) {
     }
 }
 
-void DataStore::insertConsume(Window window, ConsumeLog *data) {
+void DataStore::insertConsume(Window window, Consumption *data) {
     auto &consumes = getConsumes();
     auto &consumes_in_window = consumes[window];
     int left = 0, right = (int) consumes_in_window.size() - 1, mid;
