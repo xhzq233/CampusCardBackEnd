@@ -12,7 +12,7 @@ void testTimeWrapper(const VoidCallBack &func) {
     auto t2 = std::chrono::high_resolution_clock::now();
 
     std::chrono::duration<double, std::milli> ms = t2 - t1;
-    std::cout << "use time: " << ms.count() << " ms." << std::endl;
+    printf("use time: %f ms.\n",ms.count());
 }
 
 using CSV = FileManager::CSV;
@@ -53,7 +53,7 @@ int main() {
                 CSV csv;
                 if (FileManager::getInstance().getCSVDataSource(csv, 4,
                                                                 FileManager::CARD_RECHARGE_CSV_NAME));
-                else std::cout << "err1" << std::endl;
+                else printf("err");
                 description(csv);
 //                DataStore::insertAccount(Account(0, ""));
 //                DataStore::getConsumes();

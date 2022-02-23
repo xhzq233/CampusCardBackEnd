@@ -34,7 +34,7 @@ bool FileManager::prepareIOStream(StreamCallBack func, const std::string &path,
         if (!IOStream.is_open()) {
             //read failed
             IOStream.close();
-            std::cout << path + source << " read failed" << std::endl;
+            printf("%s read failed\n", (path+source).c_str());
             return false;
         }
     }

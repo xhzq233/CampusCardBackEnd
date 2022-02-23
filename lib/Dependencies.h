@@ -5,7 +5,6 @@
 #ifndef CAMPUSCARDBACKEND_DEPENDENCIES_H
 #define CAMPUSCARDBACKEND_DEPENDENCIES_H
 
-#include <iostream>
 #include <string>
 #include <vector>
 #include <fstream>
