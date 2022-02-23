@@ -49,12 +49,10 @@ void subwork_of_init_consumes(int index, Consumes *consumes) {
 Consumes &DataStore::consumes_init() {
     //99 x 60000
     static Consumes res(WINDOW_QTY, std::vector<Consume *>(MAXSIZE, nullptr));
-    // std::thread threads[FileManager::CONSUME_CSV_QTY];
-    std::thread threads[20];
+    std::thread threads[FileManager::CONSUME_CSV_QTY];
 
     std::cout << "Spawning threads...\n";
-    // for (int i = 0; i < FileManager::CONSUME_CSV_QTY; ++i)
-    for (int i = 0; i < 20; ++i)
+    for (int i = 0; i < FileManager::CONSUME_CSV_QTY; ++i)
         threads[i] = std::thread(subwork_of_init_consumes, i, &res);   // move-assign threads
     std::cout << "Done spawning threads. Now waiting for them to join:\n";
     for (auto &thread: threads)

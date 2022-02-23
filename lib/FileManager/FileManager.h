@@ -12,11 +12,29 @@
  * */
 class FileManager {
 public:
+
+    //linux or unix
+#ifndef __WIN64
     /* 默认数据路径 */
     constexpr static const char DEFAULT_DATA_PATH[] = "../data/";
     /* 默认log路径 */
     constexpr static const char DEFAULT_LOG_PATH[] = "../log/";
+    /* xf.csv基于位置分成了多个CSV文件，格式为W{\d}.csv */
+    constexpr static const char CONSUME_CSV_DICTIONARY[] = "xf/";
+    /* xf.csv总文件 */
+    constexpr static const char CONSUME_CSV_NAME[] = "xf/xf.csv";
 
+    //windows amd64
+#else
+    /* 默认数据路径 */
+    constexpr static const char DEFAULT_DATA_PATH[] = "..\\data\\";
+    /* 默认log路径 */
+    constexpr static const char DEFAULT_LOG_PATH[] = "..\\log\\";
+    /* xf.csv基于位置分成了多个CSV文件，格式为W{\d}.csv */
+    constexpr static const char CONSUME_CSV_DICTIONARY[] = "xf\\";
+    /* xf.csv总文件 */
+    constexpr static const char CONSUME_CSV_NAME[] = "xf\\xf.csv";
+#endif
     /* 批量开户申请数据文件（kh001.txt）*/
     constexpr static const char OPEN_ACCOUNT_NAME[] = "kh001.txt";
     /* 批量卡片操作申请数据文件（cz002.txt）*/
@@ -32,10 +50,7 @@ public:
     constexpr static const char OPEN_ACCOUNT_CSV_NAME[] = "kh.csv";
     constexpr static const char CARD_MANAGE_CSV_NAME[] = "cz.csv";
     constexpr static const char CAFE_POSITION_CSV_NAME[] = "wz.csv";
-    /* xf.csv基于位置分成了多个CSV文件，格式为W{\d}.csv */
-    constexpr static const char CONSUME_CSV_DICTIONARY[] = "xf/";
-    /* xf.csv总文件 */
-    constexpr static const char CONSUME_CSV_NAME[] = "xf/xf.csv";
+
     /* W{\d}.csv 文件个数 */
     constexpr static const char CONSUME_CSV_QTY = 58;
 
@@ -68,10 +83,6 @@ private:
     bool prepareIOStream(StreamCallBack func, const std::string &path, const std::string &source,
                          openmode mode = std::ios::in);
 
-    //暂时储存log 的buffer
-    std::string stringLogBuf;
-
-    static std::ofstream& getLogger();
     // init shared instance
     // that function called if and only if getInstance() called
     // and only called once during the whole program lifetime
@@ -104,6 +115,12 @@ public:
      * the concurrent execution shall wait for completion of the initialization.
      * */
     static FileManager &getInstance();
+
+    //暂时储存log 的buffer
+    static std::string &getLoggerBuffer();
+
+
+    static std::ofstream &getLogger();
 
     /* IO管理 */
     std::fstream IOStream;
@@ -151,9 +168,6 @@ public:
      * container format defined above
      * 返回是否成功 */
     bool writeCSVData(const CSV &container, const std::string &sourceName, const std::string &path = DEFAULT_DATA_PATH);
-
-    /* literally */
-    bool log(const std::string &content);
 
     /* log的简便形式 */
     friend FileManager &operator<<(FileManager &o, const std::string &content);
