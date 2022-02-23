@@ -177,9 +177,16 @@ void operator<<(FileManager &o, const char c) {
     if (o.stringLogBuf.empty()) return; // return directly if empty
 
     if (c == FileManager::endl) {
-        o.log(o.stringLogBuf);//TODO: err handle
+        o.bufferLength += 1;
+        if (o.bufferLength < FileManager::MAX_BUFFER_LENGTH) {
+            o.stringLogBuf.append("\n");
+        } else {
+            o.bufferLength = 0;
+            o.log(o.stringLogBuf);//TODO: err handle
+            o.stringLogBuf.clear();//输出完后清空
+        }
     }
-    o.stringLogBuf.clear();//输出完后清空
+
 }
 
 std::string FileManager::toStandardLogString(const char *title, const char *content) {
@@ -210,6 +217,13 @@ void FileManager::append_standard_time(std::string &container, const time_t &now
     char buf[25];
     strftime(buf, sizeof(buf), "%Y-%m-%d-%X", tm);
     container.append(buf);
+}
+
+FileManager::~FileManager() {
+    if (startUpTime.empty()) return;
+    // log rest before deinit
+    log(stringLogBuf);
+    stringLogBuf.clear();
 }
 
 using DataQuery = FileManager::DataQuery;
