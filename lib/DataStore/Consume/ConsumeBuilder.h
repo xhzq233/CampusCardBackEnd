@@ -10,9 +10,11 @@
 
 
 namespace ConsumeBuilder {
-    bool consume(const Window &window, const Card &card, const float &price, std::string time); //消费操作
-    bool consume(const Window &window, const Card &card, const float &price);
-    void consume(const Consume log);
+    void consume(const Window &window, const Card &card, const float &price, std::string time); //消费操作
+    void consume(const Window &window, const Card &card, const float &price);
+
+    void consume(const Consume &log);
+
     bool passwd_is_correct(const Card &card); //输入密码
 }
 

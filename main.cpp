@@ -66,7 +66,8 @@ int main() {
     //释放指针
     for (const auto &item: DataStore::getConsumes()) {
         for (const auto &i: item)
-            delete i;
+            if (i)
+                delete i;
     }
     return 0;
 }

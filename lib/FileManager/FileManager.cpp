@@ -14,15 +14,19 @@ FileManager &FileManager::getInstance() {
 
 FileManager &FileManager::shared_init() {
     static FileManager instance;
-    append_standard_time(instance.startUpTime, time(nullptr));
+    time_t now = time(nullptr);
+    auto *tm = std::localtime(&now);
+    char buf[20];
+    strftime(buf, sizeof(buf), "%Y-%m-%d", tm);
+    instance.startUpTime.append(buf);
     return instance;
 }
 
 bool FileManager::prepareIOStream(StreamCallBack func, const std::string &path,
                                   const std::string &source,
                                   const openmode mode) {
-    IOStream.open(path + source, mode);
 #ifndef __WIN64
+    IOStream.open(path + source, mode);
     if (!IOStream.is_open()) {/* check the param [path] , auto mkdir if not exist */
         IOStream.close();
         system(("mkdir " + path).c_str());
@@ -35,17 +39,18 @@ bool FileManager::prepareIOStream(StreamCallBack func, const std::string &path,
         }
     }
 #else
-    IOStream.open(path + source, mode);
+    std::string win = regex_replace(path, std::regex("/"), "\\");
+    std::string wins = regex_replace(source, std::regex("/"), "\\");
+    std::string file = path + source;
+    IOStream.open(file, mode);
     if (!IOStream.is_open()) {/* check the param [path] , auto mkdir if not exist */
         IOStream.close();
-        system(("mkdir " + regex_replace(path.substr(0,path.size()-1),std::regex("/"),"\\")).c_str());
-        std::string win = path;
-        win =  regex_replace(win,std::regex("/"),"\\");
-        IOStream.open(win + source, mode);
+        system( ("mkdir " + win.substr(0, win.size() - 1)).c_str());
+        IOStream.open(file, mode);
         if (!IOStream.is_open()) {
             //read failed
             IOStream.close();
-            std::cout << win + source << " read failed" << std::endl;
+            std::cout << file << " read failed" << std::endl;
             return false;
         }
     }
