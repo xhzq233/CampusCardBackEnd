@@ -169,7 +169,7 @@ void operator<<(FileManager &o, const char c) {
     if (FileManager::getLoggerBuffer().empty()) return; // return directly if empty
 
     if (c == FileManager::endl) {
-        FileManager::getLogger() << FileManager::getLoggerBuffer() << std::endl;
+        FileManager::getLogger() << FileManager::getLoggerBuffer() << '\n';
         FileManager::getLoggerBuffer().clear();//输出完后清空
     }
 }
@@ -216,34 +216,5 @@ std::ofstream &FileManager::getLogger() {
 
 std::string &FileManager::getLoggerBuffer() {
     static std::string res;
-    return res;
-}
-
-using DataQuery = FileManager::DataQuery;
-
-std::regex DataQuery::customRegex2CommonRegexSyntax(std::string &regex) {
-    regex.replace(regex.find('?'), 1, ".");
-    regex.replace(regex.find('*'), 1, ".{2,}");
-    return std::regex(regex);
-}
-
-DataQuery::Subscripts
-DataQuery::query(FileManager::Strings &container, const std::regex &regex) {
-    Subscripts res;
-    for (unsigned int i = 0; i < container.size(); ++i) {
-        if (std::regex_match(container[i], regex))
-            res.emplace_back(i);
-    }
-    return res;
-}
-
-DataQuery::Subscripts
-DataQuery::query(FileManager::CSV &container, unsigned int columnIndex, const std::regex &regex) {
-
-    Subscripts res;
-    for (unsigned int i = 0; i < container.size(); ++i) {
-        if (std::regex_match(container[i][columnIndex], regex))
-            res.emplace_back(i);
-    }
     return res;
 }

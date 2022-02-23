@@ -10,7 +10,7 @@
 
 
 namespace ConsumeBuilder {
-    void consume(const Window &window, const Card &card, const float &price, std::string time); //消费操作
+    void consume(const Window &window, const Card &card, const float &price, const std::string& time); //消费操作
     void consume(const Window &window, const Card &card, const float &price);
 
     void consume(const Consumption &log);

@@ -7,7 +7,7 @@ string Consumption::to_string() const {
     res.append(",");
     res.append(::to_string(window)); // window
     res.append(",");
-    res.append(::to_string(date));                       // date
+    res.append(::to_string(date));   // date
     res.append(",");
     res.append(::to_string(price));  // price
     return res;

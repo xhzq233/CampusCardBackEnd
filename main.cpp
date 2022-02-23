@@ -12,7 +12,7 @@ void testTimeWrapper(const VoidCallBack &func) {
     auto t2 = std::chrono::high_resolution_clock::now();
 
     std::chrono::duration<double, std::milli> ms = t2 - t1;
-    printf("use time: %f ms.\n",ms.count());
+    printf("use time: %f ms.\n", ms.count());
 }
 
 using CSV = FileManager::CSV;
@@ -34,11 +34,13 @@ void description(const CSV &csv, int num = 5) {
 
 // print -head num
 void description(const DataStore::Consumptions &consumes, int row = 4, int col = 5) {
-    for (int i = 0; i < row; ++i)
-        for (int j = 0; j < col; ++j) {
+    for (int i = 0; i < row; ++i) {
+        auto position = DataStore::getWindowPositions()[i];
+        for (unsigned int j = position - col; j < position ; ++j) {
             if (!consumes[i][j]) continue;
             printf("%s \n", consumes[i][j]->to_string().c_str());
         }
+    }
 }
 
 // print -head num
@@ -56,13 +58,11 @@ int main() {
 //                else printf("err");
 //                description(csv);
 //                DataStore::insertAccount(Account(0, ""));
-                DataStore::getConsumptions();
-//                DataStore::getAccounts();
-//                description(DataStore::getConsumptions());
+                description(DataStore::getConsumptions());
 //                description(DataStore::getAccounts());
-//        FileManager::getInstance() << FileManager::toStandardLogString("THIS IS TITLE", "AND content here")
-//                                   << FileManager::endl;
-//        if (FileManager::getInstance().writeCSVData(csv, "xhzq.csv", "../adjygvjsafvj/"));
+//                FileManager::getInstance() << FileManager::toStandardLogString("THIS IS TITLE", "AND content here")
+//                                           << FileManager::endl;
+//                if (FileManager::getInstance().writeCSVData(csv, "xhzq.csv", "../adjygvjsafvj/"));
             }
     };
 

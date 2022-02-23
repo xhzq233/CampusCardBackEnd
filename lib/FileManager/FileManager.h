@@ -92,6 +92,8 @@ private:
     // and only called once during the whole program lifetime
     static FileManager &shared_init();
 
+    //暂时储存log 的buffer
+    static std::string &getLoggerBuffer();
 public:
     // multi thread
     // not multi thread please use getInstance instead
@@ -120,10 +122,7 @@ public:
      * */
     static FileManager &getInstance();
 
-    //暂时储存log 的buffer
-    static std::string &getLoggerBuffer();
-
-
+    /* default logger */
     static std::ofstream &getLogger();
 
     /* IO管理 */
@@ -186,26 +185,6 @@ public:
 
     /* literally */
     static void append_standard_time(std::string &container, const time_t &now);
-
-    class DataQuery {
-    public:
-        /**
-         * #模糊匹配的格式中，？代表一个字符或一个汉字，*表示多个字符或多个汉字，或代表空；
-         * 汉字：[\u4e00-\u9fa5]
-         * 将?替换成 .
-         * 将*替换成 .{2,}
-        * */
-        static std::regex customRegex2CommonRegexSyntax(std::string &regex);
-
-        // 数组下标
-        typedef std::vector<unsigned int> Subscripts;
-
-        // query on specified multi string，return Subscripts matched
-        static Subscripts query(Strings &container, const std::regex &regex);
-
-        // query on CSV data specified column, return Subscripts matched
-        static Subscripts query(CSV &container, unsigned int columnIndex, const std::regex &regex);
-    };
 
 };
 

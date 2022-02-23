@@ -42,6 +42,10 @@ void subwork_of_init_consumes(int index, Consumptions *consumes) {
     // no longer to be sorted
 }
 
+#ifdef __WIN64
+const unsigned int MAX_THREAD = std::thread::hardware_concurrency();
+#endif //__WIN64
+
 Consumptions &DataStore::consumes_init() {
     //99 x 60000
     static Consumption *res[WINDOW_QTY][MAXSIZE] = {nullptr};
@@ -50,6 +54,7 @@ Consumptions &DataStore::consumes_init() {
     for (int i = 0; i < FileManager::CONSUME_CSV_QTY; ++i)
         threads[i] = std::thread(subwork_of_init_consumes, i, &res);   // move-assign threads
     printf("Done spawning threads. Now waiting for them to join:\n");
+
     for (auto &thread: threads)
         thread.join();
     printf("All threads joined!\n");
@@ -69,7 +74,7 @@ WindowPositions &DataStore::windows_init() {
     //Reference:
     //https://stackoverflow.com/questions/13241108/why-does-a-range-based-for-statement-take-the-range-by-auto
     for (const auto &row: container)
-        windowPositions[stoi(row[0])] = stoi(row[1]);
+        windowPositions[stoi(row[0]) - 1] = stoi(row[1]); // window ranged 1-99, but subscripts ranged 0-98
 
     return windowPositions;
 }
@@ -157,4 +162,46 @@ void DataStore::insertConsumption(Window window, Consumption *data) {
     position = (position + 1) % MAXSIZE; // no more than MAXSIZE
 
     consumes_in_window[position] = data;
+}
+
+
+using DataQuery = DataStore;
+
+std::regex DataQuery::customRegex2CommonRegexSyntax(std::string &regex) {
+    regex.replace(regex.find('?'), 1, ".");
+    regex.replace(regex.find('*'), 1, ".{2,}");
+    return std::regex(regex);
+}
+
+DataQuery::Subscripts
+DataQuery::query(FileManager::Strings &container, const std::regex &regex) {
+    Subscripts res;
+    for (unsigned int i = 0; i < container.size(); ++i) {
+        if (std::regex_match(container[i], regex))
+            res.emplace_back(i);
+    }
+    return res;
+}
+
+DataQuery::Subscripts
+DataQuery::query(FileManager::CSV &container, unsigned int columnIndex, const std::regex &regex) {
+
+    Subscripts res;
+    for (unsigned int i = 0; i < container.size(); ++i) {
+        if (std::regex_match(container[i][columnIndex], regex))
+            res.emplace_back(i);
+    }
+    return res;
+}
+
+DataQuery::Subscripts DataStore::queryConsumption(Window window, unsigned int cid) {
+    return DataStore::Subscripts();
+}
+
+DataQuery::Subscripts DataStore::queryConsumption(unsigned int cid) {
+    return DataStore::Subscripts();
+}
+
+DataQuery::Subscripts DataStore::queryConsumptionByUid(unsigned int uid) {
+    return DataStore::Subscripts();
 }
