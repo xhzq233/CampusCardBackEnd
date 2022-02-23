@@ -13,7 +13,7 @@ void ConsumeBuilder::consume(const Window &window, const Card &card, const float
 void ConsumeBuilder::consume(const Window &window, const Card &card, const float &price, string time) {
     auto account = DataStore::queryByUid(card.cid);
     account->consume(price);
-    DataStore::insertConsume(window, new Consumption(card.cid, window, time, price));
+    DataStore::insertConsumption(window, new Consumption(card.cid, window, time, price));
 }
 
 void ConsumeBuilder::consume(const Consumption &log) {

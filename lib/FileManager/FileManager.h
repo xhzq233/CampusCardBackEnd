@@ -34,7 +34,8 @@ public:
     constexpr static const char CONSUME_CSV_DICTIONARY[] = "xf\\";
     /* xf.csv总文件 */
     constexpr static const char CONSUME_CSV_NAME[] = "xf\\xf.csv";
-#endif
+#endif //__WIN64
+
     /* 批量开户申请数据文件（kh001.txt）*/
     constexpr static const char OPEN_ACCOUNT_NAME[] = "kh001.txt";
     /* 批量卡片操作申请数据文件（cz002.txt）*/
@@ -48,7 +49,10 @@ public:
 
     /* 对应上面的转换的CSV文件 */
     constexpr static const char OPEN_ACCOUNT_CSV_NAME[] = "kh.csv";
-    constexpr static const char CARD_MANAGE_CSV_NAME[] = "cz.csv";
+    // recharge , 4 columns
+    constexpr static const char CARD_RECHARGE_CSV_NAME[] = "cz.csv";
+    // manage , 3 columns
+    constexpr static const char CARD_MANAGE_CSV_NAME[] = "cz3.csv";
     constexpr static const char CAFE_POSITION_CSV_NAME[] = "wz.csv";
 
     /* W{\d}.csv 文件个数 */

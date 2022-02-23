@@ -8,6 +8,7 @@
 #include "Account/Account.h"
 #include "ConsumeLog/Consumption.h"
 
+/* 'Data Base' liked object */
 class DataStore {
 public:
     typedef std::vector<WindowPosition> WindowPositions;
@@ -34,7 +35,7 @@ public:
     static std::vector<Account>::iterator queryByCid(unsigned int uid);
 
     /* Consumption insert func, designed by half find and insert */
-    static void insertConsume(Window window, Consumption *data);
+    static void insertConsumption(Window window, Consumption *data);
 
     /* sorted by < */
     static Consumes &getConsumes();

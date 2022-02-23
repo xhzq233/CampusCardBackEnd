@@ -64,12 +64,9 @@ bool FileManager::prepareIOStream(StreamCallBack func, const std::string &path,
 bool FileManager::getStringDataSourceByLine(Strings &container, const std::string &source,
                                             const std::string &path) {
     return prepareIOStream([&](std::fstream &stream) {
-
         std::string buffer;
-
         while (std::getline(stream, buffer))
             container.emplace_back(buffer);
-
     }, path, source);
 }
 
@@ -81,10 +78,10 @@ std::string FileManager::CONSUME_CSV(unsigned int position) {
     return res;
 }
 
-// 1937 rows used time: 4.27837 ms.
 bool FileManager::getCSVDataSource(CSV &container, unsigned int rows, unsigned int columns,
                                    const std::string &source, const std::string &path) {
     // decrease copied data as possible
+    // use pre defined size
     container.resize(rows, std::vector<std::string>(columns, ""));
     return prepareIOStream([&](std::fstream &stream) {
 
@@ -94,7 +91,7 @@ bool FileManager::getCSVDataSource(CSV &container, unsigned int rows, unsigned i
             std::getline(stream, rowBuffer);
 
             for (auto &c: rowBuffer) {
-                if (c == ',') {
+                if (c == ',' || c == '\0' || c == '\r') {
                     col++;
                 } else {
                     container[i][col].push_back(c);
@@ -105,7 +102,6 @@ bool FileManager::getCSVDataSource(CSV &container, unsigned int rows, unsigned i
     }, path, source);
 }
 
-// 1937 rows used time: 4.51425 ms.
 bool FileManager::getCSVDataSource(CSV &container, unsigned int columns,
                                    const std::string &source, const std::string &path) {
     return prepareIOStream([&](std::fstream &stream) {
@@ -118,7 +114,7 @@ bool FileManager::getCSVDataSource(CSV &container, unsigned int columns,
             // decrease copied data as possible
             container.emplace_back(Strings(columns, ""));
             for (auto &c: rowBuffer) {
-                if (c == ',' || c == '\0') {
+                if (c == ',' || c == '\0' || c == '\r') {
                     col++;
                 } else {
                     container[row][col].push_back(c);

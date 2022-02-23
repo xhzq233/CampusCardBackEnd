@@ -8,7 +8,7 @@
 |     Window      |          window id of a cafe           |
 |      Card       |         stores campusCard data         |
 |     Account     |              stores cards              |
-|     Consume     |  a data bound to a card and a window   |
+|   Consumption   |  a data bound to a card and a window   |
 | ConsumeBuilder  | construct a consume data into database |
 |    DataStore    |   stores windows, accounts, consumes   |
 |   CardManage    |     manage card relative operation     |
@@ -31,7 +31,7 @@ G-->A
 H-->A
 I-->A
 B-->E
-D-->E
+C-->E
 E-->G
 F-->E
 B-->G

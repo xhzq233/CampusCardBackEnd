@@ -150,7 +150,7 @@ std::vector<Account>::iterator DataStore::queryByCid(unsigned int cid) {
     }
 }
 
-void DataStore::insertConsume(Window window, Consumption *data) {
+void DataStore::insertConsumption(Window window, Consumption *data) {
     auto &consumes = getConsumes();
     auto &consumes_in_window = consumes[window];
     int left = 0, right = (int) consumes_in_window.size() - 1, mid;
