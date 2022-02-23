@@ -120,11 +120,6 @@ bool FileManager::getCSVDataSource(CSV &container, unsigned int columns,
     }, path, source);
 }
 
-bool FileManager::logs(const Strings &container) {
-    std::string logDataName(startUpTime + ".log");
-    return writeStrings(container, logDataName, DEFAULT_LOG_PATH);
-}
-
 bool FileManager::log(const std::string &content) {
     std::string logDataName(startUpTime + ".log");
     return writeStringByLine(content, logDataName, DEFAULT_LOG_PATH);
@@ -172,14 +167,8 @@ void operator<<(FileManager &o, const char c) {
     if (o.stringLogBuf.empty()) return; // return directly if empty
 
     if (c == FileManager::endl) {
-        o.bufferLength += 1;
-        if (o.bufferLength < FileManager::MAX_BUFFER_LENGTH) {
-            o.stringLogBuf.append("\n");
-        } else {
-            o.bufferLength = 0;
-            o.log(o.stringLogBuf);//TODO: err handle
-            o.stringLogBuf.clear();//输出完后清空
-        }
+        o.log(o.stringLogBuf);//TODO: err handle
+        o.stringLogBuf.clear();//输出完后清空
     }
 
 }
@@ -214,11 +203,14 @@ void FileManager::append_standard_time(std::string &container, const time_t &now
     container.append(buf);
 }
 
-FileManager::~FileManager() {
-    if (startUpTime.empty()) return;
-    // log rest before deinit
-    log(stringLogBuf);
-    stringLogBuf.clear();
+std::ofstream &FileManager::getLogger() {
+    //lambda return
+    static std::ofstream &logger = [&]() -> std::ofstream & {
+        static std::ofstream o;
+        o.open(getInstance().startUpTime+".log",std::ios::app);
+        return o;
+    }();
+    return logger;
 }
 
 using DataQuery = FileManager::DataQuery;

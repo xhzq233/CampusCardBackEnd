@@ -71,9 +71,7 @@ private:
     //暂时储存log 的buffer
     std::string stringLogBuf;
 
-    unsigned int bufferLength = 0x00;
-    static constexpr const unsigned int MAX_BUFFER_LENGTH = 1000;
-
+    static std::ofstream& getLogger();
     // init shared instance
     // that function called if and only if getInstance() called
     // and only called once during the whole program lifetime
@@ -84,7 +82,7 @@ public:
     // not multi thread please use getInstance instead
     FileManager() = default;
 
-    ~FileManager();
+    ~FileManager() = default;
 
     /*
      * instance initialized time，used on naming log data
@@ -156,8 +154,6 @@ public:
 
     /* literally */
     bool log(const std::string &content);
-
-    bool logs(const Strings &container);
 
     /* log的简便形式 */
     friend FileManager &operator<<(FileManager &o, const std::string &content);
