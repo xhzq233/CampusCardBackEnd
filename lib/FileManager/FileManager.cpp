@@ -22,15 +22,10 @@ bool FileManager::prepareIOStream(StreamCallBack func, const std::string &path,
                                   const std::string &source,
                                   const openmode mode) {
     IOStream.open(path + source, mode);
+#ifndef __WIN64
     if (!IOStream.is_open()) {/* check the param [path] , auto mkdir if not exist */
         IOStream.close();
-#ifdef __WIN64
-        std::string win = path.substr(0,path.size()-1);
-        regex_replace(win,std::regex("/"),"\\");
-        system(("mkdir " + win).c_str());
-#else
         system(("mkdir " + path).c_str());
-#endif
         IOStream.open(path + source, mode);
         if (!IOStream.is_open()) {
             //read failed
@@ -39,6 +34,23 @@ bool FileManager::prepareIOStream(StreamCallBack func, const std::string &path,
             return false;
         }
     }
+#else
+    IOStream.open(path + source, mode);
+    if (!IOStream.is_open()) {/* check the param [path] , auto mkdir if not exist */
+        IOStream.close();
+        system(("mkdir " + regex_replace(path.substr(0,path.size()-1),std::regex("/"),"\\")).c_str());
+        std::string win = path;
+        win =  regex_replace(win,std::regex("/"),"\\");
+        IOStream.open(win + source, mode);
+        if (!IOStream.is_open()) {
+            //read failed
+            IOStream.close();
+            std::cout << win + source << " read failed" << std::endl;
+            return false;
+        }
+    }
+#endif
+
     func(IOStream);
 
     //confirm IOStream steam closed
