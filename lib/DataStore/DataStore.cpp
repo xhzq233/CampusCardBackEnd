@@ -6,7 +6,7 @@
 #include <thread>
 
 using Accounts = DataStore::Accounts;
-using Consumes = DataStore::Consumes;
+using Consumptions = DataStore::Consumptions;
 using WindowPositions = DataStore::WindowPositions;
 using CSV = FileManager::CSV;
 
@@ -23,7 +23,7 @@ Accounts &DataStore::accounts_init() {
 
 //  sentence under here used on debug
 //  std::thread::id main_thread_id = std::this_thread::get_id();
-void subwork_of_init_consumes(int index, Consumes *consumes) {
+void subwork_of_init_consumes(int index, Consumptions *consumes) {
 //    if (main_thread_id == std::this_thread::get_id())
 //        std::cout << "This is the main thread.\n";
 //    else
@@ -32,25 +32,20 @@ void subwork_of_init_consumes(int index, Consumes *consumes) {
     CSV temp;
     FileManager().getCSVDataSource(temp, 4, FileManager::CONSUME_CSV(index + 1));
 
-    for (int i = 0; i < temp.size(); ++i) {
-        auto *consume = new Consumption(index + 1, temp[i]);
-        consumes->at(index)[i] = consume;
-    }
+    //  stored data start index, it should be the initialized window position minus data size
+    auto start_index = DataStore::getWindowPositions()[index] - temp.size();
 
-    // sort by from lower to bigger
-    // only sort where have values
-    std::sort(consumes->at(index).begin(), consumes->at(index).begin() + (int) temp.size(),
-              [&](const Consumption *l, const Consumption *r) -> bool {
-                  return l->date < r->date;
-              });
+    for (unsigned int i = start_index; i < start_index + temp.size(); ++i) {
+        auto *consume = new Consumption(index + 1, temp[i - start_index]);
+        (*consumes)[index][i % DataStore::MAXSIZE] = consume; // no more than MAXSIZE
+    }
+    // no longer to be sorted
 }
 
-
-Consumes &DataStore::consumes_init() {
+Consumptions &DataStore::consumes_init() {
     //99 x 60000
-    static Consumes res(WINDOW_QTY, std::vector<Consumption *>(MAXSIZE, nullptr));
+    static Consumption *res[WINDOW_QTY][MAXSIZE] = {nullptr};
     std::thread threads[FileManager::CONSUME_CSV_QTY];
-
     printf("Spawning threads...\n");
     for (int i = 0; i < FileManager::CONSUME_CSV_QTY; ++i)
         threads[i] = std::thread(subwork_of_init_consumes, i, &res);   // move-assign threads
@@ -62,9 +57,8 @@ Consumes &DataStore::consumes_init() {
     return res;
 }
 
-const WindowPositions &DataStore::windows_init() {
-    static std::vector<WindowPosition> res(WINDOW_QTY, 0);
-
+WindowPositions &DataStore::windows_init() {
+    static WindowPosition windowPositions[WINDOW_QTY] = {0};
     FileManager::CSV container;
     ///预定好尺寸 99x2
     FileManager::getInstance().getCSVDataSource(container, WINDOW_QTY, 2,
@@ -74,23 +68,23 @@ const WindowPositions &DataStore::windows_init() {
     //why auto&&?
     //Reference:
     //https://stackoverflow.com/questions/13241108/why-does-a-range-based-for-statement-take-the-range-by-auto
-    for (auto &&row: container)
-        res[stoi(row[0])] = stoi(row[1]);
+    for (const auto &row: container)
+        windowPositions[stoi(row[0])] = stoi(row[1]);
 
-    return res;
+    return windowPositions;
 }
 
 void DataStore::localize() {
 
 }
 
-const WindowPositions &DataStore::getWindowPositions() {
-    static const WindowPositions &windowPositions = windows_init();
+WindowPositions &DataStore::getWindowPositions() {
+    static WindowPositions &windowPositions = windows_init();
     return windowPositions;
 }
 
-Consumes &DataStore::getConsumes() {
-    static Consumes &consumes = consumes_init();
+Consumptions &DataStore::getConsumptions() {
+    static Consumptions &consumes = consumes_init();
     return consumes;
 }
 
@@ -114,7 +108,7 @@ void DataStore::insertAccount(const Account &data) {
     accounts.emplace(accounts.begin() + mid, data);
 }
 
-std::vector<Account>::iterator DataStore::queryByUid(unsigned int uid) {
+std::vector<Account>::iterator DataStore::queryAccountByUid(unsigned int uid) {
     auto &accounts = getAccounts();
     int left = 0, right = (int) accounts.size() - 1, mid;
     while (left <= right) {
@@ -132,7 +126,7 @@ std::vector<Account>::iterator DataStore::queryByUid(unsigned int uid) {
     }
 }
 
-std::vector<Account>::iterator DataStore::queryByCid(unsigned int cid) {
+std::vector<Account>::iterator DataStore::queryAccountByCid(unsigned int cid) {
     auto &accounts = DataStore::getAccounts();
     int left = 0, right = (int) accounts.size() - 1, mid;
     while (left <= right) {
@@ -151,18 +145,16 @@ std::vector<Account>::iterator DataStore::queryByCid(unsigned int cid) {
 }
 
 void DataStore::insertConsumption(Window window, Consumption *data) {
-    auto &consumes = getConsumes();
-    auto &consumes_in_window = consumes[window];
-    int left = 0, right = (int) consumes_in_window.size() - 1, mid;
-    //half search
-    while (left <= right) {
-        mid = (left + right) / 2;
-        if (*(consumes_in_window[mid]) < *data) {
-            right = mid - 1;
-        } else {
-            left = mid + 1;
-        }
+    //error handle
+    if (window == 0 || window > WINDOW_QTY) {
+        printf("[ERROR] %u not in this range: 1 - 99", window);
+        return;
     }
-    consumes_in_window.emplace(consumes_in_window.begin() + mid, data);
-}
 
+    auto &consumes_in_window = getConsumptions()[window - 1];
+    auto &&position = getWindowPositions()[window - 1];
+    // add self and assign self
+    position = (position + 1) % MAXSIZE; // no more than MAXSIZE
+
+    consumes_in_window[position] = data;
+}

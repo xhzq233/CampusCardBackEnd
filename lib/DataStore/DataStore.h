@@ -6,16 +6,22 @@
 #define CAMPUSCARDBACKEND_DATASTORE_H
 
 #include "Account/Account.h"
-#include "ConsumeLog/Consumption.h"
+#include "Consumption/Consumption.h"
 
 /* 'Data Base' liked object */
 class DataStore {
 public:
-    typedef std::vector<WindowPosition> WindowPositions;
+
     typedef std::vector<Account> Accounts;
 
-    /* each Window have consumes, use Consumes[Window] get each data */
-    typedef std::vector<std::vector<Consumption *>> Consumes;
+    constexpr static const char WINDOW_QTY = 99;
+    constexpr static const int MAXSIZE = 60000;
+
+    /* each Window have Consumptions, use Consumptions[Window - 1] get each window Consumptions data */
+    typedef Consumption *Consumptions[WINDOW_QTY][MAXSIZE];
+
+    // notice that WindowPositions[0] represents the position of Window1
+    typedef WindowPosition WindowPositions[WINDOW_QTY];
 
     /*
      * sorted by <
@@ -29,32 +35,30 @@ public:
     static void insertAccount(const Account &data);
 
     /* Query account by uid */
-    static std::vector<Account>::iterator queryByUid(unsigned int uid);
+    static std::vector<Account>::iterator queryAccountByUid(unsigned int uid);
 
     /* Query account by cid */
-    static std::vector<Account>::iterator queryByCid(unsigned int uid);
+    static std::vector<Account>::iterator queryAccountByCid(unsigned int uid);
 
-    /* Consumption insert func, designed by half find and insert */
+    /* Consumption insert func, window ranged from 1 to 99 */
     static void insertConsumption(Window window, Consumption *data);
 
     /* sorted by < */
-    static Consumes &getConsumes();
+    static Consumptions &getConsumptions();
 
     /* const data because it defined by file ,unmodifiable */
-    static const WindowPositions &getWindowPositions();
+    static WindowPositions &getWindowPositions();
 
-    /* localize file stored by DataStore */
+    /* localize file stored by DataStore ，be like cache */
     static void localize();
 
-    constexpr static const char WINDOW_QTY = 99;
-    constexpr static const int MAXSIZE = 60000;
 private:
 
     //called if and only if initializing
-    static Consumes &consumes_init();
+    static Consumptions &consumes_init();
 
     //called if and only if initializing
-    static const WindowPositions &windows_init();
+    static WindowPositions &windows_init();
 
     //called if and only if initializing
     static Accounts &accounts_init();

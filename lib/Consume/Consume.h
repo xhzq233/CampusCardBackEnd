@@ -5,7 +5,7 @@
 #ifndef CAMPUSCARDBACKEND_CONSUME_H
 #define CAMPUSCARDBACKEND_CONSUME_H
 
-#include "../DataStore/ConsumeLog/Consumption.h"
+#include "../DataStore/Consumption/Consumption.h"
 #include "../CardManage/CardManage.h"
 
 

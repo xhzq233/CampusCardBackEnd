@@ -33,7 +33,7 @@ void description(const CSV &csv, int num = 5) {
 }
 
 // print -head num
-void description(const DataStore::Consumes &consumes, int row = 4, int col = 5) {
+void description(const DataStore::Consumptions &consumes, int row = 4, int col = 5) {
     for (int i = 0; i < row; ++i)
         for (int j = 0; j < col; ++j) {
             if (!consumes[i][j]) continue;
@@ -50,15 +50,15 @@ void description(const DataStore::Accounts &accounts, int num = 5) {
 int main() {
     VoidCallBack func{
             [&]() {
-                CSV csv;
-                if (FileManager::getInstance().getCSVDataSource(csv, 4,
-                                                                FileManager::CARD_RECHARGE_CSV_NAME));
-                else printf("err");
-                description(csv);
+//                CSV csv;
+//                if (FileManager::getInstance().getCSVDataSource(csv, 4,
+//                                                                FileManager::CARD_RECHARGE_CSV_NAME));
+//                else printf("err");
+//                description(csv);
 //                DataStore::insertAccount(Account(0, ""));
-//                DataStore::getConsumes();
+                DataStore::getConsumptions();
 //                DataStore::getAccounts();
-//                description(DataStore::getConsumes());
+//                description(DataStore::getConsumptions());
 //                description(DataStore::getAccounts());
 //        FileManager::getInstance() << FileManager::toStandardLogString("THIS IS TITLE", "AND content here")
 //                                   << FileManager::endl;
@@ -68,8 +68,8 @@ int main() {
 
     testTimeWrapper(func);
 
-    //释放指针
-//    for (const auto &item: DataStore::getConsumes()) {
+//    释放指针
+//    for (const auto &item: DataStore::getConsumptions()) {
 //        for (const auto &i: item)
 //            if (i)
 //                delete i;
