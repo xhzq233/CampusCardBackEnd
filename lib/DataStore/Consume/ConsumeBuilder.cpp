@@ -13,7 +13,9 @@ bool ConsumeBuilder::consume(const Window &window, const Card &card, const float
 bool ConsumeBuilder::consume(const Window &window, const Card &card, const float &price, string time) {
     DataStore::insertConsume(window, new Consume(card.cid, window, move(time), price));
 }
+void ConsumeBuilder::consume(const Consume log) {
 
+}
 bool ConsumeBuilder::passwd_is_correct(const Card &card) {
     return card.checkPassword(0);
 }
