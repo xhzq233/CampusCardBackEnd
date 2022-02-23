@@ -154,7 +154,7 @@ public:
     /* literally */
     bool log(const std::string &content);
 
-    bool logs(Strings &container);
+    bool logs(const Strings &container);
 
     /* log的简便形式 */
     friend FileManager &operator<<(FileManager &o, const std::string &content);

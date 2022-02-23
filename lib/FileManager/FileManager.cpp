@@ -24,7 +24,12 @@ bool FileManager::prepareIOStream(StreamCallBack func, const std::string &path,
     IOStream.open(path + source, mode);
     if (!IOStream.is_open()) {/* check the param [path] , auto mkdir if not exist */
         IOStream.close();
+#ifdef __WIN64
+        std::string win = path.substr(0,path.size()-1);
+        system(("mkdir " + win).c_str());
+#else
         system(("mkdir " + path).c_str());
+#endif
         IOStream.open(path + source, mode);
         if (!IOStream.is_open()) {
             //read failed
@@ -102,7 +107,7 @@ bool FileManager::getCSVDataSource(CSV &container, unsigned int columns,
     }, path, source);
 }
 
-bool FileManager::logs(Strings &container) {
+bool FileManager::logs(const Strings &container) {
     std::string logDataName(startUpTime + ".log");
     return writeStrings(container, logDataName, DEFAULT_LOG_PATH);
 }

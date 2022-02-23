@@ -18,29 +18,30 @@ void testTimeWrapper(const VoidCallBack &func) {
 using CSV = FileManager::CSV;
 
 // print -head num
-void description(const CSV &csv,int num = 5){
+void description(const CSV &csv, int num = 5) {
     auto columns = csv[0].size();
     for (int i = 0; i < num; ++i) {
         std::string buf;
         for (int j = 0; j < columns; ++j) {
             buf.append(csv[i][j]);
         }
-        std::cout<<buf<<std::endl;
+        std::cout << buf << std::endl;
     }
 }
+
 // print -head num
-void description(const DataStore::Consumes &consumes,int row = 4, int col = 5){
+void description(const DataStore::Consumes &consumes, int row = 4, int col = 5) {
     for (int i = 0; i < row; ++i)
         for (int j = 0; j < col; ++j) {
             if (!consumes[i][j]) continue;
-            std::cout<<consumes[i][j]->to_string()<<std::endl;
+            std::cout << consumes[i][j]->to_string() << std::endl;
         }
 }
 
 // print -head num
-void description(const DataStore::Accounts &accounts,int num = 5){
+void description(const DataStore::Accounts &accounts, int num = 5) {
     for (int i = 0; i < num; ++i)
-        std::cout<<accounts[i].to_string()<<std::endl;
+        std::cout << accounts[i].to_string() << std::endl;
 }
 
 int main() {
@@ -63,8 +64,8 @@ int main() {
     testTimeWrapper(func);
 
     //释放指针
-    for (const auto &item : DataStore::getConsumes()){
-        for (const auto &i : item)
+    for (const auto &item: DataStore::getConsumes()) {
+        for (const auto &i: item)
             delete i;
     }
     return 0;
