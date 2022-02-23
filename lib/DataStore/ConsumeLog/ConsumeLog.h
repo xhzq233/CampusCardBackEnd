@@ -2,8 +2,8 @@
 // Created by 夏侯臻 on 2022/1/14.
 //
 
-#ifndef CAMPUSCARDBACKEND_CONSUME_H
-#define CAMPUSCARDBACKEND_CONSUME_H
+#ifndef CAMPUSCARDBACKEND_CONSUMELOG_H
+#define CAMPUSCARDBACKEND_CONSUMELOG_H
 
 #include "../Window.h"
 #include "../../FileManager/FileManager.h"
@@ -25,7 +25,7 @@
  *  + 食堂窗口收费设备单独记录本窗口的数据
  *  + 数据最多保存6万条，循环覆盖保存，程序开始运行的前一次保存位置可以通过配置文件进行读入与保存
  * */
-class Consume {
+class ConsumeLog {
 public:
     //卡号
     unsigned int cid;
@@ -36,22 +36,22 @@ public:
     // 消费金钱
     float price;
 
-    Consume(unsigned int cid, Window window, const std::string& date, float price) : window(window), date(std::stoull(date)),
-                                                                              price(price), cid(cid) {}
+    ConsumeLog(unsigned int cid, Window window, const std::string& date, float price) : window(window), date(std::stoull(date)),
+                                                                                        price(price), cid(cid) {}
 
     /// comparable
-    bool operator>(const Consume &right) const {
+    bool operator>(const ConsumeLog &right) const {
         return date > right.date;
     }
 
-    bool operator<(const Consume &right) const {
+    bool operator<(const ConsumeLog &right) const {
         return date < right.date;
     }
 
     // from strings
-    explicit Consume(Window window, const std::vector<std::string> &strings) : Consume(std::stoi(strings[0]), window,
+    explicit ConsumeLog(Window window, const std::vector<std::string> &strings) : ConsumeLog(std::stoi(strings[0]), window,
                                                                                        strings[1] + strings[2],
-                                                                                       std::stof(strings[3])) {}
+                                                                                             std::stof(strings[3])) {}
 
     // to string
     // cid + window + date + price
@@ -60,4 +60,4 @@ public:
 
 };
 
-#endif // CAMPUSCARDBACKEND_CONSUME_H
+#endif // CAMPUSCARDBACKEND_CONSUMELOG_H

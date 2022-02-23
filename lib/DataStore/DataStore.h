@@ -6,7 +6,7 @@
 #define CAMPUSCARDBACKEND_DATASTORE_H
 
 #include "Account/Account.h"
-#include "Consume/Consume.h"
+#include "ConsumeLog/ConsumeLog.h"
 
 class DataStore {
 public:
@@ -14,7 +14,7 @@ public:
     typedef std::vector<Account> Accounts;
 
     /* each Window have consumes, use Consumes[Window] get each data */
-    typedef std::vector<std::vector<Consume *>> Consumes;
+    typedef std::vector<std::vector<ConsumeLog *>> Consumes;
 
     /*
      * sorted by <
@@ -33,8 +33,8 @@ public:
     /* Query account by cid */
     static std::vector<Account>::iterator queryByCid(unsigned int uid);
 
-    /* Consume insert func, designed by half find and insert */
-    static void insertConsume(Window window, Consume *data);
+    /* ConsumeLog insert func, designed by half find and insert */
+    static void insertConsume(Window window, ConsumeLog *data);
 
     /* sorted by < */
     static Consumes &getConsumes();
