@@ -26,7 +26,7 @@
  *  + 食堂窗口收费设备单独记录本窗口的数据
  *  + 数据最多保存6万条，循环覆盖保存，程序开始运行的前一次保存位置可以通过配置文件进行读入与保存
  * */
-class Consumption : BaseOperation {
+class Consumption : public BaseOperation {
 public:
     //卡号
     unsigned int cid;
@@ -42,15 +42,6 @@ public:
                                    << FileManager::endl;
     }
 
-    /// comparable
-    bool operator>(const Consumption &right) const {
-        return time > right.time;
-    }
-
-    bool operator<(const Consumption &right) const {
-        return time < right.time;
-    }
-
     // from strings
     explicit Consumption(Window window, const std::vector<std::string> &strings) : Consumption(std::stoi(strings[0]),
                                                                                                window,
@@ -59,9 +50,10 @@ public:
                                                                                                std::stof(strings[3])) {}
 
     // to string
-    // cid + window + date + price
+    // date + cid + window + price
     [[nodiscard]] std::string to_string() const override {
         auto &&res = BaseOperation::to_string();
+        res.push_back(',');
         res.append(std::to_string(cid));    // cid
         res.push_back(',');
         res.append(std::to_string(window)); // window

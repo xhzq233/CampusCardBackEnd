@@ -23,6 +23,15 @@ public:
 
     // disable copied BaseOperation
     BaseOperation &operator=(const BaseOperation &) = delete;
+
+    /// comparable
+    bool operator>(const BaseOperation &right) const {
+        return time > right.time;
+    }
+
+    bool operator<(const BaseOperation &right) const {
+        return time < right.time;
+    }
 };
 
 

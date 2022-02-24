@@ -41,12 +41,9 @@ public:
     /* 批量卡片操作申请数据文件（cz002.txt）*/
     constexpr static const char CARD_MANAGE_NAME[] = "cz002.txt";
     /* 食堂窗口收费记录保存的当前位置数据文件（wz003.txt）*/
-    constexpr static const char CAFE_POSITION_NAME[] = "wz003.txt";
+    constexpr static const char WINDOW_POSITION_NAME[] = "wz003.txt";
     /* 批量消费申请的数据文件（xf014.txt）*/
     constexpr static const char CONSUME_NAME[] = "xf014.txt";
-    /* 测试数据文件（chk10.txt）*/
-    constexpr static const char TEST_DATA_NAME[] = "chk10.txt";
-
     /* 对应上面的转换的CSV文件 */
     constexpr static const char OPEN_ACCOUNT_CSV_NAME[] = "kh.csv";
     // recharge , 4 columns
@@ -94,6 +91,7 @@ private:
 
     //暂时储存log 的buffer
     static std::string &getLoggerBuffer();
+
 public:
     // multi thread
     // not multi thread please use getInstance instead

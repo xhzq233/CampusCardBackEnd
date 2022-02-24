@@ -60,16 +60,19 @@ Consumptions &DataStore::consumes_init() {
         thread.join();
     printf("All threads joined!\n");
 
-    // MARK:--- extra operation
-    auto &sc = DataStore::getSortedConsumptions();
+    // MARK:--- init operations
+    auto &sc = DataStore::getSortedOperations();
     unsigned int num = 0;
     for (auto &re: res)
         for (const auto &item: re) {
             if (!item) break;
             sc[num++] = item;
         }
-
-    std::sort(sc, sc + num, [](Consumption *l, Consumption *r) -> bool {
+    CSV temp;
+    FileManager::getInstance().getCSVDataSource(temp,3,FileManager::CARD_MANAGE_CSV_NAME);
+    temp.clear();
+    FileManager::getInstance().getCSVDataSource(temp,4,FileManager::CARD_RECHARGE_CSV_NAME);
+    std::sort(sc, sc + num, [](BaseOperation *l, BaseOperation *r) -> bool {
 //        if (l && r)
         return (*l) < (*r);
 //        else
@@ -185,7 +188,6 @@ void DataStore::insertConsumption(Window window, Consumption *data) {
     consumes_in_window[position] = data;
 }
 
-
 using DataQuery = DataStore;
 
 std::regex DataQuery::customRegex2CommonRegexSyntax(std::string &regex) {
@@ -224,7 +226,7 @@ DataQuery::Subscripts DataStore::queryConsumption(Window window, unsigned int ci
     Subscripts res;
     const auto &consumptions_in_window = getConsumptions()[window - 1];
     WindowPosition windowPosition = getWindowPositions()[window - 1];
-    //individualization
+    // initial judgement
     if (cid == consumptions_in_window[windowPosition]->cid) {
         res.emplace_back(windowPosition);
     }

@@ -65,11 +65,11 @@ public:
     static void localize();
 
 private:
-    constexpr static const unsigned int RESERVED_SIZE = 2000000;
-    typedef Consumption * SortedConsumptions[RESERVED_SIZE];
+    constexpr static const unsigned int RESERVED_SIZE = 3000000;
+    typedef BaseOperation *SortedOperations[RESERVED_SIZE];
 
-    static SortedConsumptions &getSortedConsumptions() {
-        static SortedConsumptions res;
+    static SortedOperations &getSortedOperations() {
+        static SortedOperations res;
         return res;
     }
 
