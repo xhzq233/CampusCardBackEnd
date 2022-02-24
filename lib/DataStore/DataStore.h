@@ -7,6 +7,7 @@
 
 #include "Account/Account.h"
 #include "Operation/Consumption.h"
+#include "Operation/RechargeOperation.h"
 
 /* 'Data Base' liked object */
 class DataStore {
@@ -98,6 +99,7 @@ public:
     static Subscripts query(FileManager::CSV &container, unsigned int columnIndex, const std::regex &regex);
 
     DataStore() = delete;
+
     ~DataStore() = delete;
 };
 

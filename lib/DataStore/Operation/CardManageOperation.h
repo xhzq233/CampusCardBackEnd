@@ -20,9 +20,15 @@ public:
     Operator uid;
 
     CardManageOperation(Operator uid, OperationName name, Time time) : BaseOperation(time), uid(uid),
-                                                                       operationName(name) {
-        assert(name == Recharge);//use RechargeOperation
-    }
+                                                                       operationName(name) {}
+
+    // from strings
+    explicit CardManageOperation(const std::vector<std::string> &strings) : CardManageOperation(
+
+            std::stoi(
+                    strings[2]),
+            strings[1] == "充值" ? Recharge : strings[1] == "挂失" ? SetLoss : strings[1] == "解挂" ? Uncouple : Cancellation,
+            std::stoull(strings[0])) {}
 
 
     [[nodiscard]] std::string to_string() const override {

@@ -61,18 +61,25 @@ Consumptions &DataStore::consumes_init() {
     printf("All threads joined!\n");
 
     // MARK:--- init operations
-    auto &sc = DataStore::getSortedOperations();
+    auto &operations = DataStore::getSortedOperations();
     unsigned int num = 0;
     for (auto &re: res)
         for (const auto &item: re) {
             if (!item) break;
-            sc[num++] = item;
+            operations[num++] = item;
         }
     CSV temp;
-    FileManager::getInstance().getCSVDataSource(temp,3,FileManager::CARD_MANAGE_CSV_NAME);
+
+    FileManager::getInstance().getCSVDataSource(temp, 3, FileManager::CARD_MANAGE_CSV_NAME);
+    for (const auto &item: temp)
+        operations[num++] = new CardManageOperation(item);
     temp.clear();
-    FileManager::getInstance().getCSVDataSource(temp,4,FileManager::CARD_RECHARGE_CSV_NAME);
-    std::sort(sc, sc + num, [](BaseOperation *l, BaseOperation *r) -> bool {
+
+    FileManager::getInstance().getCSVDataSource(temp, 4, FileManager::CARD_RECHARGE_CSV_NAME);
+    for (const auto &item: temp)
+        operations[num++] = new RechargeOperation(item);
+    
+    std::sort(operations, operations + num, [](BaseOperation *l, BaseOperation *r) -> bool {
 //        if (l && r)
         return (*l) < (*r);
 //        else

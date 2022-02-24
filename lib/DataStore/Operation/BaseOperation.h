@@ -5,7 +5,7 @@
 #ifndef CAMPUSCARDBACKEND_BASEOPERATION_H
 #define CAMPUSCARDBACKEND_BASEOPERATION_H
 
-#include <string>
+#include "../../Dependencies.h"
 
 class BaseOperation {
 public:
