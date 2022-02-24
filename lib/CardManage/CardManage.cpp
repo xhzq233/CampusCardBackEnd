@@ -109,7 +109,7 @@ void CardManage::recharge(unsigned int uid, float amount, const string &time) {
         return;
     } else {
         auto card = *account->cards.begin();
-        if (account->balance + amount > BALANCECEILING) {
+        if (account->balance + amount > BALANCE_CEILING) {
             log("Manage",
                 to_string(uid, "非系统用户", "充值:failed 备注:卡内余额达到上限"),
                 time);

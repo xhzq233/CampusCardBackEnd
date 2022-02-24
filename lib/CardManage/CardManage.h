@@ -7,7 +7,7 @@
 #include "../DataStore/DataStore.h"
 #include "../FileManager/FileManager.h"
 
-#define BALANCECEILING 999.99 //账户余额上限
+#define BALANCE_CEILING 999.99 //账户余额上限
 
 class CardManage
 {

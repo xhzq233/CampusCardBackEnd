@@ -96,6 +96,9 @@ public:
 
     // query on CSV data specified column, return Subscripts matched
     static Subscripts query(FileManager::CSV &container, unsigned int columnIndex, const std::regex &regex);
+
+    DataStore() = delete;
+    ~DataStore() = delete;
 };
 
 #endif //CAMPUSCARDBACKEND_DATASTORE_H

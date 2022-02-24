@@ -12,7 +12,7 @@
  * 提供模糊的学号、姓名信息进行查询
  * 对指定的学号统计给定起止日期内的累计消费金额
  * */
-class CardDataAnalyze {
+namespace CardDataAnalyze {
 
 };
 
