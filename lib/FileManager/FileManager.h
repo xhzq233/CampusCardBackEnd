@@ -12,10 +12,29 @@
  * */
 class FileManager {
 public:
+
+    //linux or unix
+#ifndef __WIN64
     /* 默认数据路径 */
     constexpr static const char DEFAULT_DATA_PATH[] = "../data/";
     /* 默认log路径 */
     constexpr static const char DEFAULT_LOG_PATH[] = "../log/";
+    /* xf.csv基于位置分成了多个CSV文件，格式为W{\d}.csv */
+    constexpr static const char CONSUME_CSV_DICTIONARY[] = "xf/";
+    /* xf.csv总文件 */
+    constexpr static const char CONSUME_CSV_NAME[] = "xf/xf.csv";
+
+    //windows amd64
+#else
+    /* 默认数据路径 */
+    constexpr static const char DEFAULT_DATA_PATH[] = "..\\data\\";
+    /* 默认log路径 */
+    constexpr static const char DEFAULT_LOG_PATH[] = "..\\log\\";
+    /* xf.csv基于位置分成了多个CSV文件，格式为W{\d}.csv */
+    constexpr static const char CONSUME_CSV_DICTIONARY[] = "xf\\";
+    /* xf.csv总文件 */
+    constexpr static const char CONSUME_CSV_NAME[] = "xf\\xf.csv";
+#endif //__WIN64
 
     /* 批量开户申请数据文件（kh001.txt）*/
     constexpr static const char OPEN_ACCOUNT_NAME[] = "kh001.txt";
@@ -30,12 +49,12 @@ public:
 
     /* 对应上面的转换的CSV文件 */
     constexpr static const char OPEN_ACCOUNT_CSV_NAME[] = "kh.csv";
-    constexpr static const char CARD_MANAGE_CSV_NAME[] = "cz.csv";
+    // recharge , 4 columns
+    constexpr static const char CARD_RECHARGE_CSV_NAME[] = "cz.csv";
+    // manage , 3 columns
+    constexpr static const char CARD_MANAGE_CSV_NAME[] = "cz3.csv";
     constexpr static const char CAFE_POSITION_CSV_NAME[] = "wz.csv";
-    /* xf.csv基于位置分成了多个CSV文件，格式为W{\d}.csv */
-    constexpr static const char CONSUME_CSV_DICTIONARY[] = "xf/";
-    /* xf.csv总文件 */
-    constexpr static const char CONSUME_CSV_NAME[] = "xf/xf.csv";
+
     /* W{\d}.csv 文件个数 */
     constexpr static const char CONSUME_CSV_QTY = 58;
 
@@ -68,15 +87,13 @@ private:
     bool prepareIOStream(StreamCallBack func, const std::string &path, const std::string &source,
                          openmode mode = std::ios::in);
 
-    //暂时储存log 的buffer
-    std::string stringLogBuf;
-
-    static std::ofstream& getLogger();
     // init shared instance
     // that function called if and only if getInstance() called
     // and only called once during the whole program lifetime
     static FileManager &shared_init();
 
+    //暂时储存log 的buffer
+    static std::string &getLoggerBuffer();
 public:
     // multi thread
     // not multi thread please use getInstance instead
@@ -104,6 +121,9 @@ public:
      * the concurrent execution shall wait for completion of the initialization.
      * */
     static FileManager &getInstance();
+
+    /* default logger */
+    static std::ofstream &getLogger();
 
     /* IO管理 */
     std::fstream IOStream;
@@ -152,9 +172,6 @@ public:
      * 返回是否成功 */
     bool writeCSVData(const CSV &container, const std::string &sourceName, const std::string &path = DEFAULT_DATA_PATH);
 
-    /* literally */
-    bool log(const std::string &content);
-
     /* log的简便形式 */
     friend FileManager &operator<<(FileManager &o, const std::string &content);
 
@@ -168,26 +185,6 @@ public:
 
     /* literally */
     static void append_standard_time(std::string &container, const time_t &now);
-
-    class DataQuery {
-    public:
-        /**
-         * #模糊匹配的格式中，？代表一个字符或一个汉字，*表示多个字符或多个汉字，或代表空；
-         * 汉字：[\u4e00-\u9fa5]
-         * 将?替换成 .
-         * 将*替换成 .{2,}
-        * */
-        static std::regex customRegex2CommonRegexSyntax(std::string &regex);
-
-        // 数组下标
-        typedef std::vector<unsigned int> Subscripts;
-
-        // query on specified multi string，return Subscripts matched
-        static Subscripts query(Strings &container, const std::regex &regex);
-
-        // query on CSV data specified column, return Subscripts matched
-        static Subscripts query(CSV &container, unsigned int columnIndex, const std::regex &regex);
-    };
 
 };
 

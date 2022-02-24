@@ -16,8 +16,8 @@ FileManager &FileManager::shared_init() {
     static FileManager instance;
     time_t now = time(nullptr);
     auto *tm = std::localtime(&now);
-    char buf[20];
-    strftime(buf, sizeof(buf), "%Y-%m-%d", tm);
+    char buf[30];
+    strftime(buf, sizeof(buf), "%Y-%m-%d-%H-%M-%S", tm);
     instance.startUpTime.append(buf);
     return instance;
 }
@@ -34,18 +34,16 @@ bool FileManager::prepareIOStream(StreamCallBack func, const std::string &path,
         if (!IOStream.is_open()) {
             //read failed
             IOStream.close();
-            std::cout << path + source << " read failed" << std::endl;
+            printf("%s read failed\n", (path+source).c_str());
             return false;
         }
     }
 #else
-    std::string win = regex_replace(path, std::regex("/"), "\\");
-    std::string wins = regex_replace(source, std::regex("/"), "\\");
     std::string file = path + source;
     IOStream.open(file, mode);
     if (!IOStream.is_open()) {/* check the param [path] , auto mkdir if not exist */
         IOStream.close();
-        system( ("mkdir " + win.substr(0, win.size() - 1)).c_str());
+        system( ("mkdir " + path.substr(0, path.size() - 1)).c_str());
         IOStream.open(file, mode);
         if (!IOStream.is_open()) {
             //read failed
@@ -66,12 +64,9 @@ bool FileManager::prepareIOStream(StreamCallBack func, const std::string &path,
 bool FileManager::getStringDataSourceByLine(Strings &container, const std::string &source,
                                             const std::string &path) {
     return prepareIOStream([&](std::fstream &stream) {
-
         std::string buffer;
-
         while (std::getline(stream, buffer))
             container.emplace_back(buffer);
-
     }, path, source);
 }
 
@@ -83,51 +78,53 @@ std::string FileManager::CONSUME_CSV(unsigned int position) {
     return res;
 }
 
-// 1937 rows used time: 4.27837 ms.
 bool FileManager::getCSVDataSource(CSV &container, unsigned int rows, unsigned int columns,
                                    const std::string &source, const std::string &path) {
     // decrease copied data as possible
-    container.resize(rows, std::vector<std::string>());
+    // use pre defined size
+    container.resize(rows, std::vector<std::string>(columns, ""));
     return prepareIOStream([&](std::fstream &stream) {
 
         std::string rowBuffer;//a csv row implemented in string
-        std::string metadata;//metadata in a csv row
-
+        unsigned int col = 0;
         for (int i = 0; i < rows; ++i) {
             std::getline(stream, rowBuffer);
-            std::stringstream buf(rowBuffer);//turn to a stream type
-            container[i].reserve(columns);
-            while (std::getline(buf, metadata, ','))//csv use ',' as the separator
-                container[i].emplace_back(metadata);
+
+            for (auto &c: rowBuffer) {
+                if (c == ',' || c == '\0' || c == '\r') {
+                    col++;
+                } else {
+                    container[i][col].push_back(c);
+                }
+            }
+            col = 0;
         }
     }, path, source);
 }
 
-// 1937 rows used time: 4.51425 ms.
 bool FileManager::getCSVDataSource(CSV &container, unsigned int columns,
                                    const std::string &source, const std::string &path) {
     return prepareIOStream([&](std::fstream &stream) {
 
         std::string rowBuffer;//a csv row implemented in string
-        std::string metadata;//metadata in a csv row
+
         unsigned int row = 0;
+        unsigned int col = 0;
         while (std::getline(stream, rowBuffer)) {
             // decrease copied data as possible
             container.emplace_back(Strings(columns, ""));
-            std::stringstream buf(rowBuffer);//turn to a stream type
-            for (int i = 0; i < columns; ++i) {
-                std::getline(buf, metadata, ',');
-                container[row][i].append(metadata);
+            for (auto &c: rowBuffer) {
+                if (c == ',' || c == '\0' || c == '\r') {
+                    col++;
+                } else {
+                    container[row][col].push_back(c);
+                }
             }
+            col = 0;
             row++;
         }
 
     }, path, source);
-}
-
-bool FileManager::log(const std::string &content) {
-    std::string logDataName(startUpTime + ".log");
-    return writeStringByLine(content, logDataName, DEFAULT_LOG_PATH);
 }
 
 bool FileManager::writeStringByLine(const std::string &content, const std::string &source, const std::string &path,
@@ -163,19 +160,18 @@ bool FileManager::writeCSVData(const CSV &container, const std::string &sourceNa
 }
 
 FileManager &operator<<(FileManager &o, const std::string &content) {
-    o.stringLogBuf.append(content);
+    FileManager::getLoggerBuffer().append(content);
     return o;
 }
 
 void operator<<(FileManager &o, const char c) {
 
-    if (o.stringLogBuf.empty()) return; // return directly if empty
+    if (FileManager::getLoggerBuffer().empty()) return; // return directly if empty
 
     if (c == FileManager::endl) {
-        o.log(o.stringLogBuf);//TODO: err handle
-        o.stringLogBuf.clear();//输出完后清空
+        FileManager::getLogger() << FileManager::getLoggerBuffer() << '\n';
+        FileManager::getLoggerBuffer().clear();//输出完后清空
     }
-
 }
 
 std::string FileManager::toStandardLogString(const char *title, const char *content) {
@@ -212,37 +208,13 @@ std::ofstream &FileManager::getLogger() {
     //lambda return
     static std::ofstream &logger = [&]() -> std::ofstream & {
         static std::ofstream o;
-        o.open(getInstance().startUpTime+".log",std::ios::app);
+        o.open(DEFAULT_LOG_PATH + getInstance().startUpTime + ".log", std::ios::app);
         return o;
     }();
     return logger;
 }
 
-using DataQuery = FileManager::DataQuery;
-
-std::regex DataQuery::customRegex2CommonRegexSyntax(std::string &regex) {
-    regex.replace(regex.find('?'), 1, ".");
-    regex.replace(regex.find('*'), 1, ".{2,}");
-    return std::regex(regex);
-}
-
-DataQuery::Subscripts
-DataQuery::query(FileManager::Strings &container, const std::regex &regex) {
-    Subscripts res;
-    for (unsigned int i = 0; i < container.size(); ++i) {
-        if (std::regex_match(container[i], regex))
-            res.emplace_back(i);
-    }
-    return res;
-}
-
-DataQuery::Subscripts
-DataQuery::query(FileManager::CSV &container, unsigned int columnIndex, const std::regex &regex) {
-
-    Subscripts res;
-    for (unsigned int i = 0; i < container.size(); ++i) {
-        if (std::regex_match(container[i][columnIndex], regex))
-            res.emplace_back(i);
-    }
+std::string &FileManager::getLoggerBuffer() {
+    static std::string res;
     return res;
 }

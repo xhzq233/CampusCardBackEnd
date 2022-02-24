@@ -18,7 +18,7 @@ Card::Card(unsigned int serialNumber, unsigned int uid) : uid(uid), date(DEFAULT
 
 void Card::changePassword() {
     if (this->condition) {
-        std::cin >> this->password;
+        scanf("%u", &this->password);
     }
 }
 

@@ -5,11 +5,9 @@
 #ifndef CAMPUSCARDBACKEND_DEPENDENCIES_H
 #define CAMPUSCARDBACKEND_DEPENDENCIES_H
 
-#include <iostream>
 #include <string>
 #include <vector>
 #include <fstream>
-#include <sstream>
 #include <ctime>
 #include <list>
 #include <numeric>

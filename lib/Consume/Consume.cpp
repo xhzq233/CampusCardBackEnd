@@ -10,24 +10,20 @@ void Consume::consume(const Window &window, const Card &card, const float &price
     ;
 }
 
-void Consume::consume(const Window &window, const Card &card, const float &price, const string &time) {
-    auto account = DataStore::queryByUid(card.cid);
+
+void Consume::consume(const Window &window, const Card &card, const float &price, const string& time) {
+    auto account = DataStore::queryAccountByUid(card.cid);
     account->consume(price);
-    DataStore::insertConsume(window, new ConsumeLog(card.cid, window, time, price));
+    DataStore::insertConsumption(window, new Consumption(card.cid, window, time, price));
 }
 
-void Consume::consume(const ConsumeLog &log) {
-    auto account = DataStore::queryByUid(log.cid);
+
+void Consume::consume(const Consumption &log) {
+    auto account = DataStore::queryAccountByUid(log.cid);
     account->consume(log.price);
 }
 
-void Consume::consumeByFile() {
-    for (auto &&logs: DataStore::getConsumes()) {
-        for (auto &&log: logs) {
-            consume(*log);
-        }
-    };
-}
+
 
 bool Consume::passwd_is_correct(const Card &card) {
     return card.checkPassword(0);
