@@ -8,8 +8,8 @@
 |     Window      |          window id of a cafe           |
 |      Card       |         stores campusCard data         |
 |     Account     |              stores cards              |
-|   Consumption   |  a data bound to a card and a window   |
-| ConsumeBuilder  | construct a consume data into database |
+|     Consume     |  a data bound to a card and a window   |
+|     Consume     | construct a consume data into database |
 |    DataStore    |   stores windows, accounts, consumes   |
 |   CardManage    |     manage card relative operation     |
 | CardDataAnalyze |              analyze data              |
@@ -21,8 +21,8 @@ A((FileManager))
 B((Window))
 C((Card))
 D((Account))
-E((Consumption))
-F((ConsumeBuilder))
+E((Consume))
+F((Consume))
 G((DataStore))
 H((CardManage))
 I((CardDataAnalyze))
@@ -31,7 +31,7 @@ G-->A
 H-->A
 I-->A
 B-->E
-C-->E
+D-->E
 E-->G
 F-->E
 B-->G
