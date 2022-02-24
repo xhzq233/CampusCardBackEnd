@@ -65,16 +65,17 @@ Consumptions &DataStore::consumes_init() {
     unsigned int num = 0;
     for (auto &re: res)
         for (const auto &item: re) {
-            if(item){
-                sc.emplace_back(item);
-            }
+            if (!item) break;
+            sc[num++] = item;
         }
 
-    std::sort(sc.begin(), sc.end(), [](Consumption *l, Consumption *r) -> bool {
+    std::sort(sc, sc + num, [](Consumption *l, Consumption *r) -> bool {
+//        if (l && r)
         return (*l) < (*r);
+//        else
+//            return l == nullptr;
     });
     // ---
-
     return res;
 }
 

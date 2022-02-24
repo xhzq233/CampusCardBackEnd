@@ -58,7 +58,7 @@ int main() {
 //                else printf("err");
 //                description(csv);
 //                DataStore::insertAccount(Account(0, ""));
-                description(DataStore::getConsumptions());
+//                description(DataStore::getConsumptions());
 //                DataStore::queryConsumption(1,43532);
 //                description(DataStore::getAccounts());
 //                FileManager::getInstance() << FileManager::toStandardLogString("THIS IS TITLE", "AND content here")

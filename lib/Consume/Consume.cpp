@@ -34,7 +34,7 @@ void Consume::consume(const Window &window, const Card &card, const float &price
             if (price <= 20 || checkPasswd(card)) {
                 //价格20内或者20以上输入密码正确
                 account->consume(price);
-                DataStore::insertConsumption(window, new Consumption(card.cid, window, time, price));
+                DataStore::insertConsumption(window, new Consumption(0, card.cid, window, time, price));
                 show(window);
             }
         } else {
@@ -56,7 +56,7 @@ void Consume::consume(const Window &window, const Card &card, const float &price
             if (price <= 20 || checkPasswd(card)) {
                 //价格20内或者20以上输入密码正确
                 account->consume(price);
-                DataStore::insertConsumption(window, new Consumption(card.cid, window, time, price));
+                DataStore::insertConsumption(window, new Consumption(0, card.cid, window, std::stoull(time), price));
                 show(window, time);
             }
         } else {
@@ -105,7 +105,7 @@ bool Consume::checkPasswd(const Card &card) {
     for (int i = 0; i < 5; ++i) {
         char password[10];
         printf("Please input your password:");
-        scanf("%s", &password); //输入密码
+        scanf("%s", password); //输入密码
         if (card.checkPassword(strtol(password, nullptr,10))) {
             printf("Password entered successfully.");
             return true;

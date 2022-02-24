@@ -6,7 +6,7 @@
 #define CAMPUSCARDBACKEND_DATASTORE_H
 
 #include "Account/Account.h"
-#include "Consumption/Consumption.h"
+#include "Operation/Consumption.h"
 
 /* 'Data Base' liked object */
 class DataStore {
@@ -65,7 +65,8 @@ public:
     static void localize();
 
 private:
-    typedef std::vector<Consumption *> SortedConsumptions ;
+    constexpr static const unsigned int RESERVED_SIZE = 2000000;
+    typedef Consumption * SortedConsumptions[RESERVED_SIZE];
 
     static SortedConsumptions &getSortedConsumptions() {
         static SortedConsumptions res;

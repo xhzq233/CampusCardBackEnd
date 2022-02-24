@@ -7,6 +7,7 @@
 
 #include "../Window.h"
 #include "../../FileManager/FileManager.h"
+#include "BaseOperation.h"
 
 /*
  * 运行食堂应用模块，可以设定当前时间和消费窗口，对指定的校园卡进行收费
@@ -25,27 +26,18 @@
  *  + 食堂窗口收费设备单独记录本窗口的数据
  *  + 数据最多保存6万条，循环覆盖保存，程序开始运行的前一次保存位置可以通过配置文件进行读入与保存
  * */
-class Consumption {
+class Consumption : BaseOperation {
 public:
     //卡号
     unsigned int cid;
     // 消费窗口
     Window window;
-    // 消费时间
-    unsigned long long time;
     // 消费金钱
     float price;
 
-    Consumption(unsigned int cid, Window window, const std::string &time, float price) : window(window),
-                                                                                         time(std::stoull(time)),
-                                                                                         price(price), cid(cid) {
-        FileManager::getInstance() << FileManager::toStandardLogString("消费", this->to_string().c_str())
-                                   << FileManager::endl;
-    }
-
-    Consumption(unsigned int cid, Window window, unsigned long long &time, float price) : window(window),
-                                                                                         time(time),
-                                                                                         price(price), cid(cid) {
+    Consumption(unsigned int cid, Window window, Time time, float price) : BaseOperation(time),
+                                                                           window(window),
+                                                                           price(price), cid(cid) {
         FileManager::getInstance() << FileManager::toStandardLogString("消费", this->to_string().c_str())
                                    << FileManager::endl;
     }
@@ -62,13 +54,21 @@ public:
     // from strings
     explicit Consumption(Window window, const std::vector<std::string> &strings) : Consumption(std::stoi(strings[0]),
                                                                                                window,
-                                                                                               strings[1] + strings[2],
+                                                                                               std::stoull(strings[1] +
+                                                                                                           strings[2]),
                                                                                                std::stof(strings[3])) {}
 
     // to string
     // cid + window + date + price
-
-    [[nodiscard]] std::string to_string() const;
+    [[nodiscard]] std::string to_string() const override {
+        auto &&res = BaseOperation::to_string();
+        res.append(std::to_string(cid));    // cid
+        res.push_back(',');
+        res.append(std::to_string(window)); // window
+        res.push_back(',');
+        res.append(std::to_string(price));  // price
+        return res;
+    }
 };
 
 #endif // CAMPUSCARDBACKEND_CONSUMPTION_H
