@@ -18,7 +18,7 @@ public:
     typedef std::vector<unsigned int> Subscripts;
 
     constexpr static const char WINDOW_QTY = 99;
-    constexpr static const int MAXSIZE = 60000;
+    constexpr static const unsigned int MAXSIZE = 60000;
 
     /* each Window have Consumptions, use Consumptions[Window - 1] get each window Consumptions data */
     typedef Consumption *Consumptions[WINDOW_QTY][MAXSIZE];
@@ -65,6 +65,14 @@ public:
     static void localize();
 
 private:
+    // total init consumptions number (laugh
+    static const constexpr int DATA_NUM = 2068800;
+    typedef Consumption *SortedConsumptions[DATA_NUM];
+
+    static SortedConsumptions &sortedConsumptions() {
+        static SortedConsumptions res{nullptr};
+        return res;
+    }
 
     //called if and only if initializing
     static Consumptions &consumes_init();

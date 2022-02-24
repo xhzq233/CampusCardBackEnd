@@ -36,7 +36,7 @@ void description(const CSV &csv, int num = 5) {
 void description(const DataStore::Consumptions &consumes, int row = 4, int col = 5) {
     for (int i = 0; i < row; ++i) {
         auto position = DataStore::getWindowPositions()[i];
-        for (unsigned int j = position - col; j < position ; ++j) {
+        for (unsigned int j = position - col; j < position; ++j) {
             if (!consumes[i][j]) continue;
             printf("%s \n", consumes[i][j]->to_string().c_str());
         }
@@ -59,6 +59,7 @@ int main() {
 //                description(csv);
 //                DataStore::insertAccount(Account(0, ""));
                 description(DataStore::getConsumptions());
+//                DataStore::queryConsumption(1,43532);
 //                description(DataStore::getAccounts());
 //                FileManager::getInstance() << FileManager::toStandardLogString("THIS IS TITLE", "AND content here")
 //                                           << FileManager::endl;

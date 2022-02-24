@@ -33,11 +33,15 @@ void subwork_of_init_consumes(int index, Consumptions *consumes) {
     FileManager().getCSVDataSource(temp, 4, FileManager::CONSUME_CSV(index + 1));
 
     //  stored data start index, it should be the initialized window position minus data size
-    auto start_index = DataStore::getWindowPositions()[index] - temp.size();
-
-    for (unsigned int i = start_index; i < start_index + temp.size(); ++i) {
-        auto *consume = new Consumption(index + 1, temp[i - start_index]);
-        (*consumes)[index][i % DataStore::MAXSIZE] = consume; // no more than MAXSIZE
+//    const auto &position = DataStore::getWindowPositions()[index];
+    auto size = temp.size();
+//    int start_index = (int) position - size + 1;
+//    if (start_index < 0) // position - temp.size() + 1 less than zero
+//        start_index = (int) DataStore::MAXSIZE - start_index;
+    for (unsigned int i = 0; i < size; ++i) {
+        (*consumes)[index][i % DataStore::MAXSIZE] = new Consumption(index + 1,
+                                                                     temp[i]);
+        // no more than MAXSIZE
     }
     // no longer to be sorted
 }
@@ -48,22 +52,33 @@ const unsigned int MAX_THREAD = std::thread::hardware_concurrency();
 
 Consumptions &DataStore::consumes_init() {
     //99 x 60000
-    static Consumption *res[WINDOW_QTY][MAXSIZE] = {nullptr};
+    static Consumptions res{nullptr};
     std::thread threads[FileManager::CONSUME_CSV_QTY];
-    printf("Spawning threads...\n");
     for (int i = 0; i < FileManager::CONSUME_CSV_QTY; ++i)
         threads[i] = std::thread(subwork_of_init_consumes, i, &res);   // move-assign threads
-    printf("Done spawning threads. Now waiting for them to join:\n");
-
     for (auto &thread: threads)
         thread.join();
     printf("All threads joined!\n");
 
+    auto &sc = DataStore::sortedConsumptions();
+    unsigned int num = 0;
+    for (auto & re : res) {
+        for (const auto &item: re) {
+            if (!item) { // quit loop if meet null, in this case data ranged from zero
+                break;   // but if ranged from window position , em-mm
+            }
+            sc[num] = item;
+            ++num;
+        }
+    }
+    std::sort(sc, sc + DATA_NUM, [](Consumption *l, Consumption *r) -> bool {
+        return (*l) < (*r);
+    });
     return res;
 }
 
 WindowPositions &DataStore::windows_init() {
-    static WindowPosition windowPositions[WINDOW_QTY] = {0};
+    static WindowPositions windowPositions{0};
     FileManager::CSV container;
     ///预定好尺寸 99x2
     FileManager::getInstance().getCSVDataSource(container, WINDOW_QTY, 2,
@@ -160,7 +175,6 @@ void DataStore::insertConsumption(Window window, Consumption *data) {
         printf("[ERROR] %u not in this range: 1 - 99", window);
         return;
     }
-
     auto &consumes_in_window = getConsumptions()[window - 1];
     auto &&position = getWindowPositions()[window - 1];
     // add self and assign self
@@ -200,13 +214,34 @@ DataQuery::query(FileManager::CSV &container, unsigned int columnIndex, const st
 }
 
 DataQuery::Subscripts DataStore::queryConsumption(Window window, unsigned int cid) {
-    return DataStore::Subscripts();
+    //error handle
+    if (window == 0 || window > WINDOW_QTY) {
+        printf("[ERROR] %u not in this range: 1 - 99", window);
+        return {};
+    }
+    Subscripts res;
+    const auto &consumptions_in_window = getConsumptions()[window - 1];
+    WindowPosition windowPosition = getWindowPositions()[window - 1];
+    //individualization
+    if (cid == consumptions_in_window[windowPosition]->cid) {
+        res.emplace_back(windowPosition);
+    }
+    // if windowPosition equal to zero,
+    if (!windowPosition) windowPosition = MAXSIZE;
+    // Retrieve backward from this windowPosition
+    for (unsigned int i = windowPosition - 1; i != windowPosition; --i) {
+        if (!consumptions_in_window[i]) break;//meet nullptr ,loop close
+        if (cid == consumptions_in_window[i]->cid)
+            res.emplace_back(i);
+        if (i == 0) i = MAXSIZE;
+    }
+    return res;
 }
 
 DataQuery::Subscripts DataStore::queryConsumption(unsigned int cid) {
-    return DataStore::Subscripts();
+    return {};
 }
 
 DataQuery::Subscripts DataStore::queryConsumptionByUid(unsigned int uid) {
-    return DataStore::Subscripts();
+    return {};
 }
