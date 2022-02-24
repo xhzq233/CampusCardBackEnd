@@ -8,7 +8,7 @@
 
 class RechargeOperation : public CardManageOperation {
 public:
-    typedef int RechargeCount;
+    typedef int RechargeCount;// can only recharge integers by default
     RechargeCount price;
 
     RechargeOperation(Operator uid, Time time, RechargeCount price) : CardManageOperation(uid, Recharge, time),

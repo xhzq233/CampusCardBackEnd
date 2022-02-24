@@ -16,7 +16,6 @@ FileManager &FileManager::shared_init() {
     static FileManager instance;
     time_t now = time(nullptr);
     auto *tm = std::localtime(&now);
-    printf("shared_init");
     char buf[30];
     strftime(buf, sizeof(buf), "%Y-%m-%d-%H-%M-%S", tm);
     instance.startUpTime.append(buf);

@@ -9,6 +9,7 @@
 
 class CardManageOperation : public BaseOperation {
 public:
+    // literally
     enum OperationName : char {
         Recharge = 0x01,
         SetLoss = 0x02,
@@ -18,6 +19,7 @@ public:
     };
     OperationName operationName;
     typedef unsigned int Operator;
+    // represents in student id
     Operator uid;
 
     CardManageOperation(Operator uid, OperationName name, Time time) : BaseOperation(time), uid(uid),

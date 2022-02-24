@@ -85,6 +85,20 @@ Consumptions &DataStore::consumes_init() {
 //        else
 //            return l == nullptr;
     });
+
+    if (dynamic_cast<RechargeOperation *>(operations[0])){
+        auto rechargeOperation = dynamic_cast<RechargeOperation *>(operations[0]);
+        printf("%s", rechargeOperation->to_string().c_str());
+    }
+    if (dynamic_cast<Consumption *>(operations[0])){
+        auto consumption = dynamic_cast<Consumption *>(operations[0]);
+        printf("%s", consumption->to_string().c_str());
+    }
+    if (dynamic_cast<CardManageOperation *>(operations[0])){
+        auto cardManageOperation = dynamic_cast<CardManageOperation *>(operations[0]);
+        printf("%s", cardManageOperation->to_string().c_str());
+    }
+
     // ---
     return res;
 }
