@@ -131,6 +131,7 @@ void DataStore::insertAccount(const Account &data) {
 
 std::vector<Account>::iterator DataStore::queryAccountByUid(unsigned int uid) {
     auto &accounts = getAccounts();
+    //half search
     int left = 0, right = (int) accounts.size() - 1, mid;
     while (left <= right) {
         mid = (left + right) / 2;
@@ -141,8 +142,10 @@ std::vector<Account>::iterator DataStore::queryAccountByUid(unsigned int uid) {
         }
     }
     if ((accounts.begin() + mid)->uid == uid) {
+        // result has been found
         return accounts.begin() + mid;
     } else {
+        // result is not found
         return accounts.end();
     }
 }
@@ -159,8 +162,10 @@ std::vector<Account>::iterator DataStore::queryAccountByCid(unsigned int cid) {
         }
     }
     if ((accounts.begin() + mid)->cards.begin()->cid == cid) {
+        // result has been found
         return accounts.begin() + mid;
     } else {
+        // result is not found
         return accounts.end();
     }
 }
