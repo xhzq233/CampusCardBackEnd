@@ -32,32 +32,43 @@ public:
     // 消费窗口
     Window window;
     // 消费时间
-    unsigned long long date;
+    unsigned long long time;
     // 消费金钱
     float price;
 
-    Consumption(unsigned int cid, Window window, const std::string& date, float price) : window(window), date(std::stoull(date)),
-                                                                                         price(price), cid(cid) {}
+    Consumption(unsigned int cid, Window window, const std::string &time, float price) : window(window),
+                                                                                         time(std::stoull(time)),
+                                                                                         price(price), cid(cid) {
+        FileManager::getInstance() << FileManager::toStandardLogString("消费", this->to_string().c_str())
+                                   << FileManager::endl;
+    }
+
+    Consumption(unsigned int cid, Window window, unsigned long long &time, float price) : window(window),
+                                                                                         time(time),
+                                                                                         price(price), cid(cid) {
+        FileManager::getInstance() << FileManager::toStandardLogString("消费", this->to_string().c_str())
+                                   << FileManager::endl;
+    }
 
     /// comparable
     bool operator>(const Consumption &right) const {
-        return date > right.date;
+        return time > right.time;
     }
 
     bool operator<(const Consumption &right) const {
-        return date < right.date;
+        return time < right.time;
     }
 
     // from strings
-    explicit Consumption(Window window, const std::vector<std::string> &strings) : Consumption(std::stoi(strings[0]), window,
-                                                                                       strings[1] + strings[2],
+    explicit Consumption(Window window, const std::vector<std::string> &strings) : Consumption(std::stoi(strings[0]),
+                                                                                               window,
+                                                                                               strings[1] + strings[2],
                                                                                                std::stof(strings[3])) {}
 
     // to string
     // cid + window + date + price
 
     [[nodiscard]] std::string to_string() const;
-
 };
 
 #endif // CAMPUSCARDBACKEND_CONSUMPTION_H
