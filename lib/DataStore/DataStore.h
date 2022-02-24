@@ -65,12 +65,10 @@ public:
     static void localize();
 
 private:
-    // total init consumptions number (laugh
-    static const constexpr int DATA_NUM = 2068800;
-    typedef Consumption *SortedConsumptions[DATA_NUM];
+    typedef std::vector<Consumption *> SortedConsumptions ;
 
-    static SortedConsumptions &sortedConsumptions() {
-        static SortedConsumptions res{nullptr};
+    static SortedConsumptions &getSortedConsumptions() {
+        static SortedConsumptions res;
         return res;
     }
 

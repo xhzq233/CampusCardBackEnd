@@ -60,20 +60,21 @@ Consumptions &DataStore::consumes_init() {
         thread.join();
     printf("All threads joined!\n");
 
-    auto &sc = DataStore::sortedConsumptions();
+    // MARK:--- extra operation
+    auto &sc = DataStore::getSortedConsumptions();
     unsigned int num = 0;
-    for (auto & re : res) {
+    for (auto &re: res)
         for (const auto &item: re) {
-            if (!item) { // quit loop if meet null, in this case data ranged from zero
-                break;   // but if ranged from window position , em-mm
+            if(item){
+                sc.emplace_back(item);
             }
-            sc[num] = item;
-            ++num;
         }
-    }
-    std::sort(sc, sc + DATA_NUM, [](Consumption *l, Consumption *r) -> bool {
+
+    std::sort(sc.begin(), sc.end(), [](Consumption *l, Consumption *r) -> bool {
         return (*l) < (*r);
     });
+    // ---
+
     return res;
 }
 
