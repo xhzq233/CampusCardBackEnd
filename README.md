@@ -9,7 +9,7 @@
 |      Card       |         stores campusCard data         |
 |     Account     |              stores cards              |
 |     Consume     |  a data bound to a card and a window   |
-| ConsumeBuilder  | construct a consume data into database |
+| Consume  | construct a consume data into database |
 |    DataStore    |   stores windows, accounts, consumes   |
 |   CardManage    |     manage card relative operation     |
 | CardDataAnalyze |              analyze data              |
@@ -22,7 +22,7 @@ B((Window))
 C((Card))
 D((Account))
 E((Consume))
-F((ConsumeBuilder))
+F((Consume))
 G((DataStore))
 H((CardManage))
 I((CardDataAnalyze))
