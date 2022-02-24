@@ -78,7 +78,7 @@ Consumptions &DataStore::consumes_init() {
     FileManager::getInstance().getCSVDataSource(temp, 4, FileManager::CARD_RECHARGE_CSV_NAME);
     for (const auto &item: temp)
         operations[num++] = new RechargeOperation(item);
-    
+
     std::sort(operations, operations + num, [](BaseOperation *l, BaseOperation *r) -> bool {
 //        if (l && r)
         return (*l) < (*r);

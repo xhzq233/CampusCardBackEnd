@@ -14,6 +14,7 @@ public:
         SetLoss = 0x02,
         Uncouple = 0x04,
         Cancellation = 0x08,
+        Reissue = 0x10
     };
     OperationName operationName;
     typedef unsigned int Operator;
@@ -27,7 +28,10 @@ public:
 
             std::stoi(
                     strings[2]),
-            strings[1] == "充值" ? Recharge : strings[1] == "挂失" ? SetLoss : strings[1] == "解挂" ? Uncouple : Cancellation,
+            strings[1] == "充值" ? Recharge : strings[1] == "挂失" ? SetLoss : strings[1] == "解挂" ? Uncouple : strings[1] ==
+                                                                                                           "销户"
+                                                                                                           ? Cancellation
+                                                                                                           : Reissue,
             std::stoull(strings[0])) {}
 
 
@@ -47,6 +51,8 @@ public:
             case Cancellation:
                 res.append("销户");
                 break;
+            case Reissue:
+                res.append("补卡");
         }
         res.push_back(',');
         res.append(std::to_string(uid));

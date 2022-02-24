@@ -38,8 +38,8 @@ public:
     Consumption(unsigned int cid, Window window, Time time, float price) : BaseOperation(time),
                                                                            window(window),
                                                                            price(price), cid(cid) {
-        FileManager::getInstance() << FileManager::toStandardLogString("消费", this->to_string().c_str())
-                                   << FileManager::endl;
+//        FileManager::getInstance() << FileManager::toStandardLogString("消费", this->to_string().c_str())
+//                                   << FileManager::endl;
     }
 
     // from strings

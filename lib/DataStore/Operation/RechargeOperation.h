@@ -8,14 +8,14 @@
 
 class RechargeOperation : public CardManageOperation {
 public:
-    typedef float Price;
-    Price price;
+    typedef int RechargeCount;
+    RechargeCount price;
 
-    RechargeOperation(Operator uid, Time time, Price price) : CardManageOperation(uid, Recharge, time),
-                                                              price(price) {}
+    RechargeOperation(Operator uid, Time time, RechargeCount price) : CardManageOperation(uid, Recharge, time),
+                                                                      price(price) {}
 
     // from strings
-    explicit RechargeOperation(const std::vector<std::string> &strings) : price(std::stof(strings[3])),
+    explicit RechargeOperation(const std::vector<std::string> &strings) : price(std::stoi(strings[3])),
                                                                           CardManageOperation(strings) {}
 
     [[nodiscard]] std::string to_string() const override {
