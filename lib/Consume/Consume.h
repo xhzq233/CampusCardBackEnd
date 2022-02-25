@@ -10,6 +10,7 @@
 
 
 namespace Consume {
+
     void consume(const Window &window, const Card &card, const float &price, const std::string &time); //指定时间消费
 
     void consume(const Window &window, const Card &card, const float &price); //当日消费

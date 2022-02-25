@@ -6,22 +6,8 @@
 
 using namespace std;
 
-//将现在的时刻转换为 yyyymmdd hhmmssxx的形式
-unsigned long long to_time() {
-    time_t now = time(nullptr);
-    tm *t = localtime(&now);
-    unsigned long long time = 0;
-    time += t->tm_sec * 10'000;
-    time += t->tm_min * 1'000'000;
-    time += t->tm_hour * 100'000'000;
-    time += t->tm_mday * 10'000'000'000;
-    time += (t->tm_mon + 1) * 1'000'000'000'000;
-    time += (t->tm_year + 1900) * 100'000'000'000'000;
-    return time;
-}
-
 void Consume::consume(const Window &window, const Card &card, const float &price) {
-    auto time = to_time();
+    auto time = FileManager::to_time();
     int hour = static_cast<int>(time / 100'000'000 % 100);
     auto account = DataStore::queryAccountByUid(card.cid);
     if (!card.condition) {
@@ -74,7 +60,7 @@ void Consume::show(const Window &window) {
     auto consumptions = DataStore::getConsumptions()[window];
     int count = 0;      //当日收费次数
     float revenue = 0; // 当日营收
-    int date = static_cast<int>(to_time() / 10'000'000'000); //日期
+    int date = static_cast<int>(FileManager::to_time() / 10'000'000'000); //日期
     for (int i = 0; i < DataStore::MAXSIZE; ++i) {
         int _date = static_cast<int>(consumptions[i]->time / 10'000'000'000); //消费记录里的日期
         if (_date == date) {

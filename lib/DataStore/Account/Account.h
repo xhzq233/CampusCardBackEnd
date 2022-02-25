@@ -30,7 +30,7 @@ public:
         res.append(std::to_string(uid));
         res.append(" ");
         res.append(name);
-        res.append("succeeded");
+        res.append(" succeeded");
         return res;
     }
 

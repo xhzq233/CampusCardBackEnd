@@ -185,6 +185,8 @@ public:
     /* literally */
     static void append_standard_time(std::string &container, const Time& time);
 
+    //now -> unsigned long long
+    static unsigned long long to_time();
 };
 
 #endif //CAMPUSCARDBACKEND_FILEMANAGER_H

@@ -176,20 +176,27 @@ void operator<<(FileManager &o, const char c) {
 }
 
 std::string FileManager::toStandardLogString(const char *title, const char *content) {
-    time_t now = time(nullptr);
     std::string res;
     res.push_back('[');
-    auto *tm = std::localtime(&now);
-    char buf[25];
-    strftime(buf, sizeof(buf), "%Y-%m-%d-%X", tm);
-    res.append(buf);
+    append_standard_time(res,FileManager::to_time());
     res.append(" : ");
     res.append(title);
     res.append("] ");
     res.append(content);
     return res;
 }
-
+unsigned long long FileManager::to_time() {
+    time_t now = time(nullptr);
+    tm *t = localtime(&now);
+    unsigned long long time = 0;
+    time += t->tm_sec * 100;
+    time += t->tm_min * 10'000;
+    time += t->tm_hour * 1'000'000;
+    time += static_cast<unsigned long long>(t->tm_mday) * 100'000'000;
+    time += static_cast<unsigned long long>(t->tm_mon + 1) * 10'000'000'000;
+    time += static_cast<unsigned long long>(t->tm_year + 1900) * 1'000'000'000'000;
+    return time;
+}
 std::string FileManager::toStandardLogString(const char *title, const char *content, const Time &time) {
     std::string res;
     res.push_back('[');
