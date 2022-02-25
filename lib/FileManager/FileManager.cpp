@@ -43,13 +43,13 @@ bool FileManager::prepareIOStream(StreamCallBack func, const std::string &path,
     IOStream.open(file, mode);
     if (!IOStream.is_open()) {/* check the param [path] , auto mkdir if not exist */
         IOStream.close();
-        system( ("mkdir " + path.substr(0, path.size() - 1)).c_str());
+        system(("mkdir " + path.substr(0, path.size() - 1)).c_str());
         IOStream.open(file, mode);
         if (!IOStream.is_open()) {
             //read failed
             IOStream.close();
 //            std::cout << file << " read failed" << std::endl;
-            printf("%s load failed.",file.c_str());
+            printf("%s load failed.", file.c_str());
             return false;
         }
     }
@@ -187,10 +187,10 @@ std::string FileManager::toStandardLogString(const char *title, const char *cont
     return res;
 }
 
-std::string FileManager::toStandardLogString(const char *title, const char *content, const time_t &now) {
+std::string FileManager::toStandardLogString(const char *title, const char *content, const Time &time) {
     std::string res;
     res.append("[");
-    append_standard_time(res, now);
+    append_standard_time(res, time);
     res.append(" : ");
     res.append(title);
     res.append("] ");
@@ -198,10 +198,12 @@ std::string FileManager::toStandardLogString(const char *title, const char *cont
     return res;
 }
 
-void FileManager::append_standard_time(std::string &container, const time_t &now) {
-    auto *tm = std::localtime(&now);
-    char buf[25];
-    strftime(buf, sizeof(buf), "%Y-%m-%d-%X", tm);
+void FileManager::append_standard_time(std::string &container, const Time &time) {
+    char buf[22];
+    sprintf(buf, "%d-%d-%d-%d-%d:%d:%d", time / 1'000'000'000'000, time / 1'000'000'000'0 % 100,
+            time / 10'000'000'0 % 100,
+            time / 100'000'0 % 100, time / 1'000'0 % 100, time / 10'0 % 100,
+            time % 100);
     container.append(buf);
 }
 

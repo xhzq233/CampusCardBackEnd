@@ -7,6 +7,7 @@
 
 #include "Account/Account.h"
 #include "Operation/Consumption.h"
+#include "Operation/CardManageOperation.h"
 #include "Operation/RechargeOperation.h"
 
 /* 'Data Base' liked object */
