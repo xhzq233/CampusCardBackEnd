@@ -1,5 +1,7 @@
 #include "lib/FileManager/FileManager.h"
 #include "lib/DataStore/DataStore.h"
+#include "lib/CardManage/CardManage.h"
+#include "lib/Consume/Consume.h"
 
 typedef std::function<void(void)> VoidCallBack;
 
@@ -52,9 +54,9 @@ void description(const DataStore::Accounts &accounts, int num = 5) {
 constexpr static const unsigned int RESERVED_SIZE = 2'500'000;
 typedef BaseOperation *SortedOperations[RESERVED_SIZE];
 
-void initialize_data() {
+void init(){
     // MARK:--- init operations
-    SortedOperations operations{nullptr};
+    auto* operations = new SortedOperations{nullptr};
     auto &res = DataStore::getConsumptions();
     unsigned int num = 0;
     for (auto &re: res)
@@ -74,25 +76,29 @@ void initialize_data() {
         operations[num++] = new RechargeOperation(item);
 
     std::sort(operations, operations + num, [](BaseOperation *l, BaseOperation *r) -> bool {
-//        if (l && r)
         return (*l) < (*r);
-//        else
-//            return l == nullptr;
     });
     // sort complete
     RechargeOperation *rechargeOperation;
     Consumption *consumption;
     CardManageOperation *cardManageOperation;
+
+    // start operation
+    using namespace Consume;
     for (int i = 0; i < num; ++i) {
-        if (rechargeOperation = dynamic_cast<RechargeOperation *>(operations[i])) {
-
-        } else if (consumption = dynamic_cast<Consumption *>(operations[i])) {
-
-        } else if (cardManageOperation = dynamic_cast<CardManageOperation *>(operations[i])) {
-
+        if ((rechargeOperation = dynamic_cast<RechargeOperation *>(operations[i]))) {
+            CardManage::recharge();
+        } else if ((consumption = dynamic_cast<Consumption *>(operations[i]))) {
+            consume(*consumption);
+        } else if ((cardManageOperation = dynamic_cast<CardManageOperation *>(operations[i]))) {
+            CardManage::openAccount();
+        } else {
+            throw; // "Unknown Operation"
         }
     }
+
     // ---
+    delete[] operations;
 }
 
 int main() {
@@ -105,7 +111,7 @@ int main() {
 //                description(csv);
 //                DataStore::insertAccount(Account(0, ""));
                 description(DataStore::getConsumptions());
-                initialize_data();
+                init();
 //                DataStore::queryConsumption(1,43532);
 //                description(DataStore::getAccounts());
 //                FileManager::getInstance() << FileManager::toStandardLogString("THIS IS TITLE", "AND content here")
@@ -116,11 +122,12 @@ int main() {
 
     testTimeWrapper(func);
 
+    // Reference:
+    // https://stackoverflow.com/questions/8588541/c-should-i-bother-deleting-pointers-to-application-lifetime-variables
 //    释放指针
-//    for (const auto &item: DataStore::getConsumptions()) {
-//        for (const auto &i: item)
-//            if (i)
-//                delete i;
-//    }
+    for (const auto &item: DataStore::getConsumptions()) {
+        for (const auto &i: item)
+            delete i;
+    }
     return 0;
 }
