@@ -87,11 +87,24 @@ void init(){
     using namespace Consume;
     for (int i = 0; i < num; ++i) {
         if ((rechargeOperation = dynamic_cast<RechargeOperation *>(operations[i]))) {
-            CardManage::recharge();
+            CardManage::recharge(rechargeOperation->uid,rechargeOperation->price,rechargeOperation->time);
         } else if ((consumption = dynamic_cast<Consumption *>(operations[i]))) {
             consume(*consumption);
         } else if ((cardManageOperation = dynamic_cast<CardManageOperation *>(operations[i]))) {
-            CardManage::openAccount();
+            switch (cardManageOperation->operationName) {
+                case CardManageOperation::Reissue:
+                    CardManage::reissue(cardManageOperation->uid,cardManageOperation->time);
+                    break;
+                case CardManageOperation::Uncouple:
+                    CardManage::unsetLost(cardManageOperation->uid,cardManageOperation->time);
+                    break;
+                case CardManageOperation::SetLoss:
+                    CardManage::setLost(cardManageOperation->uid,cardManageOperation->time);
+                    break;
+                case CardManageOperation::Cancellation:
+                    CardManage::deleteAccount(cardManageOperation->uid,cardManageOperation->time);
+                    break;
+            }
         } else {
             throw; // "Unknown Operation"
         }

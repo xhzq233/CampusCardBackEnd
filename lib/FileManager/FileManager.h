@@ -69,6 +69,7 @@ public:
     typedef const std::function<void(std::fstream &stream)> &StreamCallBack;
     typedef std::vector<std::vector<std::string>> CSV;
     typedef std::vector<std::string> Strings;
+    typedef unsigned long long Time;
 private:
     /* type of std::ios::openmode, different os have different type */
 #ifdef __WIN64
@@ -179,10 +180,10 @@ public:
     static std::string toStandardLogString(const char *title, const char *content);
 
     /* 自定义时间的StandardLog */
-    static std::string toStandardLogString(const char *title, const char *content, const time_t &now);
+    static std::string toStandardLogString(const char *title, const char *content, const Time& time);
 
     /* literally */
-    static void append_standard_time(std::string &container, const time_t &now);
+    static void append_standard_time(std::string &container, const Time& time);
 
 };
 
