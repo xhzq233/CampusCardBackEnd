@@ -38,7 +38,7 @@ bool FileManager::prepareIOStream(StreamCallBack func, const std::string &path,
             return false;
         }
     }
-#else
+#else // windows amd64
     std::string file = path + source;
     IOStream.open(file, mode);
     if (!IOStream.is_open()) {/* check the param [path] , auto mkdir if not exist */
@@ -53,7 +53,7 @@ bool FileManager::prepareIOStream(StreamCallBack func, const std::string &path,
             return false;
         }
     }
-#endif
+#endif //__WIN64
 
     func(IOStream);
 

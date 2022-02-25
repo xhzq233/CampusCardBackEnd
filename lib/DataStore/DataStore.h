@@ -66,14 +66,6 @@ public:
     static void localize();
 
 private:
-    constexpr static const unsigned int RESERVED_SIZE = 3000000;
-    typedef BaseOperation *SortedOperations[RESERVED_SIZE];
-
-    static SortedOperations &getSortedOperations() {
-        static SortedOperations res;
-        return res;
-    }
-
     //called if and only if initializing
     static Consumptions &consumes_init();
 
