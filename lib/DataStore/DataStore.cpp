@@ -34,7 +34,7 @@ void subwork_of_init_consumes(int index, Consumptions *consumes) {
 
     //  stored data start index, it should be the initialized window position minus data size
 //    const auto &position = DataStore::getWindowPositions()[index];
-    auto size = temp.size();
+    unsigned int size = temp.size();
 //    int start_index = (int) position - size + 1;
 //    if (start_index < 0) // position - temp.size() + 1 less than zero
 //        start_index = (int) DataStore::MAXSIZE - start_index;
@@ -60,46 +60,48 @@ Consumptions &DataStore::consumes_init() {
         thread.join();
     printf("All threads joined!\n");
 
+
     // MARK:--- init operations
-    auto &operations = DataStore::getSortedOperations();
-    unsigned int num = 0;
-    for (auto &re: res)
-        for (const auto &item: re) {
-            if (!item) break;
-            operations[num++] = item;
-        }
-    CSV temp;
-
-    FileManager::getInstance().getCSVDataSource(temp, 3, FileManager::CARD_MANAGE_CSV_NAME);
-    for (const auto &item: temp)
-        operations[num++] = new CardManageOperation(item);
-    temp.clear();
-
-    FileManager::getInstance().getCSVDataSource(temp, 4, FileManager::CARD_RECHARGE_CSV_NAME);
-    for (const auto &item: temp)
-        operations[num++] = new RechargeOperation(item);
-
-    std::sort(operations, operations + num, [](BaseOperation *l, BaseOperation *r) -> bool {
-//        if (l && r)
-        return (*l) < (*r);
-//        else
-//            return l == nullptr;
-    });
-
-    if (dynamic_cast<RechargeOperation *>(operations[0])) {
-        auto rechargeOperation = dynamic_cast<RechargeOperation *>(operations[0]);
-        printf("%s", rechargeOperation->to_string().c_str());
-    }
-    if (dynamic_cast<Consumption *>(operations[0])) {
-        auto consumption = dynamic_cast<Consumption *>(operations[0]);
-        printf("%s", consumption->to_string().c_str());
-    }
-    if (dynamic_cast<CardManageOperation *>(operations[0])) {
-        auto cardManageOperation = dynamic_cast<CardManageOperation *>(operations[0]);
-        printf("%s", cardManageOperation->to_string().c_str());
-    }
+//    auto &operations = DataStore::getSortedOperations();
+//    unsigned int num = 0;
+//    for (auto &re: res)
+//        for (const auto &item: re) {
+//            if (!item) break;
+//            operations[num++] = item;
+//        }
+//    CSV temp;
+//
+//    FileManager::getInstance().getCSVDataSource(temp, 3, FileManager::CARD_MANAGE_CSV_NAME);
+//    for (const auto &item: temp)
+//        operations[num++] = new CardManageOperation(item);
+//    temp.clear();
+//
+//    FileManager::getInstance().getCSVDataSource(temp, 4, FileManager::CARD_RECHARGE_CSV_NAME);
+//    for (const auto &item: temp)
+//        operations[num++] = new RechargeOperation(item);
+//
+//    std::sort(operations, operations + num, [](BaseOperation *l, BaseOperation *r) -> bool {
+////        if (l && r)
+//        return (*l) < (*r);
+////        else
+////            return l == nullptr;
+//    });
+//
+//    if (dynamic_cast<RechargeOperation *>(operations[0])) {
+//        auto rechargeOperation = dynamic_cast<RechargeOperation *>(operations[0]);
+//        printf("%s", rechargeOperation->to_string().c_str());
+//    }
+//    if (dynamic_cast<Consumption *>(operations[0])) {
+//        auto consumption = dynamic_cast<Consumption *>(operations[0]);
+//        printf("%s", consumption->to_string().c_str());
+//    }
+//    if (dynamic_cast<CardManageOperation *>(operations[0])) {
+//        auto cardManageOperation = dynamic_cast<CardManageOperation *>(operations[0]);
+//        printf("%s", cardManageOperation->to_string().c_str());
+//    }
 
     // ---
+
     return res;
 }
 

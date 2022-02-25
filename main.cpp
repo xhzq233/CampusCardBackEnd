@@ -51,6 +51,52 @@ void description(const DataStore::Accounts &accounts, int num = 5) {
         printf("%s \n", accounts[i].to_string().c_str());
 }
 
+constexpr static const unsigned int RESERVED_SIZE = 2'500'000;
+typedef BaseOperation *SortedOperations[RESERVED_SIZE];
+
+void initialize_data() {
+    // MARK:--- init operations
+    SortedOperations operations{nullptr};
+    auto &res = DataStore::getConsumptions();
+    unsigned int num = 0;
+    for (auto &re: res)
+        for (const auto &item: re) {
+            if (!item) break;
+            operations[num++] = item;
+        }
+    CSV temp;
+
+    FileManager::getInstance().getCSVDataSource(temp, 3, FileManager::CARD_MANAGE_CSV_NAME);
+    for (const auto &item: temp)
+        operations[num++] = new CardManageOperation(item);
+    temp.clear();
+
+    FileManager::getInstance().getCSVDataSource(temp, 4, FileManager::CARD_RECHARGE_CSV_NAME);
+    for (const auto &item: temp)
+        operations[num++] = new RechargeOperation(item);
+
+    std::sort(operations, operations + num, [](BaseOperation *l, BaseOperation *r) -> bool {
+//        if (l && r)
+        return (*l) < (*r);
+//        else
+//            return l == nullptr;
+    });
+    // sort complete
+    RechargeOperation *rechargeOperation;
+    Consumption *consumption;
+    CardManageOperation *cardManageOperation;
+    for (int i = 0; i < num; ++i) {
+        if (rechargeOperation = dynamic_cast<RechargeOperation *>(operations[i])) {
+
+        } else if (consumption = dynamic_cast<Consumption *>(operations[i])) {
+
+        } else if (cardManageOperation = dynamic_cast<CardManageOperation *>(operations[i])) {
+
+        }
+    }
+    // ---
+}
+
 int main() {
 //    VoidCallBack func{
 //            [&]() {
@@ -61,6 +107,8 @@ int main() {
 //                description(csv);
 //                DataStore::insertAccount(Account(0, ""));
 //                description(DataStore::getConsumptions());
+ //               description(DataStore::getConsumptions());
+//                initialize_data();
 //                DataStore::queryConsumption(1,43532);
 //                description(DataStore::getAccounts());
 //                FileManager::getInstance() << FileManager::toStandardLogString("THIS IS TITLE", "AND content here")
