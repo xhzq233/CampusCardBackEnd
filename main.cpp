@@ -1,5 +1,7 @@
 #include "lib/FileManager/FileManager.h"
 #include "lib/DataStore/DataStore.h"
+#include "lib/CardManage/CardManage.h"
+#include "lib/Consume/Consume.h"
 
 typedef std::function<void(void)> VoidCallBack;
 
@@ -50,24 +52,24 @@ void description(const DataStore::Accounts &accounts, int num = 5) {
 }
 
 int main() {
-    VoidCallBack func{
-            [&]() {
+//    VoidCallBack func{
+//            [&]() {
 //                CSV csv;
 //                if (FileManager::getInstance().getCSVDataSource(csv, 4,
 //                                                                FileManager::CARD_RECHARGE_CSV_NAME));
 //                else printf("err");
 //                description(csv);
 //                DataStore::insertAccount(Account(0, ""));
-                description(DataStore::getConsumptions());
+//                description(DataStore::getConsumptions());
 //                DataStore::queryConsumption(1,43532);
 //                description(DataStore::getAccounts());
 //                FileManager::getInstance() << FileManager::toStandardLogString("THIS IS TITLE", "AND content here")
 //                                           << FileManager::endl;
 //                if (FileManager::getInstance().writeCSVData(csv, "xhzq.csv", "../adjygvjsafvj/"));
-            }
-    };
-
-    testTimeWrapper(func);
+//            }
+//    };
+//
+//    testTimeWrapper(func);
 
 //    释放指针
 //    for (const auto &item: DataStore::getConsumptions()) {
@@ -75,5 +77,11 @@ int main() {
 //            if (i)
 //                delete i;
 //    }
+    unsigned int uid = 202017184;
+    std::string name = "夏侯臻";
+    CardManage::openAccount(uid, name);
+    CardManage::distribute(uid);
+    CardManage::recharge(uid, 20.0);
+    Consume::consume(2,*DataStore::queryAccountByUid((uid))->cards.begin(),10.0);
     return 0;
 }

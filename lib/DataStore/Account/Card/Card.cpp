@@ -4,16 +4,16 @@
 
 #include "Card.h"
 
-Card::Card(unsigned int serialNumber, unsigned int uid) : uid(uid), date(DEFAULT_DATE), condition(true),
+Card::Card(unsigned int uid, unsigned int serialNumber) : uid(uid), date(DEFAULT_DATE), condition(true),
                                                           password(DEFAULT_PASSWORD) {
-    unsigned int checkNode = 0;
+    unsigned int checkNode = 0, tmp = serialNumber;
     //校验码,卡号校验码的计算规则：前6位数字相加的和再模10，得到一个0-9的数，然后用9减去这个数，就是最后一位校验码
     for (int i = 0; i < 5; ++i) {
-        checkNode += serialNumber % 10;
-        serialNumber /= 10;
+        checkNode += tmp % 10;
+        tmp /= 10;
     }
     checkNode = 9 - (checkNode + 3) % 10;
-    this->cid = (3000000 + serialNumber) * 10 + checkNode;
+    this->cid = (300000 + serialNumber) * 10 + checkNode;
 }
 
 void Card::changePassword() {

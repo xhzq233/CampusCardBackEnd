@@ -32,7 +32,7 @@ public:
     float getBalance();
 
     // from strings
-    explicit Card(const std::vector<std::string> &strings) : Card(std::stoi(strings[0]), std::stoi(strings[1])) {}
+    explicit Card(const std::vector<std::string> &strings) : Card(std::stoul(strings[0]), std::stoul(strings[1])) {}
 
     // to string
     [[nodiscard]] std::string to_string() const;

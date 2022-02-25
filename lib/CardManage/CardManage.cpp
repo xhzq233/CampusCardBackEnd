@@ -6,16 +6,13 @@
 
 using namespace std;
 
-unsigned int CardManage::serialNumber = 12345;
-
 //系统具备正常状态的学号、姓名等信息的，即属于开户状态
 void CardManage::openAccount(unsigned int uid, const string &name, const string &time) {
     auto account = DataStore::queryAccountByUid(uid);
     if (account == DataStore::getAccounts().end()) {
         DataStore::insertAccount(Account(uid, name));
-        log("Manage", to_string(uid, name, " 开户:succeeded"), time);
     } else {
-        log("Manage", to_string(uid, "非系统用户", " 开户:failed"), time);
+        log("开户", to_string(uid, "非系统用户", " failed"), time);
     }
 }
 
@@ -24,10 +21,9 @@ void CardManage::deleteAccount(unsigned int uid, const string &time) {
     auto account = DataStore::queryAccountByUid(uid);
     if (account != DataStore::getAccounts().end()) {
         account->cards.clear();
-        log("Manage", to_string(uid, account->name, " 销户:succeeded"), time);
         DataStore::getAccounts().erase(account);
     } else {
-        log("Manage", to_string(uid, "非系统用户", "销户:failed 备注:该用户未开号"), time);
+        log("销户", to_string(uid, "非系统用户", "failed 备注:该用户未开号"), time);
     }
 }
 
@@ -35,12 +31,12 @@ void CardManage::deleteAccount(unsigned int uid, const string &time) {
 void CardManage::distribute(unsigned int uid, const string &time) {
     auto account = DataStore::queryAccountByUid(uid);
     if (account != DataStore::getAccounts().end()) {
-        Card card(uid, ++serialNumber);
+        Card card(uid, ++CardManage::serialNumber);
         account->cards.push_front(card);
-        log("Manage", to_string(uid, account->name, "发卡:succeeded"),
+        log("发卡", to_string(uid, account->name, "succeeded"),
             time);
     } else {
-        log("Manage", to_string(uid, "非系统用户", "发卡:failed"), time);
+        log("发卡", to_string(uid, "非系统用户", "failed"), time);
     }
 }
 
@@ -48,16 +44,16 @@ void CardManage::distribute(unsigned int uid, const string &time) {
 void CardManage::setLost(unsigned int uid, const string &time) {
     auto account = DataStore::queryAccountByUid(uid);
     if (account == DataStore::getAccounts().end()) {
-        log("Manage", to_string(uid, "非系统用户", "挂失:failed"), time);
+        log("挂失", to_string(uid, "非系统用户", "failed"), time);
         return;
     }
     auto card = *account->cards.begin();
     if (card.condition) {
         card.condition = false;
-        log("Manage", to_string(uid, account->name, "挂失:succeeded"),
+        log("挂失", to_string(uid, account->name, "succeeded"),
             time);
     } else {
-        log("Manage", to_string(uid, account->name, "挂失:failed"),
+        log("挂失", to_string(uid, account->name, "failed"),
             time);
     }
 }
@@ -66,16 +62,16 @@ void CardManage::setLost(unsigned int uid, const string &time) {
 void CardManage::unsetLost(unsigned int uid, const string &time) {
     auto account = DataStore::queryAccountByUid(uid);
     if (account == DataStore::getAccounts().end()) {
-        log("Manage", to_string(uid, "非系统用户", "挂失:failed"), time);
+        log("解挂", to_string(uid, "非系统用户", "failed"), time);
         return;
     }
     auto card = *account->cards.begin();
     if (!card.condition) {
         card.condition = true;
-        log("Manage", to_string(uid, account->name, "解挂:succeed"),
+        log("解挂", to_string(uid, account->name, "succeed"),
             time);
     } else {
-        log("Manage", to_string(uid, account->name, "解挂:failed"),
+        log("解挂", to_string(uid, account->name, "failed"),
             time);
     }
 }
@@ -84,20 +80,20 @@ void CardManage::unsetLost(unsigned int uid, const string &time) {
 void CardManage::reissue(unsigned int uid, const string &time) {
     auto account = DataStore::queryAccountByUid(uid);
     if (account == DataStore::getAccounts().end()) {
-        log("Manage", to_string(uid, "非系统用户", "补卡:failed"), time);
+        log("补卡", to_string(uid, "非系统用户", "failed"), time);
         return;
     }
         //最多只能补卡100次
     else if (account->cards.size() >= 100) {
-        log("Manage", to_string(uid, "非系统用户", "补卡:failed 备注:补卡次数达到上限"), time);
+        log("补卡", to_string(uid, "非系统用户", "failed 备注:补卡次数达到上限"), time);
         return;
     }
-    Card card(uid, ++serialNumber);
+    Card card(uid, ++CardManage::serialNumber);
     //如果之前有卡,将之前卡的余额给新补的卡
     //将之前卡的状态设置为禁用状态
     setLost(uid);
     account->cards.push_front(card);
-    log("Manage", to_string(uid, "非系统用户", "补卡:succeeded"),
+    log("补卡", to_string(uid, "非系统用户", "succeeded"),
         time);
 }
 
@@ -105,22 +101,22 @@ void CardManage::reissue(unsigned int uid, const string &time) {
 void CardManage::recharge(unsigned int uid, float amount, const string &time) {
     auto account = DataStore::queryAccountByUid(uid);
     if (account == DataStore::getAccounts().end()) {
-        log("Manage", to_string(uid, "非系统用户", "充值:failed"), time);
+        log("充值", to_string(uid, "非系统用户", "failed"), time);
         return;
     } else {
         auto card = *account->cards.begin();
         if (account->balance + amount > BALANCE_CEILING) {
-            log("Manage",
-                to_string(uid, "非系统用户", "充值:failed 备注:卡内余额达到上限"),
+            log("充值",
+                to_string(uid, "非系统用户", "failed 备注:卡内余额达到上限"),
                 time);
         } else {
-            string content = "充值:succeeded 卡号: ";
+            string content = "succeeded 卡号: ";
             content.append(std::to_string(card.cid));
             content.append(" 充值前余额:");
             content.append(std::to_string(account->balance));
             content.append(" 充值后余额:");
             content.append(std::to_string(account->balance + amount));
-            log("Manage", to_string(uid, account->name, content), time);
+            log("充值", to_string(uid, account->name, content), time);
             account->recharge(amount);
         }
     }
