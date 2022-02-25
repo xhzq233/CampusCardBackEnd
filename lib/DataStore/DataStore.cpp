@@ -48,7 +48,15 @@ void subwork_of_init_consumes(int index, Consumptions *consumes) {
 
 #ifdef __WIN64
 const unsigned int MAX_THREAD = std::thread::hardware_concurrency();
-#endif //__WIN64
+Consumptions &DataStore::consumes_init() {
+    //99 x 60000
+    static Consumptions res{nullptr};
+    for (int i = 0; i < FileManager::CONSUME_CSV_QTY; ++i)
+        subwork_of_init_consumes(i,&res);
+    return res;
+}
+
+#else
 
 Consumptions &DataStore::consumes_init() {
     //99 x 60000
@@ -61,6 +69,8 @@ Consumptions &DataStore::consumes_init() {
     printf("All threads joined!\n");
     return res;
 }
+
+#endif //__WIN64
 
 WindowPositions &DataStore::windows_init() {
     static WindowPositions windowPositions{0};

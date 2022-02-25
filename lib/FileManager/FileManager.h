@@ -56,7 +56,7 @@ public:
     constexpr static const char CONSUME_CSV_QTY = 58;
 
     /* .log file max length */
-    constexpr static const unsigned short MAX_LINE_PER_LOG = 1U << 15;
+    constexpr static const unsigned short MAX_LINE_PER_LOG = 1U << 14;
 
     /*
      * Get WZ CSV file path based on location ,
@@ -89,6 +89,7 @@ private:
     // that function called if and only if getInstance() called
     // and only called once during the whole program lifetime
     static FileManager &shared_init();
+
 public:
     // multi thread
     // not multi thread please use getInstance instead
@@ -180,7 +181,7 @@ public:
 
 
     //now -> unsigned long long
-    static unsigned long long to_time();
+    static Time nowTime();
 
     void refreshStartUpTime();
 

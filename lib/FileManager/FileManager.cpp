@@ -189,14 +189,19 @@ void operator<<(FileManager &o, const std::string &content) {
 std::string FileManager::toStandardLogString(const char *title, const char *content) {
     std::string res;
     res.push_back('[');
-    append_standard_time(res,FileManager::to_time());
+    time_t now = time(nullptr);
+    auto *tm = std::localtime(&now);
+    char buf[23];
+    strftime(buf, sizeof(buf), "%Y-%m-%d-%X:00", tm);
+    res.append(buf);
     res.append(" : ");
     res.append(title);
     res.append("] ");
     res.append(content);
     return res;
 }
-unsigned long long FileManager::to_time() {
+
+FileManager::Time FileManager::nowTime() {
     time_t now = time(nullptr);
     tm *t = localtime(&now);
     unsigned long long time = 0;
@@ -208,6 +213,7 @@ unsigned long long FileManager::to_time() {
     time += static_cast<unsigned long long>(t->tm_year + 1900) * 1'000'000'000'000;
     return time;
 }
+
 std::string FileManager::toStandardLogString(const char *title, const char *content, const Time &time) {
     std::string res;
     res.push_back('[');
@@ -220,11 +226,17 @@ std::string FileManager::toStandardLogString(const char *title, const char *cont
 }
 
 void FileManager::append_standard_time(std::string &container, const Time &time) {
-    char buf[22];
-    sprintf(buf, "%d-%02d-%02d-%02d:%02d:%02d:%02d", time / 1'000'000'000'000, time / 1'000'000'000'0 % 100,
-            time / 10'000'000'0 % 100,
-            time / 100'000'0 % 100, time / 1'000'0 % 100, time / 10'0 % 100,
-            time % 100);
+    char buf[23];
+    typedef unsigned char sub_time;
+
+    sprintf(buf, "%d-%02d-%02d-%02d:%02d:%02d:%02d",
+            (unsigned short) (time / 1'000'000'000'000),
+            (sub_time) (time / 1'000'000'000'0 % 100),
+            (sub_time) (time / 10'000'000'0 % 100),
+            (sub_time) (time / 100'000'0 % 100),
+            (sub_time) (time / 1'000'0 % 100),
+            (sub_time) (time / 10'0 % 100),
+            (sub_time) (time % 100));
     container.append(buf);
 }
 

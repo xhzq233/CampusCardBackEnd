@@ -99,7 +99,7 @@ void CardManage::reissue(unsigned int uid, const Time &time) {
 }
 
 //为该学号账户充值；账户余额上限999.99元；
-void CardManage::recharge(unsigned int uid, int amount, const Time &time) {
+void CardManage::recharge(unsigned int uid, float amount, const Time &time) {
     auto account = DataStore::queryAccountByUid(uid);
     if (account == DataStore::getAccounts().end()) {
         log("充值", to_string(uid, "非系统用户", "failed"), time);

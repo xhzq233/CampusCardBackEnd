@@ -7,12 +7,10 @@
 #include "../DataStore/DataStore.h"
 #include "../FileManager/FileManager.h"
 
-#define BALANCE_CEILING 999.99 //账户余额上限
-
 namespace CardManage {
     typedef unsigned long long Time;
     static unsigned int serialNumber = 12345;                                    //流水号
-
+    static const constexpr float BALANCE_CEILING = 999.99; //账户余额上限
     void log(const char *title, const std::string &content, const Time &time); //日志记录
 
     std::string to_string(unsigned int uid, const std::string &name, const std::string &info);
