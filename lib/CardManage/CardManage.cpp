@@ -159,9 +159,9 @@ void CardManage::operateByFile() {
 string CardManage::to_string(unsigned int uid, const string &name, const string &info) {
     string content;
     content.append(std::to_string(uid));
-    content.append(" ");
+    content.push_back(' ');
     content.append(name);
-    content.append(" ");
+    content.push_back(' ');
     content.append(info);
     return content;
 }

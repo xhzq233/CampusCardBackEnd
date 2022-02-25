@@ -11,11 +11,11 @@ class CardManageOperation : public BaseOperation {
 public:
     // literally
     enum OperationName : char {
-        Recharge = 0x01,
-        SetLoss = 0x02,
-        Uncouple = 0x04,
-        Cancellation = 0x08,
-        Reissue = 0x10
+        Recharge = 0x01, // 充值
+        SetLoss = 0x02, // 挂失
+        Uncouple = 0x04, // 解挂
+        Cancellation = 0x08, // 销户
+        Reissue = 0x10 // 补卡
     };
     OperationName operationName;
     typedef unsigned int Operator;
