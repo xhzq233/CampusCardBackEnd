@@ -9,39 +9,30 @@
 
 #define BALANCE_CEILING 999.99 //账户余额上限
 
-class CardManage
-{
-private:
+namespace CardManage {
+    static unsigned int serialNumber = 12345;                                    //流水号
 
-    CardManage() = default;                                        //构造函数
-    ~CardManage() = default;                                       //析构函数
-    static void log(const char *, const std::string &, const std::string &); //日志记录
+    void log(const char *, const std::string &, const std::string &); //日志记录
 
-public:
-    static unsigned int serialNumber;                                    //流水号
-    CardManage(const CardManage &) = delete;                             //拷贝构造函数
-    CardManage &operator=(const CardManage &) = delete;                  //拷贝赋值函数
-    CardManage(CardManage &&) = delete;                                  //移动构造函数
+    std::string to_string(unsigned int uid, const std::string &name, const std::string &info);
 
-    static std::string to_string(unsigned int uid, const std::string &name, const std::string &info);
+    void openAccount(unsigned int uid, const std::string &name, const std::string &time = ""); //开户
 
-    static void openAccount(unsigned int uid, const std::string &name, const std::string &time = ""); //开户
+    void deleteAccount(unsigned int uid, const std::string &time = "");             //销户
 
-    static void deleteAccount(unsigned int uid, const std::string &time = "");             //销户
+    void distribute(unsigned int uid, const std::string &time = "");                //发卡
 
-    static void distribute(unsigned int uid, const std::string &time = "");                //发卡
+    void setLost(unsigned int uid, const std::string &time = "");                   //挂失
 
-    static void setLost(unsigned int uid, const std::string &time = "");                   //挂失
+    void unsetLost(unsigned int uid, const std::string &time = "");                 //解挂
 
-    static void unsetLost(unsigned int uid, const std::string &time = "");                 //解挂
+    void reissue(unsigned int uid, const std::string &time = "");                   //补卡
 
-    static void reissue(unsigned int uid, const std::string &time = "");                   //补卡
+    void recharge(unsigned int uid, float amount, const std::string &time = "");    //充值
 
-    static void recharge(unsigned int uid, float amount, const std::string &time = "");    //充值
+    void recall();                                                                  //日志回溯
 
-    static void recall();                                                                  //日志回溯
-
-    static void operateByFile();                                                           //批量操作
+    void operateByFile();                                                           //批量操作
 
 };
 

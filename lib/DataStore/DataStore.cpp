@@ -59,6 +59,49 @@ Consumptions &DataStore::consumes_init() {
     for (auto &thread: threads)
         thread.join();
     printf("All threads joined!\n");
+
+
+    // MARK:--- init operations
+//    auto &operations = DataStore::getSortedOperations();
+//    unsigned int num = 0;
+//    for (auto &re: res)
+//        for (const auto &item: re) {
+//            if (!item) break;
+//            operations[num++] = item;
+//        }
+//    CSV temp;
+//
+//    FileManager::getInstance().getCSVDataSource(temp, 3, FileManager::CARD_MANAGE_CSV_NAME);
+//    for (const auto &item: temp)
+//        operations[num++] = new CardManageOperation(item);
+//    temp.clear();
+//
+//    FileManager::getInstance().getCSVDataSource(temp, 4, FileManager::CARD_RECHARGE_CSV_NAME);
+//    for (const auto &item: temp)
+//        operations[num++] = new RechargeOperation(item);
+//
+//    std::sort(operations, operations + num, [](BaseOperation *l, BaseOperation *r) -> bool {
+////        if (l && r)
+//        return (*l) < (*r);
+////        else
+////            return l == nullptr;
+//    });
+//
+//    if (dynamic_cast<RechargeOperation *>(operations[0])) {
+//        auto rechargeOperation = dynamic_cast<RechargeOperation *>(operations[0]);
+//        printf("%s", rechargeOperation->to_string().c_str());
+//    }
+//    if (dynamic_cast<Consumption *>(operations[0])) {
+//        auto consumption = dynamic_cast<Consumption *>(operations[0]);
+//        printf("%s", consumption->to_string().c_str());
+//    }
+//    if (dynamic_cast<CardManageOperation *>(operations[0])) {
+//        auto cardManageOperation = dynamic_cast<CardManageOperation *>(operations[0]);
+//        printf("%s", cardManageOperation->to_string().c_str());
+//    }
+
+    // ---
+
     return res;
 }
 
@@ -104,13 +147,13 @@ void DataStore::insertAccount(const Account &data) {
     //half search
     while (left <= right) {
         mid = (left + right) / 2;
-        if (accounts[mid] < data) {
+        if (accounts[mid] > data) {
             right = mid - 1;
         } else {
             left = mid + 1;
         }
     }
-    accounts.emplace(accounts.begin() + mid, data);
+    accounts.emplace(accounts.begin() + left, data);
 }
 
 std::vector<Account>::iterator DataStore::queryAccountByUid(unsigned int uid) {
@@ -119,39 +162,36 @@ std::vector<Account>::iterator DataStore::queryAccountByUid(unsigned int uid) {
     int left = 0, right = (int) accounts.size() - 1, mid;
     while (left <= right) {
         mid = (left + right) / 2;
+       if (accounts[mid].uid == uid) {
+            return accounts.begin() + mid;
+        }
         if (accounts[mid].uid > uid) {
             right = mid - 1;
         } else {
             left = mid + 1;
         }
     }
-    if ((accounts.begin() + mid)->uid == uid) {
-        // result has been found
-        return accounts.begin() + mid;
-    } else {
-        // result is not found
-        return accounts.end();
-    }
+    // result is not found
+    return accounts.end();
 }
 
 std::vector<Account>::iterator DataStore::queryAccountByCid(unsigned int cid) {
-    auto &accounts = DataStore::getAccounts();
+    auto &accounts = getAccounts();
+    //half search
     int left = 0, right = (int) accounts.size() - 1, mid;
     while (left <= right) {
         mid = (left + right) / 2;
+        if (accounts[mid].cards.begin()->cid == cid) {
+            return accounts.begin() + mid;
+        }
         if (accounts[mid].cards.begin()->cid > cid) {
             right = mid - 1;
         } else {
             left = mid + 1;
         }
     }
-    if ((accounts.begin() + mid)->cards.begin()->cid == cid) {
-        // result has been found
-        return accounts.begin() + mid;
-    } else {
-        // result is not found
-        return accounts.end();
-    }
+    // result is not found
+    return accounts.end();
 }
 
 void DataStore::insertConsumption(Window window, Consumption *data) {

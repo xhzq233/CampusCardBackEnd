@@ -26,7 +26,7 @@ void Consume::consume(const Window &window, const Card &card, const float &price
     auto account = DataStore::queryAccountByUid(card.cid);
     if (!card.condition) {
         printf("Invalid card.");
-    } else if (account->balance < price) {
+    } else if (account->balance > price) {
         printf("Insufficient account balance."); //账户余额不足
     } else {
         if (hour >= 7 && hour <= 9 || hour >= 11 && hour <= 13 || hour >= 17 && hour <= 19) {
