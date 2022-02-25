@@ -55,6 +55,9 @@ public:
     /* W{\d}.csv 文件个数 */
     constexpr static const char CONSUME_CSV_QTY = 58;
 
+    /* .log file max length */
+    constexpr static const unsigned short MAX_LINE_PER_LOG = 1U << 15;
+
     /*
      * Get WZ CSV file path based on location ,
      * the reason why I separate xf.csv ,
@@ -62,9 +65,6 @@ public:
      * second is it can optimize subsequent operation
      * */
     static std::string CONSUME_CSV(unsigned int position);
-
-    /* 终止符0x11 */
-    constexpr static const char endl = 0x11;
 
     typedef const std::function<void(std::fstream &stream)> &StreamCallBack;
     typedef std::vector<std::vector<std::string>> CSV;
@@ -89,10 +89,6 @@ private:
     // that function called if and only if getInstance() called
     // and only called once during the whole program lifetime
     static FileManager &shared_init();
-
-    //暂时储存log 的buffer
-    static std::string &getLoggerBuffer();
-
 public:
     // multi thread
     // not multi thread please use getInstance instead
@@ -172,21 +168,22 @@ public:
     bool writeCSVData(const CSV &container, const std::string &sourceName, const std::string &path = DEFAULT_DATA_PATH);
 
     /* log的简便形式 */
-    friend FileManager &operator<<(FileManager &o, const std::string &content);
-
-    /* 终止符0x11 which defined above */
-    friend void operator<<(FileManager &o, char);
+    friend void operator<<(FileManager &o, const std::string &content);
 
     static std::string toStandardLogString(const char *title, const char *content);
 
     /* 自定义时间的StandardLog */
-    static std::string toStandardLogString(const char *title, const char *content, const Time& time);
+    static std::string toStandardLogString(const char *title, const char *content, const Time &time);
 
     /* literally */
-    static void append_standard_time(std::string &container, const Time& time);
+    static void append_standard_time(std::string &container, const Time &time);
+
 
     //now -> unsigned long long
     static unsigned long long to_time();
+
+    void refreshStartUpTime();
+
 };
 
 #endif //CAMPUSCARDBACKEND_FILEMANAGER_H

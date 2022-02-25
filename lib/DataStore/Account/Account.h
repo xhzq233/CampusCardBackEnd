@@ -17,8 +17,7 @@ public:
     float balance;//余额
     std::list<Card> cards;//卡
     Account(unsigned int uid, std::string name) : uid(uid), name(move(name)), balance(0), cards({}) {
-        FileManager::getInstance() << FileManager::toStandardLogString("开户", this->to_string().c_str())
-                                   << FileManager::endl;
+        FileManager::getInstance() << FileManager::toStandardLogString("开户", this->to_string().c_str());
     }
 
     // from strings
