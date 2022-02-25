@@ -46,7 +46,7 @@ void subwork_of_init_consumes(int index, Consumptions *consumes) {
     // no longer to be sorted
 }
 
-#ifdef __WIN64
+#ifndef __WIN64
 const unsigned int MAX_THREAD = std::thread::hardware_concurrency();
 #endif //__WIN64
 

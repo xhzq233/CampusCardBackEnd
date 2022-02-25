@@ -56,7 +56,7 @@ public:
     constexpr static const char CONSUME_CSV_QTY = 58;
 
     /* .log file max length */
-    constexpr static const unsigned short MAX_LINE_PER_LOG = 1U << 15;
+    constexpr static const unsigned short MAX_LINE_PER_LOG = 1U << 14;
 
     /*
      * Get WZ CSV file path based on location ,
@@ -180,7 +180,7 @@ public:
 
 
     //now -> unsigned long long
-    static unsigned long long to_time();
+    static Time nowTime();
 
     void refreshStartUpTime();
 
