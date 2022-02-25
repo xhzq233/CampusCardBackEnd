@@ -10,16 +10,19 @@
 
 
 namespace Consume {
+    typedef unsigned long long Time;
 
-    void consume(const Window &window, const Card &card, const float &price, const std::string &time); //指定时间消费
+    void consume(const Window &window, const Card &card, const float &price, const Time &time); //指定时间消费
 
     void consume(const Window &window, const Card &card, const float &price); //当日消费
 
     void consume(const Consumption &log); //通过消费记录消费
 
-    void show(const Window &window, const std::string &time); //消费完后展示指定时间消费次数和数据
+    void show(const Window &window, const Time &time); //消费完后展示指定时间消费次数和数据
 
     void show(const Window &window); //消费完后展示当日消费次数和数据
+
+    void log(const Time&time,unsigned int cid,Window window,float price,const char *info);
 
     bool checkPasswd(const Card &card); //输入密码
 }

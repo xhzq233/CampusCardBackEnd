@@ -119,7 +119,7 @@ std::vector<Account>::iterator DataStore::queryAccountByUid(unsigned int uid) {
     int left = 0, right = (int) accounts.size() - 1, mid;
     while (left <= right) {
         mid = (left + right) / 2;
-       if (accounts[mid].uid == uid) {
+        if (accounts[mid].uid == uid) {
             return accounts.begin() + mid;
         }
         if (accounts[mid].uid > uid) {

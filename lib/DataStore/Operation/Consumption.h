@@ -50,12 +50,15 @@ public:
     // date + cid + window + price
     [[nodiscard]] std::string to_string() const override {
         auto &&res = BaseOperation::to_string();
-        res.push_back(',');
+        res.push_back(' ');
         res.append(std::to_string(cid));    // cid
-        res.push_back(',');
+        res.push_back(' ');
         res.append(std::to_string(window)); // window
-        res.push_back(',');
-        res.append(std::to_string(price));  // price
+        res.push_back(' ');
+        char _price[6];
+        sprintf(_price,"%.2f",price);
+        res.append(_price);  // price
+        res.append(" succeeded");
         return res;
     }
 };
