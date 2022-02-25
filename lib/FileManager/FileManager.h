@@ -89,6 +89,7 @@ private:
     // that function called if and only if getInstance() called
     // and only called once during the whole program lifetime
     static FileManager &shared_init();
+
 public:
     // multi thread
     // not multi thread please use getInstance instead
