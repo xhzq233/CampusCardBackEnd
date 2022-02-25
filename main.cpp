@@ -104,6 +104,8 @@ void init(){
                 case CardManageOperation::Cancellation:
                     CardManage::deleteAccount(cardManageOperation->uid,cardManageOperation->time);
                     break;
+                case CardManageOperation::Recharge:
+                    throw;// no recharge
             }
         } else {
             throw; // "Unknown Operation"

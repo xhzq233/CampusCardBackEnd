@@ -5,11 +5,11 @@
 #ifndef CAMPUSCARDBACKEND_BASEOPERATION_H
 #define CAMPUSCARDBACKEND_BASEOPERATION_H
 
-#include "../../Dependencies.h"
+#include "../../FileManager/FileManager.h"
 
 class BaseOperation {
 public:
-    typedef unsigned long long Time;
+    using Time = FileManager::Time;
     Time time;
 
     explicit BaseOperation(Time time) : time(time) {}

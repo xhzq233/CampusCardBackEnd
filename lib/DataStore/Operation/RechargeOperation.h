@@ -15,8 +15,12 @@ public:
                                                                       price(price) {}
 
     // from strings
-    explicit RechargeOperation(const std::vector<std::string> &strings) : price(std::stoi(strings[3])),
-                                                                          CardManageOperation(strings) {}
+    explicit RechargeOperation(const std::vector<std::string> &strings) :
+            RechargeOperation(
+                    std::stoi(strings[2]),
+                    std::stoull(strings[0]),
+                    std::stoi(strings[3])
+            ) {}
 
     [[nodiscard]] std::string to_string() const override {
         auto &&res = CardManageOperation::to_string();

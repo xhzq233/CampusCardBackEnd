@@ -34,7 +34,7 @@ bool FileManager::prepareIOStream(StreamCallBack func, const std::string &path,
         if (!IOStream.is_open()) {
             //read failed
             IOStream.close();
-            printf("%s read failed\n", (path+source).c_str());
+            printf("%s read failed\n", (path + source).c_str());
             return false;
         }
     }
@@ -178,29 +178,32 @@ void operator<<(FileManager &o, const char c) {
 std::string FileManager::toStandardLogString(const char *title, const char *content) {
     time_t now = time(nullptr);
     std::string res;
-    res.append("[");
-    append_standard_time(res, now);
+    res.push_back('[');
+    auto *tm = std::localtime(&now);
+    char buf[25];
+    strftime(buf, sizeof(buf), "%Y-%m-%d-%X", tm);
+    res.append(buf);
     res.append(" : ");
     res.append(title);
-    res.append("] ");
+    res.push_back(']');
     res.append(content);
     return res;
 }
 
 std::string FileManager::toStandardLogString(const char *title, const char *content, const Time &time) {
     std::string res;
-    res.append("[");
+    res.push_back('[');
     append_standard_time(res, time);
     res.append(" : ");
     res.append(title);
-    res.append("] ");
+    res.push_back(']');
     res.append(content);
     return res;
 }
 
 void FileManager::append_standard_time(std::string &container, const Time &time) {
     char buf[22];
-    sprintf(buf, "%d-%d-%d-%d-%d:%d:%d", time / 1'000'000'000'000, time / 1'000'000'000'0 % 100,
+    sprintf(buf, "%llu-%llu-%llu-%llu-%llu:%llu:%llu", time / 1'000'000'000'000, time / 1'000'000'000'0 % 100,
             time / 10'000'000'0 % 100,
             time / 100'000'0 % 100, time / 1'000'0 % 100, time / 10'0 % 100,
             time % 100);
