@@ -5,20 +5,27 @@
 
 #include "FileManager.h"
 
-
 FileManager &FileManager::getInstance() {
     // only call once here
     static FileManager &instance = shared_init();
     return instance;
 }
 
-FileManager &FileManager::shared_init() {
-    static FileManager instance;
+void FileManager::refreshStartUpTime() {
+    static unsigned int count = 0;
+    startUpTime.clear();
     time_t now = time(nullptr);
     auto *tm = std::localtime(&now);
     char buf[30];
-    strftime(buf, sizeof(buf), "%Y-%m-%d-%H-%M-%S", tm);
-    instance.startUpTime.append(buf);
+    strftime(buf, sizeof(buf), "%Y-%m-%d-%H-%M-%S-", tm);
+    startUpTime.append(buf);
+    startUpTime.append(std::to_string(count));
+    count++;
+}
+
+FileManager &FileManager::shared_init() {
+    static FileManager instance;
+    instance.refreshStartUpTime();
     return instance;
 }
 
@@ -151,7 +158,7 @@ bool FileManager::writeCSVData(const CSV &container, const std::string &sourceNa
                                    [](const std::string &r,//init 参数需要显示转换为string
                                       const std::string &l) -> std::string {
                                        std::string s(r);
-                                       s.append(",");
+                                       s.push_back(',');
                                        s.append(l);
                                        return s;
                                    });//Complexity: O(last - first) applications of binary_op.
@@ -160,18 +167,22 @@ bool FileManager::writeCSVData(const CSV &container, const std::string &sourceNa
     return writeStrings(transform, sourceName, path, std::ios::out | std::ios::trunc);
 }
 
-FileManager &operator<<(FileManager &o, const std::string &content) {
-    FileManager::getLoggerBuffer().append(content);
-    return o;
-}
+void operator<<(FileManager &o, const std::string &content) {
+    if (content.empty()) return; // return directly if empty
 
-void operator<<(FileManager &o, const char c) {
+    static unsigned short length = 0;
 
-    if (FileManager::getLoggerBuffer().empty()) return; // return directly if empty
+    FileManager::getLogger() << content << '\n';
 
-    if (c == FileManager::endl) {
-        FileManager::getLogger() << FileManager::getLoggerBuffer() << '\n';
-        FileManager::getLoggerBuffer().clear();//输出完后清空
+    length++;
+
+    if (length > FileManager::MAX_LINE_PER_LOG) {
+        o.refreshStartUpTime();
+        FileManager::getLogger().close(); //remake
+        FileManager::getLogger().open(
+                FileManager::DEFAULT_LOG_PATH + o.startUpTime + ".log",
+                std::ios::trunc);
+        length = 0;
     }
 }
 
@@ -212,15 +223,6 @@ void FileManager::append_standard_time(std::string &container, const Time &time)
 
 std::ofstream &FileManager::getLogger() {
     //lambda return
-    static std::ofstream &logger = [&]() -> std::ofstream & {
-        static std::ofstream o;
-        o.open(DEFAULT_LOG_PATH + getInstance().startUpTime + ".log", std::ios::app);
-        return o;
-    }();
+    static std::ofstream logger(DEFAULT_LOG_PATH + getInstance().startUpTime + ".log", std::ios::trunc);
     return logger;
-}
-
-std::string &FileManager::getLoggerBuffer() {
-    static std::string res;
-    return res;
 }

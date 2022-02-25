@@ -54,9 +54,9 @@ void description(const DataStore::Accounts &accounts, int num = 5) {
 constexpr static const unsigned int RESERVED_SIZE = 2'500'000;
 typedef BaseOperation *SortedOperations[RESERVED_SIZE];
 
-void init(){
+void init() {
     // MARK:--- init operations
-    auto* operations = new SortedOperations{nullptr};
+    auto *operations = new SortedOperations{nullptr};
     auto &res = DataStore::getConsumptions();
     unsigned int num = 0;
     for (auto &re: res)
@@ -87,22 +87,22 @@ void init(){
     using namespace Consume;
     for (int i = 0; i < num; ++i) {
         if ((rechargeOperation = dynamic_cast<RechargeOperation *>(operations[i]))) {
-            CardManage::recharge(rechargeOperation->uid,rechargeOperation->price,rechargeOperation->time);
+            CardManage::recharge(rechargeOperation->uid, rechargeOperation->price, rechargeOperation->time);
         } else if ((consumption = dynamic_cast<Consumption *>(operations[i]))) {
             consume(*consumption);
         } else if ((cardManageOperation = dynamic_cast<CardManageOperation *>(operations[i]))) {
             switch (cardManageOperation->operationName) {
                 case CardManageOperation::Reissue:
-                    CardManage::reissue(cardManageOperation->uid,cardManageOperation->time);
+                    CardManage::reissue(cardManageOperation->uid, cardManageOperation->time);
                     break;
                 case CardManageOperation::Uncouple:
-                    CardManage::unsetLost(cardManageOperation->uid,cardManageOperation->time);
+                    CardManage::unsetLost(cardManageOperation->uid, cardManageOperation->time);
                     break;
                 case CardManageOperation::SetLoss:
-                    CardManage::setLost(cardManageOperation->uid,cardManageOperation->time);
+                    CardManage::setLost(cardManageOperation->uid, cardManageOperation->time);
                     break;
                 case CardManageOperation::Cancellation:
-                    CardManage::deleteAccount(cardManageOperation->uid,cardManageOperation->time);
+                    CardManage::deleteAccount(cardManageOperation->uid, cardManageOperation->time);
                     break;
                 case CardManageOperation::Recharge:
                     throw;// no recharge
@@ -136,13 +136,12 @@ int main() {
     };
 
     testTimeWrapper(func);
-
     // Reference:
     // https://stackoverflow.com/questions/8588541/c-should-i-bother-deleting-pointers-to-application-lifetime-variables
 //    释放指针
-    for (const auto &item: DataStore::getConsumptions()) {
-        for (const auto &i: item)
-            delete i;
-    }
+//    for (const auto &item: DataStore::getConsumptions()) {
+//        for (const auto &i: item)
+//            delete i;
+//    }
     return 0;
 }

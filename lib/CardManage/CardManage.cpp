@@ -128,10 +128,9 @@ void CardManage::recall() {
 
 void CardManage::log(const char *title, const string &content, const Time &time) {
     if (!time) {
-        FileManager::getInstance() << FileManager::toStandardLogString(title, content.c_str()) << FileManager::endl;
+        FileManager::getInstance() << FileManager::toStandardLogString(title, content.c_str());
     } else {
-        FileManager::getInstance() << FileManager::toStandardLogString(title, content.c_str(), time)
-                                   << FileManager::endl;
+        FileManager::getInstance() << FileManager::toStandardLogString(title, content.c_str(), time);
     }
 }
 
