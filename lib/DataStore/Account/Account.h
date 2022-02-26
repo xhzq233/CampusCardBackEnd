@@ -8,6 +8,26 @@
 #include "Card/Card.h"
 #include "../../FileManager/FileManager.h"
 
+class list {
+private:
+    Card *card;
+    list *next;
+
+public:
+    list() : card(nullptr), next(nullptr) {};
+
+    ~list();
+
+    void push(Card *newCard);
+
+    Card *begin();
+
+    void clear();
+
+    int size();
+};
+
+
 class Account {
 private:
     /* data */
@@ -18,8 +38,9 @@ public:
 
     Name name{0};//姓名
     float balance;//余额
-    std::list<Card> cards;//卡
-    Account(unsigned int uid, const std::string &name1) : uid(uid), balance(0), cards({}) {
+    list cards;//卡
+
+    Account(unsigned int uid, const std::string &name1) : uid(uid), balance(0), cards() {
         if (name1.size() > NAME_SIZE)
             throw;
         strncpy(name, name1.c_str(), name1.size());
@@ -29,14 +50,10 @@ public:
     // from strings
     explicit Account(const std::vector<std::string> &strings) : Account(std::stoul(strings[0]), strings[1]) {}
 
+    ~Account()=default;
+
     // to string
-    [[nodiscard]] std::string to_string() const {
-        std::string res;
-        res.append(std::to_string(uid));
-        res.append(" ");
-        res.append(name);
-        return res;
-    }
+    [[nodiscard]] std::string to_string() const;
 
     void consume(float price) {
         this->balance -= price;
