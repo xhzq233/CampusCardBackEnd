@@ -32,13 +32,13 @@ namespace CardManage {
     void recall();                                                                  //日志回溯
 
     inline void not_in_sys(const char *title, unsigned int &uid, const FileManager::Time &time) {
-        auto buffer = new char[35];
+        auto buffer = new char[32];
         sprintf(buffer, "%d failed: NOT IN SYS", uid);
         CardManage::log(title, buffer, time);
     }
 
     inline void success(const char *title, const char *name, unsigned int &uid, const FileManager::Time &time) {
-        auto buffer = new char[36];
+        auto buffer = new char[25];
         sprintf(buffer, "%d %s success", uid, name);
         CardManage::log(title, buffer, time);
     }

@@ -2,6 +2,7 @@
 #include "lib/DataStore/DataStore.h"
 #include "lib/CardManage/CardManage.h"
 #include "lib/Consume/Consume.h"
+#include "lib/Container/CircularArray.h"
 
 typedef std::function<void(void)> VoidCallBack;
 
@@ -37,11 +38,7 @@ void description(const CSV &csv, int num = 5) {
 // print -head num
 void description(const DataStore::Consumptions &consumes, int row = 4, int col = 5) {
     for (int i = 0; i < row; ++i) {
-        auto position = DataStore::getWindowPositions()[i];
-        for (unsigned int j = position - col; j < position; ++j) {
-            if (!consumes[i][j]) continue;
-            printf("%s \n", consumes[i][j]->to_string().c_str());
-        }
+        //todo
     }
 }
 
@@ -60,7 +57,7 @@ void init() {
     auto &res = DataStore::getConsumptions();
     unsigned int num = 0;
     for (auto &re: res)
-        for (const auto &item: re) {
+        for (const auto &item: *re) {
             if (!item) break;
             operations[num++] = item;
         }
@@ -78,8 +75,7 @@ void init() {
     std::sort(operations, operations + num, [](BaseOperation *l, BaseOperation *r) -> bool {
         return (*l) < (*r);
     });
-    for (auto &account : DataStore::getAccounts())
-    {
+    for (auto &account: DataStore::getAccounts()) {
         CardManage::distribute(account.uid);
     }    // sort complete
     temp.clear();
@@ -88,7 +84,7 @@ void init() {
     Consumption *consumption;
     CardManageOperation *cardManageOperation;
 
-    // start operation
+    // start_index operation
     using namespace Consume;
     for (int i = 0; i < num; ++i) {
         if ((rechargeOperation = dynamic_cast<RechargeOperation *>(operations[i]))) {
@@ -124,17 +120,7 @@ void init() {
 int main() {
     VoidCallBack func{
             [&]() {
-//                CSV csv;
-//                if (FileManager::getInstance().getCSVDataSource(csv, 4,
-//                                                                FileManager::CARD_RECHARGE_CSV_NAME));
-//                else printf("err");
-//                description(csv);
-//                DataStore::insertAccount(Account(0, ""));
                 init();
-//                DataStore::queryConsumption(1,43532);
-//                description(DataStore::getAccounts());
-//                FileManager::getInstance() << FileManager::toStandardLogString("THIS IS TITLE", "AND content here")
-//                                           << FileManager::endl;
 //                if (FileManager::getInstance().writeCSVData(csv, "xhzq.csv", "../adjygvjsafvj/"));
             }
     };
@@ -142,9 +128,8 @@ int main() {
     testTimeWrapper(func);
     // Reference:
     // https://stackoverflow.com/questions/8588541/c-should-i-bother-deleting-pointers-to-application-lifetime-variables
-//    释放指针
-//    for (const auto &item: DataStore::getConsumptions()) {
-//        for (const auto &i: item)
-//            delete i;
-//    }
+    // 释放指针
+    for (auto item: DataStore::getConsumptions()) {
+        delete item;
+    }
 }

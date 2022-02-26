@@ -192,7 +192,7 @@ std::string FileManager::toStandardLogString(const char *title, const char *cont
     char buf[23];
     strftime(buf, sizeof(buf), "%Y-%m-%d-%X:00", tm);
 
-    char buffer[90];
+    char buffer[91];
     sprintf(buffer, "[%s : %s] %s", buf, title, content);
 
     delete[] content;
@@ -206,9 +206,9 @@ std::string FileManager::toStandardLogString(const char *title, const std::strin
     char buf[23];
     strftime(buf, sizeof(buf), "%Y-%m-%d-%X:00", tm);
 
-    char buffer[90];
+    char buffer[91];
     sprintf(buffer, "[%s : %s] %s", buf, title, content.c_str());
-    // std::string.c_str() not in heap so don't need to free
+    // std::string.c_str() is not in heap so don't need to free
     return {buffer};
 }
 
@@ -217,10 +217,10 @@ FileManager::toStandardLogString(const char *title, const std::string &content, 
     std::string res;
     res.push_back('[');
     append_standard_time(res, time);
-    char buffer[70];
+    char buffer[72];
     sprintf(buffer, " : %s] %s", title, content.c_str());
     res.append(buffer);
-    // std::string.c_str() not in heap so don't need to free
+    // std::string.c_str() is not in heap so don't need to free
     return res;
 }
 
@@ -252,7 +252,7 @@ std::string FileManager::toStandardLogString(const char *title, const char *cont
 }
 
 void FileManager::append_standard_time(std::string &container, const Time &time) {
-    char buf[23];
+    char buf [23];
     typedef unsigned char sub_time;
 
     sprintf(buf, "%d-%02d-%02d-%02d:%02d:%02d:%02d",
@@ -267,7 +267,6 @@ void FileManager::append_standard_time(std::string &container, const Time &time)
 }
 
 std::ofstream &FileManager::getLogger() {
-    //lambda return
     static std::ofstream logger(DEFAULT_LOG_PATH + getInstance().startUpTime + ".log", std::ios::trunc);
     return logger;
 }

@@ -22,7 +22,7 @@ void Consume::consume(const Window &window, const Card &card, const float &price
             if (price <= 20 || checkPasswd(card)) {
                 //价格20内或者20以上输入密码正确
                 account->consume(price);
-                DataStore::insertConsumption(window, new Consumption(card.cid, window, time, price));
+                DataStore::pushConsumption(window, new Consumption(card.cid, window, time, price));
                 Consume::log(time, card.cid, window, price, "succeeded");
                 show(window);
             }
@@ -51,7 +51,7 @@ void Consume::consume(const Window &window, const Card &card, const float &price
             if (price <= 20 || checkPasswd(card)) {
                 //价格20内或者20以上输入密码正确
                 account->consume(price);
-                DataStore::insertConsumption(window, new Consumption(card.cid, window, time, price));
+                DataStore::pushConsumption(window, new Consumption(card.cid, window, time, price));
                 Consume::log(time, card.cid, window, price, "succeeded");
                 show(window, time);
             }
@@ -69,7 +69,7 @@ void Consume::consume(const Consumption &log) {
 }
 
 void Consume::show(const Window &window) {
-    auto consumptions = DataStore::getConsumptions()[window];
+    const auto& consumptions = *(DataStore::getConsumptions()[window]);
     int count = 0;      //当日收费次数
     float revenue = 0; // 当日营收
     int date = static_cast<int>(FileManager::nowTime() / 10'000'000'000); //日期
@@ -84,7 +84,7 @@ void Consume::show(const Window &window) {
 }
 
 void Consume::show(const Window &window, const Time &time) {
-    auto consumptions = DataStore::getConsumptions()[window];
+    const auto& consumptions = *(DataStore::getConsumptions()[window]);
     int count = 0;//指定时间的收费次数
     float revenue = 0; // 指定时间营收
     int date = (int) (time / 100000000); //日期

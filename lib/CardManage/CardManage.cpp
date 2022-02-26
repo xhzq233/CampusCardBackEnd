@@ -112,7 +112,7 @@ void CardManage::recharge(unsigned int uid, int amount, const Time &time) noexce
             sprintf(buffer, "%d failed: Reached upper limit", uid);
             log("充值", buffer, time);
         } else {
-            auto buffer = new char[70];
+            auto buffer = new char[64];
             sprintf(buffer, "%d %s success (cid: %d elder %.2f new %.2f)", uid, account->name, card->cid,
                     account->balance,
                     account->balance + (float) amount);

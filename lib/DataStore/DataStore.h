@@ -9,6 +9,7 @@
 #include "Operation/Consumption.h"
 #include "Operation/CardManageOperation.h"
 #include "Operation/RechargeOperation.h"
+#include "../Container/CircularArray.h"
 
 /* 'Data Base' liked object */
 class DataStore {
@@ -23,7 +24,7 @@ public:
     constexpr static const unsigned int MAXSIZE = 60000;
 
     /* each Window have Consumptions, use Consumptions[Window - 1] get each window Consumptions data */
-    typedef Consumption *Consumptions[WINDOW_QTY][MAXSIZE];
+    typedef CircularArray<Consumption *> *Consumptions[WINDOW_QTY];
 
     // notice that WindowPositions[0] represents the position of Window1
     typedef WindowPosition WindowPositions[WINDOW_QTY];
@@ -40,7 +41,7 @@ public:
     static Consumptions &getConsumptions();
 
     /* notice that WindowPositions[0] represents the position of Window1, subscripts ranged from 0 to 98 */
-    static WindowPositions &getWindowPositions();
+    static const WindowPositions &getWindowPositions();
 
     /* Account insert func, designed by half find and insert */
     static void insertAccount(const Account &data);
@@ -51,8 +52,11 @@ public:
     /* Query account by cid */
     static std::vector<Account>::iterator queryAccountByCid(unsigned int uid);
 
-    /* Consumption insert func, window ranged from 1 to 99 */
-    static void insertConsumption(Window window, Consumption *data);
+    /* Consumption push back, window ranged from 1 to 99 */
+    static void pushConsumption(Window window, Consumption *data);
+
+    /* OnSpecifiedTime */
+    static void insertConsumptionOnSpecifiedTime(Window window, Consumption *data, const FileManager::Time &time);
 
     /* on specified window and card id, return Subscripts matched */
     static Subscripts queryConsumption(Window window, unsigned int cid);
@@ -71,7 +75,7 @@ private:
     static Consumptions &consumes_init();
 
     //called if and only if initializing
-    static WindowPositions &windows_init();
+    static const WindowPositions &windows_init();
 
     //called if and only if initializing
     static Accounts &accounts_init();

@@ -32,15 +32,14 @@ void subwork_of_init_consumes(int index, Consumptions *consumes) {
     CSV temp;
     FileManager().getCSVDataSource(temp, 4, FileManager::CONSUME_CSV(index + 1));
 
-    //  stored data start index, it should be the initialized window position minus data size
+    //  stored data start_index index, it should be the initialized window position minus data size
 //    const auto &position = DataStore::getWindowPositions()[index];
     unsigned int size = temp.size();
 //    int start_index = (int) position - size + 1;
 //    if (start_index < 0) // position - temp.size() + 1 less than zero
 //        start_index = (int) DataStore::MAXSIZE - start_index;
     for (unsigned int i = 0; i < size; ++i) {
-        (*consumes)[index][i % DataStore::MAXSIZE] = new Consumption(index + 1,
-                                                                     temp[i]);
+        (*consumes)[index]->push_back(new Consumption(index + 1, temp[i]));
         // no more than MAXSIZE
     }
     // no longer to be sorted
@@ -51,6 +50,10 @@ const unsigned int MAX_THREAD = std::thread::hardware_concurrency();
 Consumptions &DataStore::consumes_init() {
     //99 x 60000
     static Consumptions res{nullptr};
+    auto &windowPositions = DataStore::getWindowPositions();
+    for (int i = 0; i < WINDOW_QTY; ++i) {
+        res[i] = new CircularArray<Consumption *>(MAXSIZE, windowPositions[i]);
+    }
     for (int i = 0; i < FileManager::CONSUME_CSV_QTY; ++i)
         subwork_of_init_consumes(i,&res);
     return res;
@@ -61,6 +64,10 @@ Consumptions &DataStore::consumes_init() {
 Consumptions &DataStore::consumes_init() {
     //99 x 60000
     static Consumptions res{nullptr};
+    auto &windowPositions = DataStore::getWindowPositions();
+    for (int i = 0; i < WINDOW_QTY; ++i) {
+        res[i] = new CircularArray<Consumption *>(MAXSIZE, windowPositions[i]);
+    }
     std::thread threads[FileManager::CONSUME_CSV_QTY];
     for (int i = 0; i < FileManager::CONSUME_CSV_QTY; ++i)
         threads[i] = std::thread(subwork_of_init_consumes, i, &res);   // move-assign threads
@@ -72,7 +79,7 @@ Consumptions &DataStore::consumes_init() {
 
 #endif //__WIN64
 
-WindowPositions &DataStore::windows_init() {
+const WindowPositions &DataStore::windows_init() {
     static WindowPositions windowPositions{0};
     FileManager::CSV container;
     ///预定好尺寸 99x2
@@ -93,8 +100,8 @@ void DataStore::localize() {
 
 }
 
-WindowPositions &DataStore::getWindowPositions() {
-    static WindowPositions &windowPositions = windows_init();
+const WindowPositions &DataStore::getWindowPositions() {
+    static const WindowPositions &windowPositions = windows_init();
     return windowPositions;
 }
 
@@ -159,7 +166,17 @@ std::vector<Account>::iterator DataStore::queryAccountByCid(unsigned int cid) {
     return accounts.end();
 }
 
-void DataStore::insertConsumption(Window window, Consumption *data) {
+void DataStore::pushConsumption(Window window, Consumption *data) {
+    //error handle
+    if (window == 0 || window > WINDOW_QTY) {
+        printf("[ERROR] %u not in this range: 1 - 99", window);
+        return;
+    }
+    auto consumes_in_window = getConsumptions()[window - 1];
+    consumes_in_window->push_back(data);
+}
+
+void DataStore::insertConsumptionOnSpecifiedTime(Window window, Consumption *data, const FileManager::Time &time) {
     //error handle
     if (window == 0 || window > WINDOW_QTY) {
         printf("[ERROR] %u not in this range: 1 - 99", window);
@@ -167,10 +184,7 @@ void DataStore::insertConsumption(Window window, Consumption *data) {
     }
     auto &consumes_in_window = getConsumptions()[window - 1];
     auto &&position = getWindowPositions()[window - 1];
-    // add self and assign self
-    position = (position + 1) % MAXSIZE; // no more than MAXSIZE
 
-    consumes_in_window[position] = data;
 }
 
 using DataQuery = DataStore;
@@ -209,21 +223,11 @@ DataQuery::Subscripts DataStore::queryConsumption(Window window, unsigned int ci
         return {};
     }
     Subscripts res;
-    const auto &consumptions_in_window = getConsumptions()[window - 1];
-    WindowPosition windowPosition = getWindowPositions()[window - 1];
-    // initial judgement
-    if (cid == consumptions_in_window[windowPosition]->cid) {
-        res.emplace_back(windowPosition);
-    }
-    // if windowPosition equal to zero,
-    if (!windowPosition) windowPosition = MAXSIZE;
+    const auto &consumptions_in_window = *getConsumptions()[window - 1];
     // Retrieve backward from this windowPosition
-    for (unsigned int i = windowPosition - 1; i != windowPosition; --i) {
-        if (!consumptions_in_window[i]) break;//meet nullptr ,loop close
-        if (cid == consumptions_in_window[i]->cid)
-            res.emplace_back(i);
-        if (i == 0) i = MAXSIZE;
-    }
+    // todo
+    //if (cid == consumptions_in_window[i]->cid)
+    //            res.emplace_back(i);
     return res;
 }
 
