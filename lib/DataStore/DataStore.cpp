@@ -48,11 +48,12 @@ void subwork_of_init_consumes(int index, Consumptions *consumes) {
 
 #ifdef __WIN64
 const unsigned int MAX_THREAD = std::thread::hardware_concurrency();
+
 Consumptions &DataStore::consumes_init() {
     //99 x 60000
     static Consumptions res{nullptr};
     for (int i = 0; i < FileManager::CONSUME_CSV_QTY; ++i)
-        subwork_of_init_consumes(i,&res);
+        subwork_of_init_consumes(i, &res);
     return res;
 }
 
@@ -147,6 +148,9 @@ std::vector<Account>::iterator DataStore::queryAccountByCid(unsigned int cid) {
     int left = 0, right = (int) accounts.size() - 1, mid;
     while (left <= right) {
         mid = (left + right) / 2;
+        if (!accounts[mid].cards.begin()) {
+            ++mid;
+        }
         if (accounts[mid].cards.begin()->cid == cid) {
             return accounts.begin() + mid;
         } else if (accounts[mid].cards.begin()->cid > cid) {

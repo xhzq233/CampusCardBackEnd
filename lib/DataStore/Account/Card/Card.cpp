@@ -18,16 +18,9 @@ Card::Card(unsigned int uid, unsigned int serialNumber) : uid(uid), date(DEFAULT
 
 void Card::changePassword() {
     if (this->condition) {
-        scanf("%u", &this->password);
+        char * buf;
+        this->password = strtoul("%u",&buf,8);
     }
-}
-
-void Card::consume(float d) {
-
-}
-
-float Card::getBalance() {
-    return 0;
 }
 
 std::string Card::to_string() const {

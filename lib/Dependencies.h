@@ -9,7 +9,6 @@
 #include <vector>
 #include <fstream>
 #include <ctime>
-#include <list>
 #include <numeric>
 #include <functional>
 #include <regex>

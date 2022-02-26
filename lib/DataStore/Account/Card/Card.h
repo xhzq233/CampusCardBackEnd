@@ -27,9 +27,6 @@ public:
         return this->password == password;
     }
 
-    void consume(float d);
-
-    float getBalance();
 
     // from strings
     explicit Card(const std::vector<std::string> &strings) : Card(std::stoul(strings[0]), std::stoul(strings[1])) {}
