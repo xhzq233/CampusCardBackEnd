@@ -86,7 +86,7 @@ void CardManage::reissue(unsigned int uid, const Time &time) {
         //最多只能补卡100次
     else if (account->cards.size() >= CardManage::MAX_REISSUE_TIMES) {
         auto buffer = new char[40];
-        sprintf(buffer, "%d failed: Reached upper limit", uid);
+        sprintf(buffer, "%d %s failed: Reached upper limit", uid, account->name.c_str());
         log("补卡", buffer, time);
     } else {
         Card card(uid, ++CardManage::serialNumber);
