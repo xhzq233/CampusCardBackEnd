@@ -56,11 +56,9 @@ void init() {
     auto *operations = new SortedOperations{nullptr};
     auto &res = DataStore::getConsumptions();
     unsigned int num = 0;
-    for (auto &re: res)
-        for (const auto &item: *re) {
-            if (!item) break;
+    for (auto re: res)
+        for (auto item: (*re))
             operations[num++] = item;
-        }
     CSV temp;
 
     FileManager::getInstance().getCSVDataSource(temp, 3, FileManager::CARD_MANAGE_CSV_NAME);
@@ -125,23 +123,23 @@ int main() {
 
                 unsigned int uid = 2020171992;
                 std::string name = "夏侯臻";
-                CardManage::openAccount(uid,name);
+                CardManage::openAccount(uid, name);
                 CardManage::deleteAccount(uid);
-                CardManage::openAccount(uid,name);
+                CardManage::openAccount(uid, name);
                 CardManage::distribute(uid);
-                CardManage::recharge(uid,20);
+                CardManage::recharge(uid, 20);
                 auto &card = *DataStore::queryAccountByUid(uid)->cards.begin();
-                Consume::consume(2,card,30.0);
+                Consume::consume(2, card, 30.0);
             }
     };
 
     testTimeWrapper(func);
+
     // Reference:
     // https://stackoverflow.com/questions/8588541/c-should-i-bother-deleting-pointers-to-application-lifetime-variables
-
     // 释放指针
-    for (auto item: DataStore::getConsumptions()) {
-        delete item;
-    }
-
+//    for (auto item: DataStore::getConsumptions()) {
+//        delete item;
+//    }
+    return 0;
 }

@@ -109,22 +109,51 @@ public:
 
     // delete pointer
     ~CircularArray() {
-        for (int i = 0; i < size; ++i)
-            delete data[i];
+        for (auto &item: (*this)) {
+            delete item; //must add this, otherwise it can't be deleted correctly
+        }
         delete[] data;
     }
 
+    class Iterator {
+    public:
+        explicit Iterator(ValueType *ptr, ValueType *head, Size size, Index current) : ptr(ptr),
+                                                                                       head(head),
+                                                                                       size(size),
+                                                                                       count(current) {}
+
+        Iterator operator++() noexcept {
+            ++count;
+            if (count < size) {
+                ++ptr;
+            } else {
+                ptr = head;
+                count = 0;
+            }
+            return *this;
+        }
+
+        bool operator!=(ValueType *other) const noexcept { return ptr != other; }
+
+        const ValueType &operator*() const noexcept { return *ptr; }
+
+    private:
+        ValueType *ptr;
+        ValueType *head;
+        Index count;
+        Size size;
+    };
+
 private:
-    ValueType *data;
-
+    ValueType *data{nullptr};
 public:
-    const ValueType *begin() const { return data + current_index; }
-
-    const ValueType *end() const { return data + size; }
-
-    const ValueType * range(){
-
+    // only iterate none null values
+    Iterator begin() const noexcept {
+        return Iterator(data + (start_index + 1) % size, data, size, (start_index + 1) % size);
     }
+
+    ValueType *end() const noexcept { return data + (current_index + 1) % size; } //nullptr
+
 };
 
 #endif //CAMPUSCARDBACKEND_CIRCULARARRAY_H

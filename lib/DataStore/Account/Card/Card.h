@@ -23,8 +23,8 @@ public:
     void changePassword();                            //修改密码
 
     //验证密码
-    [[nodiscard]] inline bool checkPassword(unsigned int password) const {
-        return this->password == password;
+    [[nodiscard]] inline bool checkPassword(unsigned int passwd) const {
+        return this->password == passwd;
     }
 
 
