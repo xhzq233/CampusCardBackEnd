@@ -86,7 +86,7 @@ void CardManage::reissue(unsigned int uid, const Time &time) {
     }
         //最多只能补卡100次
     else if (account->cards.size() >= 100) {
-        log("补卡", to_string(uid, "非系统用户", "failed 备注:补卡次数达到上限"), time);
+        log("补卡", to_string(uid, account->name, "failed 备注:补卡次数达到上限"), time);
         return;
     }
     Card card(uid, ++CardManage::serialNumber);

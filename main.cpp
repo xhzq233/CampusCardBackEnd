@@ -78,7 +78,10 @@ void init() {
     std::sort(operations, operations + num, [](BaseOperation *l, BaseOperation *r) -> bool {
         return (*l) < (*r);
     });
-    // sort complete
+    for (auto &account : DataStore::getAccounts())
+    {
+        CardManage::distribute(account.uid);
+    }    // sort complete
     RechargeOperation *rechargeOperation;
     Consumption *consumption;
     CardManageOperation *cardManageOperation;
