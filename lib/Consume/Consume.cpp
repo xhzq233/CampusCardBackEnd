@@ -65,7 +65,7 @@ void Consume::consume(const Window &window, const Card &card, const float &price
 void Consume::consume(const Consumption &log) {
     auto account = DataStore::queryAccountByUid(log.cid);
     account->consume(log.price);
-    FileManager::getInstance() << FileManager::toStandardLogString("消费", log.to_string().c_str(), log.time);
+    FileManager::getInstance() << FileManager::toStandardLogString("消费", log.to_string(), log.time);
 }
 
 void Consume::show(const Window &window) {

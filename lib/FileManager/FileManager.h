@@ -53,7 +53,7 @@ public:
     constexpr static const char CAFE_POSITION_CSV_NAME[] = "wz.csv";
 
     /* W{\d}.csv 文件个数 */
-    constexpr static const char CONSUME_CSV_QTY = 58;
+    constexpr static const char CONSUME_CSV_QTY = 2;
 
     /* .log file max length */
     constexpr static const unsigned short MAX_LINE_PER_LOG = 1U << 14;
@@ -172,19 +172,18 @@ public:
     friend void operator<<(FileManager &o, const std::string &content);
 
     static std::string toStandardLogString(const char *title, const char *content);
-
+    static std::string toStandardLogString(const char *title, const std::string &content);
     /* 自定义时间的StandardLog */
     static std::string toStandardLogString(const char *title, const char *content, const Time &time);
-
+    static std::string toStandardLogString(const char *title, const std::string &content, const Time &time);
     /* literally */
     static void append_standard_time(std::string &container, const Time &time);
 
 
-    //now -> unsigned long long
+    //now -> Time
     static Time nowTime();
 
     void refreshStartUpTime();
-
 };
 
 #endif //CAMPUSCARDBACKEND_FILEMANAGER_H
