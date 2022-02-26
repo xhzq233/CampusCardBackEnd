@@ -82,6 +82,8 @@ void init() {
     {
         CardManage::distribute(account.uid);
     }    // sort complete
+    temp.clear();
+    // sort complete
     RechargeOperation *rechargeOperation;
     Consumption *consumption;
     CardManageOperation *cardManageOperation;
@@ -128,7 +130,6 @@ int main() {
 //                else printf("err");
 //                description(csv);
 //                DataStore::insertAccount(Account(0, ""));
-                description(DataStore::getConsumptions());
                 init();
 //                DataStore::queryConsumption(1,43532);
 //                description(DataStore::getAccounts());
@@ -146,14 +147,4 @@ int main() {
 //        for (const auto &i: item)
 //            delete i;
 //    }
-    unsigned int uid = 2020171992;
-    std::string name = "夏侯臻";
-    CardManage::openAccount(uid,name);
-    CardManage::deleteAccount(uid);
-    CardManage::openAccount(uid,name);
-    CardManage::distribute(uid);
-    CardManage::recharge(uid,20);
-    auto &card = *DataStore::queryAccountByUid(uid)->cards.begin();
-    Consume::consume(2,card,30.0);
-    return 0;
 }

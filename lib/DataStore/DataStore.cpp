@@ -131,8 +131,7 @@ std::vector<Account>::iterator DataStore::queryAccountByUid(unsigned int uid) {
         mid = (left + right) / 2;
         if (accounts[mid].uid == uid) {
             return accounts.begin() + mid;
-        }
-        if (accounts[mid].uid > uid) {
+        } else if (accounts[mid].uid > uid) {
             right = mid - 1;
         } else {
             left = mid + 1;
@@ -150,8 +149,7 @@ std::vector<Account>::iterator DataStore::queryAccountByCid(unsigned int cid) {
         mid = (left + right) / 2;
         if (accounts[mid].cards.begin()->cid == cid) {
             return accounts.begin() + mid;
-        }
-        if (accounts[mid].cards.begin()->cid > cid) {
+        } else if (accounts[mid].cards.begin()->cid > cid) {
             right = mid - 1;
         } else {
             left = mid + 1;

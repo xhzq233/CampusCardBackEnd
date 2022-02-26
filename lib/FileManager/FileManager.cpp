@@ -187,17 +187,40 @@ void operator<<(FileManager &o, const std::string &content) {
 }
 
 std::string FileManager::toStandardLogString(const char *title, const char *content) {
-    std::string res;
-    res.push_back('[');
     time_t now = time(nullptr);
     auto *tm = std::localtime(&now);
     char buf[23];
     strftime(buf, sizeof(buf), "%Y-%m-%d-%X:00", tm);
-    res.append(buf);
-    res.append(" : ");
-    res.append(title);
-    res.append("] ");
-    res.append(content);
+
+    char buffer[90];
+    sprintf(buffer, "[%s : %s] %s", buf, title, content);
+
+    delete[] content;
+    return {buffer};
+}
+
+std::string FileManager::toStandardLogString(const char *title, const std::string &content) {
+
+    time_t now = time(nullptr);
+    auto *tm = std::localtime(&now);
+    char buf[23];
+    strftime(buf, sizeof(buf), "%Y-%m-%d-%X:00", tm);
+
+    char buffer[90];
+    sprintf(buffer, "[%s : %s] %s", buf, title, content.c_str());
+    // std::string.c_str() not in heap so don't need to free
+    return {buffer};
+}
+
+std::string
+FileManager::toStandardLogString(const char *title, const std::string &content, const FileManager::Time &time) {
+    std::string res;
+    res.push_back('[');
+    append_standard_time(res, time);
+    char buffer[70];
+    sprintf(buffer, " : %s] %s", title, content.c_str());
+    res.append(buffer);
+    // std::string.c_str() not in heap so don't need to free
     return res;
 }
 
@@ -222,6 +245,9 @@ std::string FileManager::toStandardLogString(const char *title, const char *cont
     res.append(title);
     res.append("] ");
     res.append(content);
+
+    delete[] content;
+
     return res;
 }
 
