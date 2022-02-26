@@ -22,7 +22,7 @@ void CardManage::deleteAccount(unsigned int uid, const Time &time) {
     auto account = DataStore::queryAccountByUid(uid);
     if (account != DataStore::getAccounts().end()) {
         account->cards.clear();
-        success("销户", account->name.c_str(), uid, time);
+        success("销户", account->name, uid, time);
         DataStore::getAccounts().erase(account);
     } else {
         not_in_sys("销户", uid, time);
@@ -35,7 +35,7 @@ void CardManage::distribute(unsigned int uid, const Time &time) {
     if (account != DataStore::getAccounts().end()) {
         Card *card = new Card(uid, ++CardManage::serialNumber);
         account->cards.push(card);
-        success("发卡", account->name.c_str(), uid, time);
+        success("发卡", account->name, uid, time);
     } else {
         not_in_sys("发卡", uid, time);
     }
@@ -50,14 +50,14 @@ void CardManage::setLost(unsigned int uid, const Time &time) {
         auto card = account->cards.begin();
         if (!card) {
             auto buffer = new char[40];
-            sprintf(buffer, "%d %s failed: no card", uid, account->name.c_str());
+            sprintf(buffer, "%d %s failed: no card", uid, account->name);
             log("挂失", buffer, time);
         } else if (card->condition) {
             card->condition = false;
-            success("挂失", account->name.c_str(), uid, time);
+            success("挂失", account->name, uid, time);
         } else {
             auto buffer = new char[40];
-            sprintf(buffer, "%d %s failed: Already lost", uid, account->name.c_str());
+            sprintf(buffer, "%d %s failed: Already lost", uid, account->name);
             log("挂失", buffer, time);
         }
     }
@@ -72,14 +72,14 @@ void CardManage::unsetLost(unsigned int uid, const Time &time) {
         auto card = account->cards.begin();
         if (!card) {
             auto buffer = new char[40];
-            sprintf(buffer, "%d %s failed: no card", uid, account->name.c_str());
+            sprintf(buffer, "%d %s failed: no card", uid, account->name);
             log("解挂", buffer, time);
         } else if (!card->condition) {
             card->condition = true;
-            success("解挂", account->name.c_str(), uid, time);
+            success("解挂", account->name, uid, time);
         } else {
             auto buffer = new char[40];
-            sprintf(buffer, "%d %s failed: not lost yet", uid, account->name.c_str());
+            sprintf(buffer, "%d %s failed: not lost yet", uid, account->name);
             log("解挂", buffer, time);
         }
     }
@@ -94,15 +94,16 @@ void CardManage::reissue(unsigned int uid, const Time &time) {
         //最多只能补卡100次
     else if (account->cards.size() >= CardManage::MAX_REISSUE_TIMES) {
         auto buffer = new char[40];
-        sprintf(buffer, "%d %s failed: Reached upper limit", uid, account->name.c_str());
+        sprintf(buffer, "%d %s failed: Reached upper limit", uid, account->name);
         log("补卡", buffer, time);
     } else {
         //setLost(uid,time);
         Card *card = new Card(uid, ++CardManage::serialNumber);
         //将之前卡的状态设置为禁用状态
         account->cards.push(card);
-        success("补卡", account->name.c_str(), uid, time);
+        success("补卡", account->name, uid, time);
         printf("%u %d\n",uid, account->cards.size());
+
     }
 }
 
@@ -115,17 +116,15 @@ void CardManage::recharge(unsigned int uid, int amount, const Time &time) noexce
         auto card = account->cards.begin();
         if (!card) {
             auto buffer = new char[40];
-            sprintf(buffer, "%d %s failed: no card", uid, account->name.c_str());
+            sprintf(buffer, "%d %s failed: no card", uid, account->name);
             log("解挂", buffer, time);
         }else if (account->balance + (float) amount > BALANCE_CEILING) {
             auto buffer = new char[35];
             sprintf(buffer, "%d failed: Reached upper limit", uid);
-            log("充值",
-                buffer,
-                time);
+            log("充值", buffer, time);
         } else {
             auto buffer = new char[80];
-            sprintf(buffer, "%d %s succeeded (cid: %d elder %.2f new %.2f)", uid, account->name.c_str(), card->cid,
+            sprintf(buffer, "%d %s succeeded (cid: %d elder %.2f new %.2f)", uid, account->name, card->cid,
                     account->balance,
                     account->balance + (float) amount);
             log("充值", buffer, time);

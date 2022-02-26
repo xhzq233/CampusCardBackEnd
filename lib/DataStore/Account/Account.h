@@ -33,10 +33,17 @@ private:
     /* data */
 public:
     unsigned int uid;//学号
-    std::string name;//姓名
+    static const constexpr char NAME_SIZE = 15;
+    typedef char Name[NAME_SIZE];
+
+    Name name{0};//姓名
     float balance;//余额
     list cards;//卡
-    Account(unsigned int uid, std::string name) : uid(uid), name(move(name)), balance(0), cards() {
+
+    Account(unsigned int uid, const std::string &name1) : uid(uid), balance(0), cards() {
+        if (name1.size() > NAME_SIZE)
+            throw;
+        strncpy(name, name1.c_str(), name1.size());
         FileManager::getInstance() << FileManager::toStandardLogString("开户", this->to_string());
     }
 

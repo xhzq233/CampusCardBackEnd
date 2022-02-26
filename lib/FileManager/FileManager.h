@@ -53,7 +53,7 @@ public:
     constexpr static const char CAFE_POSITION_CSV_NAME[] = "wz.csv";
 
     /* W{\d}.csv 文件个数 */
-    constexpr static const char CONSUME_CSV_QTY = 2;
+    constexpr static const char CONSUME_CSV_QTY = 58;
 
     /* .log file max length */
     constexpr static const unsigned short MAX_LINE_PER_LOG = 1U << 14;
@@ -121,7 +121,7 @@ public:
     /* default logger */
     static std::ofstream &getLogger();
 
-    /* IO管理 */
+    /* IO */
     std::fstream IOStream;
 
     /*
@@ -139,7 +139,7 @@ public:
      * the first dimension is columns.
      * the second dimension is rows.
      * DEFAULT storing-data path is DEFAULT_DATA_PATH.
-     * use Pair<unsigned int, unsigned int> size instead if size already known
+     * use getCSVDataSource(unsigned int rows, unsigned int columns) instead if size already known
      * */
     bool getCSVDataSource(CSV &container, unsigned int columns, const std::string &source,
                           const std::string &path = DEFAULT_DATA_PATH);
