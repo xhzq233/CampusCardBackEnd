@@ -3,7 +3,7 @@
 //
 
 #include "DataStore.h"
-#include <thread>
+#include "../ThreadPool.h"
 
 using Accounts = DataStore::Accounts;
 using Consumptions = DataStore::Consumptions;
@@ -32,7 +32,7 @@ void subwork_of_init_consumes(int index, Consumptions *consumes) {
     CSV temp;
     FileManager().getCSVDataSource(temp, 4, FileManager::CONSUME_CSV(index + 1));
 
-    //  stored data start_index index, it should be the initialized window position minus data size
+//  stored data start_index index, it should be the initialized window position minus data size
 //    const auto &position = DataStore::getWindowPositions()[index];
     unsigned int size = temp.size();
 //    int start_index = (int) position - size + 1;
@@ -45,22 +45,7 @@ void subwork_of_init_consumes(int index, Consumptions *consumes) {
     // no longer to be sorted
 }
 
-#ifdef __WIN64
 const unsigned int MAX_THREAD = std::thread::hardware_concurrency();
-
-Consumptions &DataStore::consumes_init() {
-    //99 x 60000
-    static Consumptions res{nullptr};
-    auto &windowPositions = DataStore::getWindowPositions();
-    for (int i = 0; i < WINDOW_QTY; ++i) {
-        res[i] = new CircularArray<Consumption *>(MAXSIZE, windowPositions[i]);
-    }
-    for (int i = 0; i < FileManager::CONSUME_CSV_QTY; ++i)
-        subwork_of_init_consumes(i, &res);
-    return res;
-}
-
-#else
 
 Consumptions &DataStore::consumes_init() {
     //99 x 60000
@@ -69,16 +54,17 @@ Consumptions &DataStore::consumes_init() {
     for (int i = 0; i < WINDOW_QTY; ++i) {
         res[i] = new CircularArray<Consumption *>(MAXSIZE, windowPositions[i]);
     }
-    std::thread threads[FileManager::CONSUME_CSV_QTY];
-    for (int i = 0; i < FileManager::CONSUME_CSV_QTY; ++i)
-        threads[i] = std::thread(subwork_of_init_consumes, i, &res);   // move-assign threads
-    for (auto &thread: threads)
-        thread.join();
+
+    JoinableThreadPool threadPool(MAX_THREAD, FileManager::CONSUME_CSV_QTY, [](int index) -> auto {
+        return [i = index, res = &res]() {
+            printf("%d thread executing!\n", i);
+            subwork_of_init_consumes(i, res);
+        };
+    });
+
     printf("All threads joined!\n");
     return res;
 }
-
-#endif //__WIN64
 
 const WindowPositions &DataStore::windows_init() {
     static WindowPositions windowPositions{0};

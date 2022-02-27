@@ -95,7 +95,7 @@ void CardManage::reissue(unsigned int uid, const Time &time) {
     else if (account->cards.size() >= CardManage::MAX_REISSUE_TIMES) {
         // reference:
         // https://sites.google.com/site/wyylview/dong-tai-fen-pei-nei-cun-zai-ke-nengheap-corruption-detected-de-yuan-yin-zhi-yi-2
-        auto buffer = new char[45];
+        auto buffer = new char[50];
         sprintf(buffer, "%d %s failed: Reached upper limit", uid, account->name);
         log("补卡", buffer, time);
     } else {
