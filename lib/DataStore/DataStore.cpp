@@ -31,9 +31,9 @@ Consumptions &DataStore::consumes_init() {
         res[i] = new CircularArray<Consumption *>(MAXSIZE, windowPositions[i]);
     }
 
-    JoinableThreadPool threadPool(MAX_THREAD, FileManager::CONSUME_CSV_QTY, [](int index) -> auto {
+    JoinableMultiWork works(MAX_THREAD, FileManager::CONSUME_CSV_QTY, [](int index) -> auto {
         return [window_index = index, consumes = res]() {
-            printf("%d thread executing!\n", window_index);
+            printf("work %d executing!\n", window_index);
             CSV temp;
             FileManager().getCSVDataSource(temp, 4, FileManager::CONSUME_CSV(window_index + 1));
             unsigned int size = temp.size();
@@ -43,25 +43,9 @@ Consumptions &DataStore::consumes_init() {
             // no longer to be sorted
         };
     });
-
     printf("All threads joined!\n");
     return res;
 }
-//std::thread threads[FileManager::CONSUME_CSV_QTY];
-//    for (int window = 0; window < FileManager::CONSUME_CSV_QTY; ++window) {
-//        threads[window] = std::thread([window = window,res = res]() {
-//            printf("%d thread executing!\n", window);
-//            CSV temp;
-//            FileManager().getCSVDataSource(temp, 4, FileManager::CONSUME_CSV(window + 1));
-//            unsigned int size = temp.size();
-//            for (unsigned int index = 0; index < size; ++index) {
-//                res[window]->push_back(new Consumption(window + 1, temp[index]));
-//            }
-//            // no longer to be sorted
-//        });
-//    }
-//    for (auto &item : threads)
-//        item.join();
 
 const WindowPositions &DataStore::windows_init() {
     static WindowPositions windowPositions{0};

@@ -67,17 +67,18 @@ private:
     std::shared_ptr<data> data_;
 };
 
-class JoinableThreadPool {
+class JoinableMultiWork {
 public:
     typedef std::function<std::function<void(void)>(int index)> TaskBuilder;
 
-    JoinableThreadPool(size_t thread_count, int work_count, const TaskBuilder &taskBuilder)
+    JoinableMultiWork(size_t thread_count, int work_count, const TaskBuilder &taskBuilder)
             : data_(std::make_shared<data>()) {
         for (int i = 0; i < work_count; ++i) {
             data_->tasks_.emplace(std::move(taskBuilder(i)));
         }
-        for (size_t i = 0; i < thread_count; ++i) {
-            std::thread([data = data_] {
+        std::thread threads[thread_count];
+        for (int i = 0; i < thread_count; ++i) {
+            threads[i] = std::thread([data = data_] {
                 for (;;) {
                     if (!data->tasks_.empty()) {
                         auto current = std::move(data->tasks_.front());
@@ -87,10 +88,13 @@ public:
                         break;
                     }
                 }
-            }).join();
+            });
         }
+        for (auto &item: threads)
+            item.join();
     }
-    ~JoinableThreadPool() = default;
+
+    ~JoinableMultiWork() = default;
 
 private:
     struct data {
