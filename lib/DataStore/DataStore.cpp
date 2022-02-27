@@ -64,7 +64,7 @@ Consumptions &DataStore::consumes_init() {
 
 Consumptions &DataStore::consumes_init() {
     //99 x 60000
-    static Consumptions res{nullptr};
+    static Consumptions res;
     auto &windowPositions = DataStore::getWindowPositions();
     for (int i = 0; i < WINDOW_QTY; ++i) {
         res[i] = new CircularArray<Consumption *>(MAXSIZE, windowPositions[i]);
@@ -173,7 +173,7 @@ std::vector<Account>::iterator DataStore::queryAccountByCid(unsigned int cid) {
 void DataStore::pushConsumption(Window window, Consumption *data) {
     //error handle
     if (window == 0 || window > WINDOW_QTY) {
-        printf("[ERROR] %u not in this range: 1 - 99", window);
+        printf("[ERROR] %u not in this for_loop: 1 - 99", window);
         return;
     }
     auto consumes_in_window = getConsumptions()[window - 1];
@@ -183,7 +183,7 @@ void DataStore::pushConsumption(Window window, Consumption *data) {
 void DataStore::insertConsumptionOnSpecifiedTime(Window window, Consumption *data, const FileManager::Time &time) {
     //error handle
     if (window == 0 || window > WINDOW_QTY) {
-        printf("[ERROR] %u not in this range: 1 - 99", window);
+        printf("[ERROR] %u not in this for_loop: 1 - 99", window);
         return;
     }
     auto &consumes_in_window = getConsumptions()[window - 1];
@@ -223,7 +223,7 @@ DataQuery::query(FileManager::CSV &container, unsigned int columnIndex, const st
 DataQuery::Subscripts DataStore::queryConsumption(Window window, unsigned int cid) {
     //error handle
     if (window == 0 || window > WINDOW_QTY) {
-        printf("[ERROR] %u not in this range: 1 - 99", window);
+        printf("[ERROR] %u not in this for_loop: 1 - 99", window);
         return {};
     }
     Subscripts res;
