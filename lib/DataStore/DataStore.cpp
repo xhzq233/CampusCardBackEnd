@@ -64,7 +64,7 @@ Consumptions &DataStore::consumes_init() {
 
 Consumptions &DataStore::consumes_init() {
     //99 x 60000
-    static Consumptions res{nullptr};
+    static Consumptions res;
     auto &windowPositions = DataStore::getWindowPositions();
     for (int i = 0; i < WINDOW_QTY; ++i) {
         res[i] = new CircularArray<Consumption *>(MAXSIZE, windowPositions[i]);

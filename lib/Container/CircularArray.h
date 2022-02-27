@@ -17,6 +17,7 @@ class CircularArray {
 public:
     typedef unsigned int Index;
     typedef unsigned int Size;
+    typedef std::function<bool(ValueType value)> Compare;
 
     Size size;
     /* current data index , always have value */
@@ -30,6 +31,12 @@ public:
         current_index = start;
         data = new ValueType[size];
     };
+
+    // delete copy methods
+    CircularArray(const CircularArray &) = delete;
+
+    // disable copied CircularArray
+    CircularArray &operator=(const CircularArray &) = delete;
 
     [[nodiscard]] inline Size count() const {
         return start_index > current_index ? current_index + 1 + size - start_index : current_index - start_index;
@@ -60,6 +67,48 @@ public:
         data[current_index] = value;
     }
 
+    /**
+     * return subscript meet the conditions
+     *
+     * for example, compare = [](ValueType value)->bool{ return value < 2; }
+     * return the subscript of value which **last** less than 2
+     * */
+    inline Index halfSearch(Compare compare) {
+        if (compare(top())) {
+            return (current_index + 1) % size;
+        } else if (!compare(bottom())) {
+            return start_index;
+        } else {
+            if (current_index < start_index) {
+                int left = start_index + 1, right = current_index + size, mid;
+
+                //half search
+                while (left <= right) {
+                    mid = (left + right) / 2;
+                    if (compare(data[mid % size])) {
+                        right = mid - 1;
+                    } else {
+                        left = mid + 1;
+                    }
+                }
+                return (mid - 1) % size;
+            } else {
+                int left = start_index + 1, right = current_index, mid;
+
+                //half search
+                while (left <= right) {
+                    mid = (left + right) / 2;
+                    if (!compare(data[mid])) {
+                        right = mid - 1;
+                    } else {
+                        left = mid + 1;
+                    }
+                }
+                return mid - 1;
+            }
+        }
+    }
+
     /* Massive memory movement, ValueType must comparable */
     inline void insert(ValueType value) {
 
@@ -77,26 +126,43 @@ public:
                 delete data[current_index];// reserve one place
                 current_index = current_index == 0 ? size - 1 : start_index - 1; // back one step
             }
-        } else {
-            // value ranged from bottom to top
-            // add extra size used on circular search
-            int left = start_index + 1, right = current_index + size, mid;
+        } else {// value ranged from bottom to top
 
-            //half search
-            while (left <= right) {
-                mid = (left + right) / 2;
-                if (*(data[mid % size]) > *value) {
-                    right = mid - 1;
-                } else {
-                    left = mid + 1;
+            if (current_index < start_index) {// add extra size used on circular search
+                int left = start_index + 1, right = current_index + size, mid;
+
+                //half search
+                while (left <= right) {
+                    mid = (left + right) / 2;
+                    if (*(data[mid % size]) > *value) {
+                        right = mid - 1;
+                    } else {
+                        left = mid + 1;
+                    }
                 }
-            }
-            Index index = current_index + size;
-            //movement
-            while (index >= mid)
-                std::swap(data[index % size], data[(--index) % size]);
-            data[index % size] = value;
+                Index index = current_index + size;
+                //movement
+                while (index >= mid)
+                    std::swap(data[index % size], data[(--index) % size]);
+                data[index % size] = value;
+            } else {
+                int left = start_index + 1, right = current_index, mid;
 
+                //half search
+                while (left <= right) {
+                    mid = (left + right) / 2;
+                    if (*(data[mid]) > *value) {
+                        right = mid - 1;
+                    } else {
+                        left = mid + 1;
+                    }
+                }
+                Index index = current_index + 1;
+                //movement
+                while (index >= mid)
+                    std::swap(data[index], data[--index]);
+                data[index] = value;
+            }
             current_index = (current_index + 1) % size;
 
             if (current_index == start_index) {

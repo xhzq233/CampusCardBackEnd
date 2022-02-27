@@ -38,7 +38,11 @@ void description(const CSV &csv, int num = 5) {
 // print -head num
 void description(const DataStore::Consumptions &consumes, int row = 4, int col = 5) {
     for (int i = 0; i < row; ++i) {
-        //todo
+        for (const auto &item: *consumes[row]) {
+            printf("%s\n", item->to_string().c_str());
+            if (--col == 0)
+                break;
+        }
     }
 }
 
@@ -118,23 +122,34 @@ void init() {
 int main() {
     VoidCallBack func{
             [&]() {
-                init();
+//                init();
 //                if (FileManager::getInstance().writeCSVData(csv, "xhzq.csv", "../adjygvjsafvj/"));
 
-                unsigned int uid = 2020171992;
-                std::string name = "夏侯臻";
-                CardManage::openAccount(uid, name);
-                CardManage::deleteAccount(uid);
-                CardManage::openAccount(uid, name);
-                CardManage::distribute(uid);
-                CardManage::recharge(uid, 20);
-                auto &card = *DataStore::queryAccountByUid(uid)->cards.begin();
-                Consume::consume(2, card, 30.0);
+//                unsigned int uid = 2020171992;
+//                std::string name = "夏侯臻";
+//                CardManage::openAccount(uid, name);
+//                CardManage::deleteAccount(uid);
+//                CardManage::openAccount(uid, name);
+//                CardManage::distribute(uid);
+//                CardManage::recharge(uid, 20);
+//                auto &card = *DataStore::queryAccountByUid(uid)->cards.begin();
+//                Consume::consume(2, card, 30.0);
             }
     };
 
-    testTimeWrapper(func);
+//    testTimeWrapper(func);
 
+    CircularArray<int *> a(8);
+    for (int i = 0; i < 6; ++i) {
+        a.push_back(new int(i));
+    }
+    a.insert(new int(2));
+    a.halfSearch([](const int *value) -> bool {
+        return *value <= 2;
+    });
+    for (const auto &item: a) {
+        printf("%d", *item);
+    }
     // Reference:
     // https://stackoverflow.com/questions/8588541/c-should-i-bother-deleting-pointers-to-application-lifetime-variables
     // 释放指针
