@@ -99,13 +99,10 @@ void CardManage::reissue(unsigned int uid, const Time &time) {
         sprintf(buffer, "%d %s failed: Reached upper limit", uid, account->name);
         log("补卡", buffer, time);
     } else {
-        //setLost(uid,time);
         Card *card = new Card(uid, ++CardManage::serialNumber);
         //将之前卡的状态设置为禁用状态
         account->cards.push(card);
         success("补卡", account->name, uid, time);
-        printf("%u %d\n",uid, account->cards.size());
-
     }
 }
 
