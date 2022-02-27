@@ -50,9 +50,6 @@ void init() {
     });
     // sort complete
 
-    for (auto &account: DataStore::getAccounts()) {
-        CardManage::distribute(account.uid);
-    }
 
     RechargeOperation *rechargeOperation;
     Consumption *consumption;

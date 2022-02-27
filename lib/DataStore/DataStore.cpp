@@ -15,7 +15,7 @@ Accounts &DataStore::accounts_init() {
     CSV temp;
     FileManager::getInstance().getCSVDataSource(temp, 2, FileManager::OPEN_ACCOUNT_CSV_NAME);
     for (auto &&info: temp) {
-        res.emplace_back(Account(info, serialNumber));
+        res.emplace_back(Account(info, ++serialNumber));
     }
     std::sort(res.begin(), res.end());
     return res;
