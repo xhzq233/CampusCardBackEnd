@@ -35,7 +35,8 @@ void CardManage::deleteAccount(unsigned int uid, const Time &time) {
     if (account != DataStore::getAccounts().end()) {
         account->cards.clear();
         success("销户", account->name, uid, time);
-        DataStore::getAccounts().erase(account);
+        auto iter = DataStore::getAccounts().erase(account);
+        printf("%d\n",iter->uid);
     } else {
         not_in_sys("销户", uid, time);
     }
@@ -59,7 +60,7 @@ void CardManage::setLost(unsigned int uid, const Time &time) {
     if (account == DataStore::getAccounts().end()) {
         not_in_sys("挂失", uid, time);
     } else {
-        auto card = account->cards.begin();
+        auto &card = account->cards.begin();
         if (card.condition) {
             card.condition = false;
             success("挂失", account->name, uid, time);
@@ -77,7 +78,7 @@ void CardManage::unsetLost(unsigned int uid, const Time &time) {
     if (account == DataStore::getAccounts().end()) {
         not_in_sys("解挂", uid, time);
     } else {
-        auto card = account->cards.begin();
+        auto &card = account->cards.begin();
         if (!card.condition) {
             card.condition = true;
             success("解挂", account->name, uid, time);
@@ -116,7 +117,7 @@ void CardManage::recharge(unsigned int uid, int amount, const Time &time) noexce
     if (account == DataStore::getAccounts().end()) {
         not_in_sys("充值", uid, time);
     } else {
-        auto card = account->cards.begin();
+        auto &card = account->cards.begin();
         if (account->balance + (float) amount > BALANCE_CEILING) {
             CardManage::log("充值", [&](auto buffer) {
                 sprintf(buffer, "%d failed: Reached upper limit", uid);
