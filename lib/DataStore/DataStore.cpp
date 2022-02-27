@@ -21,30 +21,6 @@ Accounts &DataStore::accounts_init() {
     return res;
 }
 
-//  sentence under here used on debug
-//  std::thread::id main_thread_id = std::this_thread::get_id();
-void subwork_of_init_consumes(int index, Consumptions *consumes) {
-//    if (main_thread_id == std::this_thread::get_id())
-//        std::cout << "This is the main thread.\n";
-//    else
-//        std::cout << "This is not the main thread.\n";
-
-    CSV temp;
-    FileManager().getCSVDataSource(temp, 4, FileManager::CONSUME_CSV(index + 1));
-
-//  stored data start_index index, it should be the initialized window position minus data size
-//    const auto &position = DataStore::getWindowPositions()[index];
-    unsigned int size = temp.size();
-//    int start_index = (int) position - size + 1;
-//    if (start_index < 0) // position - temp.size() + 1 less than zero
-//        start_index = (int) DataStore::MAXSIZE - start_index;
-    for (unsigned int i = 0; i < size; ++i) {
-        (*consumes)[index]->push_back(new Consumption(index + 1, temp[i]));
-        // no more than MAXSIZE
-    }
-    // no longer to be sorted
-}
-
 const unsigned int MAX_THREAD = std::thread::hardware_concurrency();
 
 Consumptions &DataStore::consumes_init() {
@@ -56,9 +32,15 @@ Consumptions &DataStore::consumes_init() {
     }
 
     JoinableThreadPool threadPool(MAX_THREAD, FileManager::CONSUME_CSV_QTY, [](int index) -> auto {
-        return [i = index, res = &res]() {
-            printf("%d thread executing!\n", i);
-            subwork_of_init_consumes(i, res);
+        return [window_index = index, consumes = &res]() {
+            printf("%d thread executing!\n", window_index);
+            CSV temp;
+            FileManager().getCSVDataSource(temp, 4, FileManager::CONSUME_CSV(window_index + 1));
+            unsigned int size = temp.size();
+            for (unsigned int i = 0; i < size; ++i) {
+                (*consumes)[window_index]->push_back(new Consumption(window_index + 1, temp[i]));
+            }
+            // no longer to be sorted
         };
     });
 

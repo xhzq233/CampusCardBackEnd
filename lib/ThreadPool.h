@@ -93,11 +93,6 @@ public:
             }).join();
         }
     }
-
-    JoinableThreadPool() = default;
-
-    JoinableThreadPool(JoinableThreadPool &&) = default;
-
     ~JoinableThreadPool() = default;
 
 private:

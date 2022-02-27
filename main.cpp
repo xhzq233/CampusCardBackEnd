@@ -20,36 +20,6 @@ void testTimeWrapper(const VoidCallBack &func) {
 
 using CSV = FileManager::CSV;
 
-// print -head num
-void description(const CSV &csv, int num = 5) {
-    auto columns = csv[0].size();
-    auto rows = csv.size();
-    printf("rows: %lu, columns: %lu \n", rows, columns);
-    std::string buf;
-    for (int i = 0; i < num; ++i) {
-        for (int j = 0; j < columns; ++j) {
-            buf.append(csv[i][j]);
-        }
-        printf("%s \n", buf.c_str());
-        buf.clear();
-    }
-}
-
-// print -head num
-void description(const DataStore::Consumptions &consumes, int row = 4) {
-    for (int i = 0; i < row; ++i) {
-        consumes[row]->for_loop([](auto value) {
-            printf("%s\n", value->to_string().c_str());
-        });
-    }
-}
-
-// print -head num
-void description(const DataStore::Accounts &accounts, int num = 5) {
-    for (int i = 0; i < num; ++i)
-        printf("%s \n", accounts[i].to_string().c_str());
-}
-
 constexpr static const unsigned int RESERVED_SIZE = 2'500'000;
 typedef BaseOperation *SortedOperations[RESERVED_SIZE];
 
@@ -73,15 +43,17 @@ void init() {
     FileManager::getInstance().getCSVDataSource(temp, 4, FileManager::CARD_RECHARGE_CSV_NAME);
     for (const auto &item: temp)
         operations[num++] = new RechargeOperation(item);
+    temp.clear();
 
     std::sort(operations, operations + num, [](BaseOperation *l, BaseOperation *r) -> bool {
         return (*l) < (*r);
     });
+    // sort complete
+
     for (auto &account: DataStore::getAccounts()) {
         CardManage::distribute(account.uid);
-    }    // sort complete
-    temp.clear();
-    // sort complete
+    }
+
     RechargeOperation *rechargeOperation;
     Consumption *consumption;
     CardManageOperation *cardManageOperation;
