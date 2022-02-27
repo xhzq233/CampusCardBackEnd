@@ -36,13 +36,11 @@ void description(const CSV &csv, int num = 5) {
 }
 
 // print -head num
-void description(const DataStore::Consumptions &consumes, int row = 4, int col = 5) {
+void description(const DataStore::Consumptions &consumes, int row = 4) {
     for (int i = 0; i < row; ++i) {
-        for (const auto &item: *consumes[row]) {
-            printf("%s\n", item->to_string().c_str());
-            if (--col == 0)
-                break;
-        }
+        consumes[row]->for_loop([](auto value) {
+            printf("%s\n", value->to_string().c_str());
+        });
     }
 }
 
@@ -61,8 +59,10 @@ void init() {
     auto &res = DataStore::getConsumptions();
     unsigned int num = 0;
     for (auto re: res)
-        for (auto item: (*re))
-            operations[num++] = item;
+        re->for_loop([&](auto value) {
+            operations[num++] = value;
+        });
+
     CSV temp;
 
     FileManager::getInstance().getCSVDataSource(temp, 3, FileManager::CARD_MANAGE_CSV_NAME);
@@ -143,13 +143,21 @@ int main() {
     for (int i = 0; i < 6; ++i) {
         a.push_back(new int(i));
     }
-    a.insert(new int(2));
-    a.halfSearch([](const int *value) -> bool {
-        return *value <= 2;
+    auto index = a.halfSearch([](const int *value) -> bool {
+        return *value < 2;
     });
-    for (const auto &item: a) {
-        printf("%d", *item);
-    }
+    printf("%d \n", index);
+    a.insert(new int(2));
+    a.insert(new int(2));
+    a.insert(new int(2));
+    auto index2 = a.halfSearch([](const int *value) -> bool {
+        return *value < 2;
+    });
+    printf("%d \n", index2);
+    a.for_loop([](auto value) {
+        printf("%d", *value);
+    });
+
     // Reference:
     // https://stackoverflow.com/questions/8588541/c-should-i-bother-deleting-pointers-to-application-lifetime-variables
     // 释放指针

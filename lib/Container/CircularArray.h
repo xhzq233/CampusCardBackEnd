@@ -18,6 +18,7 @@ public:
     typedef unsigned int Index;
     typedef unsigned int Size;
     typedef std::function<bool(ValueType value)> Compare;
+    typedef std::function<void(const ValueType &value)> Range;
 
     Size size;
     /* current data index , always have value */
@@ -29,7 +30,7 @@ public:
         if (start >= size)
             throw;
         current_index = start;
-        data = new ValueType[size];
+        data = new ValueType[size]{nullptr};
     };
 
     // delete copy methods
@@ -73,7 +74,7 @@ public:
      * for example, compare = [](ValueType value)->bool{ return value < 2; }
      * return the subscript of value which **last** less than 2
      * */
-    inline Index halfSearch(Compare compare) {
+    [[nodiscard]] inline Index halfSearch(Compare compare) {
         if (compare(top())) {
             return (current_index + 1) % size;
         } else if (!compare(bottom())) {
@@ -81,11 +82,10 @@ public:
         } else {
             if (current_index < start_index) {
                 int left = start_index + 1, right = current_index + size, mid;
-
                 //half search
                 while (left <= right) {
                     mid = (left + right) / 2;
-                    if (compare(data[mid % size])) {
+                    if (!compare(data[mid % size])) {
                         right = mid - 1;
                     } else {
                         left = mid + 1;
@@ -94,7 +94,6 @@ public:
                 return (mid - 1) % size;
             } else {
                 int left = start_index + 1, right = current_index, mid;
-
                 //half search
                 while (left <= right) {
                     mid = (left + right) / 2;
@@ -127,10 +126,10 @@ public:
                 current_index = current_index == 0 ? size - 1 : start_index - 1; // back one step
             }
         } else {// value ranged from bottom to top
-
+            int mid;
+            Index move_index;
             if (current_index < start_index) {// add extra size used on circular search
-                int left = start_index + 1, right = current_index + size, mid;
-
+                int left = start_index + 1, right = current_index + size;
                 //half search
                 while (left <= right) {
                     mid = (left + right) / 2;
@@ -140,14 +139,9 @@ public:
                         left = mid + 1;
                     }
                 }
-                Index index = current_index + size;
-                //movement
-                while (index >= mid)
-                    std::swap(data[index % size], data[(--index) % size]);
-                data[index % size] = value;
+                move_index = current_index + size + 1;
             } else {
-                int left = start_index + 1, right = current_index, mid;
-
+                int left = start_index + 1, right = current_index;
                 //half search
                 while (left <= right) {
                     mid = (left + right) / 2;
@@ -157,68 +151,39 @@ public:
                         left = mid + 1;
                     }
                 }
-                Index index = current_index + 1;
-                //movement
-                while (index >= mid)
-                    std::swap(data[index], data[--index]);
-                data[index] = value;
+                move_index = current_index + 1;
             }
-            current_index = (current_index + 1) % size;
 
+            //movement
+            while (move_index > mid)
+                std::swap(data[move_index % size], data[(--move_index) % size]);
+            data[move_index % size] = value;
+            current_index = (current_index + 1) % size;
             if (current_index == start_index) {
-                delete data[start_index];// reserve one place
                 start_index = (start_index + 1) % size; // forward one step
+                delete data[start_index];// reserve one place
             }
         }
     }
-
 
     // delete pointer
     ~CircularArray() {
-        for (auto &item: (*this)) {
-            delete item; //must add this, otherwise it can't be deleted correctly
-        }
+        for_loop([](ValueType value) {
+            delete value; //must add this, otherwise it can't be deleted correctly
+        });
         delete[] data;
     }
-
-    class Iterator {
-    public:
-        explicit Iterator(ValueType *ptr, ValueType *head, Size size, Index current) : ptr(ptr),
-                                                                                       head(head),
-                                                                                       size(size),
-                                                                                       count(current) {}
-
-        Iterator operator++() noexcept {
-            ++count;
-            if (count < size) {
-                ++ptr;
-            } else {
-                ptr = head;
-                count = 0;
-            }
-            return *this;
-        }
-
-        bool operator!=(ValueType *other) const noexcept { return ptr != other; }
-
-        const ValueType &operator*() const noexcept { return *ptr; }
-
-    private:
-        ValueType *ptr;
-        ValueType *head;
-        Index count;
-        Size size;
-    };
 
 private:
     ValueType *data{nullptr};
 public:
     // only iterate none null values
-    Iterator begin() const noexcept {
-        return Iterator(data + (start_index + 1) % size, data, size, (start_index + 1) % size);
+    void for_loop(Range range) {
+        Index last = current_index < start_index ? current_index + size + 1 : current_index + 1;
+        for (int i = (start_index + 1) % size; i < last; ++i) {
+            range(data[i % size]);
+        }
     }
-
-    ValueType *end() const noexcept { return data + (current_index + 1) % size; } //nullptr
 
 };
 
