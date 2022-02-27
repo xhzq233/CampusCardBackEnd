@@ -1,18 +1,22 @@
 # CampusCardBackEnd
- 模拟HUST智慧校园卡系统
+
+模拟HUST智慧校园卡系统
 
 ## Current Project Structure
-|      Name       |                Function                |
-|:---------------:|:--------------------------------------:|
-|   FileManager   |            controls file io            |
-|     Window      |          window id of a cafe           |
-|      Card       |         stores campusCard data         |
-|     Account     |              stores cards              |
-|     Consume     |  a data bound to a card and a window   |
-|     Consume     | construct a consume data into database |
-|    DataStore    |   stores windows, accounts, consumes   |
-|   CardManage    |     manage card relative operation     |
-| CardDataAnalyze |              analyze data              |
+
+|        Name         |                Function                |
+|:-------------------:|:--------------------------------------:|
+|     FileManager     |            controls file io            |
+|       Window        |          window id of a cafe           |
+|        Card         |         stores campusCard data         |
+|       Account       |              stores cards              |
+|    BaseOperation    |           sortable operation           |
+| CardManageOperation |   management card related operations   |
+|     Consumption     |  a data bound to a card and a window   |
+|       Consume       | construct a consume data into database |
+|      DataStore      |   stores windows, accounts, consumes   |
+|     CardManage      |     manage card relative operation     |
+|   CardDataAnalyze   |              analyze data              |
 
 ```mermaid
 graph TB
@@ -21,19 +25,21 @@ A((FileManager))
 B((Window))
 C((Card))
 D((Account))
-E((Consume))
+
+E((Consumption))
 F((Consume))
 G((DataStore))
 H((CardManage))
 I((CardDataAnalyze))
+J((BaseOperation))
+K((CardManageOperation))
 
-G-->A
-H-->A
-I-->A
+J-->K
+J-->E
 B-->E
 D-->E
-E-->G
-F-->E
+E-->F
+F-->G
 B-->G
 C-->D
 D-->G
