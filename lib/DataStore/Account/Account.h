@@ -10,17 +10,18 @@
 
 class list {
 private:
-    Card *card;
+    Card card;
     list *next;
 
 public:
-    list() : card(nullptr), next(nullptr) {};
 
-    ~list();
+    list(unsigned int uid, unsigned int serialNumber) : card(uid, serialNumber), next(nullptr) {};
 
-    void push(Card *newCard);
+    ~list()=default;
 
-    Card *begin();
+    void push(Card &newCard);
+
+    Card &begin();
 
     void clear();
 
@@ -41,7 +42,9 @@ public:
     float balance;//余额
     list cards;//卡
 
-    Account(unsigned int uid, const std::string &name1) : uid(uid), balance(0), lastTime(0), lastTotal(0), cards() {
+    Account(unsigned int uid, const std::string &name1, unsigned int serialNumber) : uid(uid), balance(0), lastTime(0),
+                                                                                     lastTotal(0),
+                                                                                     cards(uid, serialNumber) {
         if (name1.size() > NAME_SIZE)
             throw;
         strncpy(name, name1.c_str(), name1.size());
@@ -49,7 +52,8 @@ public:
     }
 
     // from strings
-    explicit Account(const std::vector<std::string> &strings) : Account(std::stoul(strings[0]), strings[1]) {}
+    explicit Account(const std::vector<std::string> &strings, unsigned int serialNumber) : Account(
+            std::stoul(strings[0]), strings[1], serialNumber) {}
 
     ~Account() = default;
 

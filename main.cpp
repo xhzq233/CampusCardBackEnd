@@ -120,7 +120,7 @@ void execute() {
         CardManage::openAccount(uid, name);
         CardManage::distribute(uid);
         CardManage::recharge(uid, 20);
-        auto &card = *DataStore::queryAccountByUid(uid)->cards.begin();
+        auto &card = DataStore::queryAccountByUid(uid)->cards.begin();
         Consume::consume(2, card, 30.0);
         int cmd;
         scanf("%d", &cmd);

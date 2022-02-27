@@ -15,7 +15,7 @@ Accounts &DataStore::accounts_init() {
     CSV temp;
     FileManager::getInstance().getCSVDataSource(temp, 2, FileManager::OPEN_ACCOUNT_CSV_NAME);
     for (auto &&info: temp) {
-        res.emplace_back(Account(info));
+        res.emplace_back(Account(info, serialNumber));
     }
     std::sort(res.begin(), res.end());
     return res;
@@ -123,12 +123,9 @@ std::vector<Account>::iterator DataStore::queryAccountByCid(unsigned int cid) {
     int left = 0, right = (int) accounts.size() - 1, mid;
     while (left <= right) {
         mid = (left + right) / 2;
-        if (!accounts[mid].cards.begin()) {
-            ++mid;
-        }
-        if (accounts[mid].cards.begin()->cid == cid) {
+        if (accounts[mid].cards.begin().cid == cid) {
             return accounts.begin() + mid;
-        } else if (accounts[mid].cards.begin()->cid > cid) {
+        } else if (accounts[mid].cards.begin().cid > cid) {
             right = mid - 1;
         } else {
             left = mid + 1;

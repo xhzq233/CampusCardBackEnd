@@ -20,6 +20,7 @@ public:
     // 数组下标
     typedef std::vector<unsigned int> Subscripts;
 
+
     constexpr static const char WINDOW_QTY = 99;
     constexpr static const unsigned int MAXSIZE = 60000;
 
@@ -99,5 +100,7 @@ public:
 
     ~DataStore() = delete;
 };
+
+static unsigned int serialNumber = 12345;                                    //流水号
 
 #endif //CAMPUSCARDBACKEND_DATASTORE_H

@@ -4,24 +4,20 @@
 
 #include "Account.h"
 
-list::~list() {
-    delete card;
-}
-
-void list::push(Card *newCard) {
+void list::push(Card &newCard) {
     if (!next) {
-        next = new list();
+        next = new list(0,0);
         next->card = newCard;
     } else {
-        list *tmp = new list();
+        list *tmp = new list(0,0);
         tmp->card = newCard;
         tmp->next = next;
         next = tmp;
     }
 }
 
-Card *list::begin() {
-    return next ? next->card : card;
+Card &list::begin() {
+    return card;
 }
 
 void list::clear() {
@@ -36,10 +32,10 @@ void list::clear() {
 
 int list::size() {
     if (!next) {
-        return 0;
+        return 1;
     }
     list *p = next;
-    int size = 1;
+    int size = 2;
     while (p->next) {
         ++size;
         p = p->next;

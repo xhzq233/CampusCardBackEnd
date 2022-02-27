@@ -10,7 +10,7 @@
 namespace CardManage {
     typedef unsigned long long Time;
     typedef std::function<void(char *)> BufferCallBack;
-    static unsigned int serialNumber = 12345;                                    //流水号
+
     static const constexpr float BALANCE_CEILING = 999.99; //账户余额上限
     static const constexpr char MAX_REISSUE_TIMES = 100; // 最大补卡
 
