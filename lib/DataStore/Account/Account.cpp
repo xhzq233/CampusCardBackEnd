@@ -6,13 +6,15 @@
 
 void list::push(Card &newCard) {
     if (!next) {
-        next = new list(0,0);
+        next = new list(0, 0);
         next->card = newCard;
+        std::swap(card, next->card);
     } else {
-        list *tmp = new list(0,0);
+        list *tmp = new list(0, 0);
         tmp->card = newCard;
         tmp->next = next;
         next = tmp;
+        std::swap(card, next->card);
     }
 }
 
@@ -28,6 +30,7 @@ void list::clear() {
         delete p;
         next = q;
     }
+    next = nullptr;
 }
 
 int list::size() {
