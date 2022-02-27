@@ -10,10 +10,10 @@ list::~list() {
 
 void list::push(Card *newCard) {
     if (!next) {
-        next = new list;
+        next = new list();
         next->card = newCard;
     } else {
-        list *tmp = new list;
+        list *tmp = new list();
         tmp->card = newCard;
         tmp->next = next;
         next = tmp;
@@ -25,12 +25,12 @@ Card *list::begin() {
 }
 
 void list::clear() {
-    list *p, *q = this->next;
+    list *p, *q = next;
     while (q) {
         p = q;
         q = q->next;
         delete p;
-        this->next = q;
+        next = q;
     }
 }
 
