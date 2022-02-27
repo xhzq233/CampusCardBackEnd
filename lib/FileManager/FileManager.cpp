@@ -195,7 +195,7 @@ std::string FileManager::toStandardLogString(const char *title, const char *cont
     char buffer[91];
     sprintf(buffer, "[%s : %s] %s", buf, title, content);
 
-//    delete[] content;
+    delete[] content;
     return {buffer};
 }
 
@@ -246,7 +246,7 @@ std::string FileManager::toStandardLogString(const char *title, const char *cont
     res.append("] ");
     res.append(content);
 
-//    delete[] content;
+    delete[] content;
 
     return res;
 }
