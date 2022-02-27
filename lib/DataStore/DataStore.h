@@ -18,8 +18,8 @@ public:
     typedef std::vector<Account> Accounts;
 
     // 数组下标
+    typedef std::vector<const Consumption *> QueryResults;
     typedef std::vector<unsigned int> Subscripts;
-
 
     constexpr static const char WINDOW_QTY = 99;
     constexpr static const unsigned int MAXSIZE = 60000;
@@ -59,14 +59,11 @@ public:
     /* OnSpecifiedTime */
     static void insertConsumptionOnSpecifiedTime(Window window, Consumption *data, const FileManager::Time &time);
 
-    /* on specified window and card id, return Subscripts matched */
-    static Subscripts queryConsumption(Window window, unsigned int cid);
+    /* on specified window and card id, return pointers matched */
+    [[nodiscard]] static QueryResults queryConsumption(Window window, unsigned int cid);
 
-    /* on specified card id, return Subscripts matched */
-    static Subscripts queryConsumption(unsigned int cid);
-
-    /* on specified account id, return Subscripts matched */
-    static Subscripts queryConsumptionByUid(unsigned int uid);
+    /* on specified card id, return pointers matched */
+    [[nodiscard]] static QueryResults queryConsumption(unsigned int cid);
 
     /* localize file stored by DataStore ，be like cache */
     static void localize();
