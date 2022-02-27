@@ -39,7 +39,7 @@ namespace CardManage {
 
     inline void success(const char *title, const char *name, unsigned int &uid, const FileManager::Time &time) {
         auto buffer = new char[25];
-        sprintf(buffer, "%d %s success", uid, name);
+        sprintf(buffer, "%d %s succeeded", uid, name);
         CardManage::log(title, buffer, time);
     }
 }
