@@ -7,7 +7,6 @@
 #include "../../../Dependencies.h"
 
 #define DEFAULT_DATE 20240715   //默认的卡号有效期
-#define UID_LENGTH 10           //学号长度
 #define DEFAULT_PASSWORD 123456 //默认的密码
 
 class Card {
@@ -23,7 +22,7 @@ public:
     void changePassword();                            //修改密码
 
     //验证密码
-    [[nodiscard]] inline bool checkPassword(unsigned int passwd) const {
+    [[nodiscard]] bool checkPassword(unsigned int passwd) const {
         return this->password == passwd;
     }
 

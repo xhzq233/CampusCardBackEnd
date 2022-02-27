@@ -49,14 +49,14 @@ void CardManage::setLost(unsigned int uid, const Time &time) {
     } else {
         auto card = account->cards.begin();
         if (!card) {
-            auto buffer = new char[40];
+            char buffer[40];
             sprintf(buffer, "%d %s failed: no card", uid, account->name);
             log("挂失", buffer, time);
         } else if (card->condition) {
             card->condition = false;
             success("挂失", account->name, uid, time);
         } else {
-            auto buffer = new char[40];
+            char buffer[40];
             sprintf(buffer, "%d %s failed: Already lost", uid, account->name);
             log("挂失", buffer, time);
         }
@@ -71,14 +71,14 @@ void CardManage::unsetLost(unsigned int uid, const Time &time) {
     } else {
         auto card = account->cards.begin();
         if (!card) {
-            auto buffer = new char[40];
+            char buffer[40];
             sprintf(buffer, "%d %s failed: no card", uid, account->name);
             log("解挂", buffer, time);
         } else if (!card->condition) {
             card->condition = true;
             success("解挂", account->name, uid, time);
         } else {
-            auto buffer = new char[40];
+            char buffer[40];
             sprintf(buffer, "%d %s failed: not lost yet", uid, account->name);
             log("解挂", buffer, time);
         }
@@ -114,16 +114,16 @@ void CardManage::recharge(unsigned int uid, int amount, const Time &time) noexce
     } else {
         auto card = account->cards.begin();
         if (!card) {
-            auto buffer = new char[40];
+            char buffer[40];
             sprintf(buffer, "%d %s failed: no card", uid, account->name);
-            log("解挂", buffer, time);
-        }else if (account->balance + (float) amount > BALANCE_CEILING) {
-            auto buffer = new char[35];
+            log("充值", buffer, time);
+        } else if (account->balance + (float) amount > BALANCE_CEILING) {
+            char buffer[35];
             sprintf(buffer, "%d failed: Reached upper limit", uid);
             log("充值", buffer, time);
         } else {
-            auto buffer = new char[64];
-            sprintf(buffer, "%d %s success (cid: %d elder %.2f new %.2f)", uid, account->name, card->cid,
+            char buffer[64];
+            sprintf(buffer, "%d %s succeeded (cid: %d elder %.2f new %.2f)", uid, account->name, card->cid,
                     account->balance,
                     account->balance + (float) amount);
             log("充值", buffer, time);

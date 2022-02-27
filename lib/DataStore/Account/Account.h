@@ -35,12 +35,13 @@ public:
     unsigned int uid;//学号
     static const constexpr char NAME_SIZE = 15;
     typedef char Name[NAME_SIZE];
-
+    unsigned int lastTime; //上一次输入密码的时间
+    float lastTotal;//现在到上一次输入密码的消费总额
     Name name{0};//姓名
     float balance;//余额
     list cards;//卡
 
-    Account(unsigned int uid, const std::string &name1) : uid(uid), balance(0), cards() {
+    Account(unsigned int uid, const std::string &name1) : uid(uid), balance(0), lastTime(0), lastTotal(0), cards() {
         if (name1.size() > NAME_SIZE)
             throw;
         strncpy(name, name1.c_str(), name1.size());
@@ -50,7 +51,7 @@ public:
     // from strings
     explicit Account(const std::vector<std::string> &strings) : Account(std::stoul(strings[0]), strings[1]) {}
 
-    ~Account()=default;
+    ~Account() = default;
 
     // to string
     [[nodiscard]] std::string to_string() const;
