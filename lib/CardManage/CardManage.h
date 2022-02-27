@@ -9,6 +9,7 @@
 
 namespace CardManage {
     typedef unsigned long long Time;
+    typedef std::function<void(char *)> BufferCallBack;
     static unsigned int serialNumber = 12345;                                    //流水号
     static const constexpr float BALANCE_CEILING = 999.99; //账户余额上限
     static const constexpr char MAX_REISSUE_TIMES = 100; // 最大补卡
@@ -30,18 +31,7 @@ namespace CardManage {
     void recharge(unsigned int uid, int amount, const Time &time = 0) noexcept;    //充值
 
     void recall();                                                                  //日志回溯
-
-    inline void not_in_sys(const char *title, unsigned int &uid, const FileManager::Time &time) {
-        auto buffer = new char[32];
-        sprintf(buffer, "%d failed: NOT IN SYS", uid);
-        CardManage::log(title, buffer, time);
-    }
-
-    inline void success(const char *title, const char *name, unsigned int &uid, const FileManager::Time &time) {
-        auto buffer = new char[25];
-        sprintf(buffer, "%d %s succeeded", uid, name);
-        CardManage::log(title, buffer, time);
-    }
+    void log(const char *title, const BufferCallBack &bufferCallBack, const Time &time);
 }
 
 #endif // CAMPUSCARDBACKEND_CARDMANAGE_H

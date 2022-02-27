@@ -192,10 +192,8 @@ std::string FileManager::toStandardLogString(const char *title, const char *cont
     char buf[23];
     strftime(buf, sizeof(buf), "%Y-%m-%d-%X:00", tm);
 
-    char buffer[91];
+    char buffer[100];
     sprintf(buffer, "[%s : %s] %s", buf, title, content);
-
-    delete[] content;
     return {buffer};
 }
 
@@ -206,22 +204,10 @@ std::string FileManager::toStandardLogString(const char *title, const std::strin
     char buf[23];
     strftime(buf, sizeof(buf), "%Y-%m-%d-%X:00", tm);
 
-    char buffer[91];
+    char buffer[100];
     sprintf(buffer, "[%s : %s] %s", buf, title, content.c_str());
     // std::string.c_str() is not in heap so don't need to free
     return {buffer};
-}
-
-std::string
-FileManager::toStandardLogString(const char *title, const std::string &content, const FileManager::Time &time) {
-    std::string res;
-    res.push_back('[');
-    append_standard_time(res, time);
-    char buffer[72];
-    sprintf(buffer, " : %s] %s", title, content.c_str());
-    res.append(buffer);
-    // std::string.c_str() is not in heap so don't need to free
-    return res;
 }
 
 FileManager::Time FileManager::nowTime() {
@@ -245,8 +231,6 @@ std::string FileManager::toStandardLogString(const char *title, const char *cont
     res.append(title);
     res.append("] ");
     res.append(content);
-
-    delete[] content;
 
     return res;
 }

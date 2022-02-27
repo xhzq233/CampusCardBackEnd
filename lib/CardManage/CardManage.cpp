@@ -6,6 +6,18 @@
 
 using namespace std;
 
+inline void not_in_sys(const char *title, unsigned int &uid, const FileManager::Time &time) {
+    CardManage::log(title, [&](auto buffer) {
+        sprintf(buffer, "%d failed: NOT IN SYS", uid);
+    }, time);
+}
+
+inline void success(const char *title, const char *name, unsigned int &uid, const FileManager::Time &time) {
+    CardManage::log(title, [&](auto buffer) {
+        sprintf(buffer, "%d %s succeeded", uid, name);
+    }, time);
+}
+
 //系统具备正常状态的学号、姓名等信息的，即属于开户状态
 void CardManage::openAccount(unsigned int uid, const string &name, const Time &time) {
     auto account = DataStore::queryAccountByUid(uid);
@@ -49,16 +61,16 @@ void CardManage::setLost(unsigned int uid, const Time &time) {
     } else {
         auto card = account->cards.begin();
         if (!card) {
-            char buffer[40];
-            sprintf(buffer, "%d %s failed: no card", uid, account->name);
-            log("挂失", buffer, time);
+            CardManage::log("挂失", [&](auto buffer) {
+                sprintf(buffer, "%d %s failed: no card", uid, account->name);
+            }, time);
         } else if (card->condition) {
             card->condition = false;
             success("挂失", account->name, uid, time);
         } else {
-            char buffer[40];
-            sprintf(buffer, "%d %s failed: Already lost", uid, account->name);
-            log("挂失", buffer, time);
+            CardManage::log("挂失", [&](auto buffer) {
+                sprintf(buffer, "%d %s failed: Already lost", uid, account->name);
+            }, time);
         }
     }
 }
@@ -71,16 +83,16 @@ void CardManage::unsetLost(unsigned int uid, const Time &time) {
     } else {
         auto card = account->cards.begin();
         if (!card) {
-            char buffer[40];
-            sprintf(buffer, "%d %s failed: no card", uid, account->name);
-            log("解挂", buffer, time);
+            CardManage::log("解挂", [&](auto buffer) {
+                sprintf(buffer, "%d %s failed: no card", uid, account->name);
+            }, time);
         } else if (!card->condition) {
             card->condition = true;
             success("解挂", account->name, uid, time);
         } else {
-            char buffer[40];
-            sprintf(buffer, "%d %s failed: not lost yet", uid, account->name);
-            log("解挂", buffer, time);
+            CardManage::log("解挂", [&](auto buffer) {
+                sprintf(buffer, "%d %s failed: not lost yet", uid, account->name);
+            }, time);
         }
     }
 }
@@ -95,9 +107,9 @@ void CardManage::reissue(unsigned int uid, const Time &time) {
     else if (account->cards.size() >= CardManage::MAX_REISSUE_TIMES) {
         // reference:
         // https://sites.google.com/site/wyylview/dong-tai-fen-pei-nei-cun-zai-ke-nengheap-corruption-detected-de-yuan-yin-zhi-yi-2
-        auto buffer = new char[50];
-        sprintf(buffer, "%d %s failed: Reached upper limit", uid, account->name);
-        log("补卡", buffer, time);
+        CardManage::log("补卡", [&](auto buffer) {
+            sprintf(buffer, "%d %s failed: Reached upper limit", uid, account->name);
+        }, time);
     } else {
         Card *card = new Card(uid, ++CardManage::serialNumber);
         //将之前卡的状态设置为禁用状态
@@ -114,19 +126,19 @@ void CardManage::recharge(unsigned int uid, int amount, const Time &time) noexce
     } else {
         auto card = account->cards.begin();
         if (!card) {
-            char buffer[40];
-            sprintf(buffer, "%d %s failed: no card", uid, account->name);
-            log("充值", buffer, time);
+            CardManage::log("充值", [&](auto buffer) {
+                sprintf(buffer, "%d %s failed: no card", uid, account->name);
+            }, time);
         } else if (account->balance + (float) amount > BALANCE_CEILING) {
-            char buffer[35];
-            sprintf(buffer, "%d failed: Reached upper limit", uid);
-            log("充值", buffer, time);
+            CardManage::log("充值", [&](auto buffer) {
+                sprintf(buffer, "%d failed: Reached upper limit", uid);
+            }, time);
         } else {
-            char buffer[64];
-            sprintf(buffer, "%d %s succeeded (cid: %d elder %.2f new %.2f)", uid, account->name, card->cid,
-                    account->balance,
-                    account->balance + (float) amount);
-            log("充值", buffer, time);
+            log("充值", [&](auto buffer) {
+                sprintf(buffer, "%d %s success (cid: %d elder %.2f new %.2f)", uid, account->name, card->cid,
+                        account->balance,
+                        account->balance + (float) amount);
+            }, time);
             account->recharge((float) amount);
         }
     }
@@ -136,10 +148,12 @@ void CardManage::recharge(unsigned int uid, int amount, const Time &time) noexce
 void CardManage::recall() {
 }
 
-void CardManage::log(const char *title, const char *content, const Time &time) {
+void CardManage::log(const char *title, const BufferCallBack &bufferCallBack, const Time &time) {
+    static char buffer[90];
+    bufferCallBack(buffer);
     if (!time) {
-        FileManager::getInstance() << FileManager::toStandardLogString(title, content);
+        FileManager::getInstance() << FileManager::toStandardLogString(title, buffer);
     } else {
-        FileManager::getInstance() << FileManager::toStandardLogString(title, content, time);
+        FileManager::getInstance() << FileManager::toStandardLogString(title, buffer, time);
     }
 }

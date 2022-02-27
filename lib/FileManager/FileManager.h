@@ -175,7 +175,6 @@ public:
     static std::string toStandardLogString(const char *title, const std::string &content);
     /* 自定义时间的StandardLog */
     static std::string toStandardLogString(const char *title, const char *content, const Time &time);
-    static std::string toStandardLogString(const char *title, const std::string &content, const Time &time);
     /* literally */
     static void append_standard_time(std::string &container, const Time &time);
 

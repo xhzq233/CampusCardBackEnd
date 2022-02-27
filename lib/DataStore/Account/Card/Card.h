@@ -26,10 +26,6 @@ public:
         return this->password == passwd;
     }
 
-
-    // from strings
-    explicit Card(const std::vector<std::string> &strings) : Card(std::stoul(strings[0]), std::stoul(strings[1])) {}
-
     // to string
     [[nodiscard]] std::string to_string() const;
 };
