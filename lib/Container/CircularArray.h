@@ -178,7 +178,7 @@ private:
     ValueType *data{nullptr};
 public:
     // only iterate none null values
-    void for_loop(Range range) {
+    void for_loop(Range range) const {
         Index last = current_index < start_index ? current_index + size + 1 : current_index + 1;
         for (int i = (start_index + 1) % size; i < last; ++i) {
             range(data[i % size]);

@@ -32,13 +32,13 @@ Consumptions &DataStore::consumes_init() {
     }
 
     JoinableThreadPool threadPool(MAX_THREAD, FileManager::CONSUME_CSV_QTY, [](int index) -> auto {
-        return [window_index = index, consumes = &res]() {
+        return [window_index = index, consumes = res]() {
             printf("%d thread executing!\n", window_index);
             CSV temp;
             FileManager().getCSVDataSource(temp, 4, FileManager::CONSUME_CSV(window_index + 1));
             unsigned int size = temp.size();
             for (unsigned int i = 0; i < size; ++i) {
-                (*consumes)[window_index]->push_back(new Consumption(window_index + 1, temp[i]));
+                consumes[window_index]->push_back(new Consumption(window_index + 1, temp[i]));
             }
             // no longer to be sorted
         };
@@ -47,6 +47,21 @@ Consumptions &DataStore::consumes_init() {
     printf("All threads joined!\n");
     return res;
 }
+//std::thread threads[FileManager::CONSUME_CSV_QTY];
+//    for (int window = 0; window < FileManager::CONSUME_CSV_QTY; ++window) {
+//        threads[window] = std::thread([window = window,res = res]() {
+//            printf("%d thread executing!\n", window);
+//            CSV temp;
+//            FileManager().getCSVDataSource(temp, 4, FileManager::CONSUME_CSV(window + 1));
+//            unsigned int size = temp.size();
+//            for (unsigned int index = 0; index < size; ++index) {
+//                res[window]->push_back(new Consumption(window + 1, temp[index]));
+//            }
+//            // no longer to be sorted
+//        });
+//    }
+//    for (auto &item : threads)
+//        item.join();
 
 const WindowPositions &DataStore::windows_init() {
     static WindowPositions windowPositions{0};
@@ -185,25 +200,29 @@ DataQuery::query(FileManager::CSV &container, unsigned int columnIndex, const st
     return res;
 }
 
-DataQuery::Subscripts DataStore::queryConsumption(Window window, unsigned int cid) {
+DataQuery::QueryResults DataStore::queryConsumption(Window window, unsigned int cid) {
     //error handle
     if (window == 0 || window > WINDOW_QTY) {
         printf("[ERROR] %u not in this for_loop: 1 - 99", window);
         return {};
     }
-    Subscripts res;
+    QueryResults res;
     const auto &consumptions_in_window = *getConsumptions()[window - 1];
-    // Retrieve backward from this windowPosition
-    // todo
-    //if (cid == consumptions_in_window[i]->cid)
-    //            res.emplace_back(i);
+    consumptions_in_window.for_loop([&](auto value) {
+        if (cid == value->cid)
+            res.emplace_back(value);
+    });
     return res;
 }
 
-DataQuery::Subscripts DataStore::queryConsumption(unsigned int cid) {
-    return {};
-}
-
-DataQuery::Subscripts DataStore::queryConsumptionByUid(unsigned int uid) {
-    return {};
+DataQuery::QueryResults DataStore::queryConsumption(unsigned int cid) {
+    QueryResults res;
+    auto &consumptions = getConsumptions();
+    for (auto &consumption: consumptions) {
+        consumption->for_loop([&](auto value) {
+            if (cid == value->cid)
+                res.emplace_back(value);
+        });
+    }
+    return res;
 }
