@@ -165,7 +165,7 @@ void Consume::show(const Window &window, const Time &time) {
 
 void Consume::log(const Time &time, unsigned int cid, Window window, float price, const char *res) {
     static char content[70];
-    sprintf(content, "%llu %d %d %.2f %s", time, cid, window, price, res);
+    sprintf(content, "cid %d window %d price %.2f %s", cid, window, price, res);
     FileManager::getInstance() << FileManager::toStandardLogString("消费", content, time);
 }
 

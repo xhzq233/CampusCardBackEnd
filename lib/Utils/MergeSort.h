@@ -14,8 +14,7 @@ private:
     /// 归并
     /// @param container 数组
     inline static void merge(ValueType *container, int left, int mid, int right) {
-        auto size = right - left + 1;
-        auto temp_container = new ValueType[size];
+        auto temp_container = new ValueType[right - left + 1];
         int pointer1 = left, pointer2 = mid, temp_index = 0;
 
         while (pointer1 < mid && pointer2 <= right)
@@ -30,10 +29,6 @@ private:
 
         //赋值回去
         std::copy(temp_container, temp_container + temp_index, container + left);
-        for (int i = 1; i < temp_index; ++i) {
-            if (*container[left + i - 1] > *container[left + i])
-                throw;
-        }
         delete[] temp_container;
     }
 

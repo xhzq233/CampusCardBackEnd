@@ -268,12 +268,13 @@ void execute() {
 int main() {
     testTimeWrapper(init);
 
+    execute();
+
     // Reference:
     // https://stackoverflow.com/questions/8588541/c-should-i-bother-deleting-pointers-to-application-lifetime-variables
     // 释放指针
     for (auto item: DataStore::getConsumptions()) {
         delete item;
     }
-    execute();
     return 0;
 }
