@@ -107,26 +107,8 @@ void Consume::consume(const Consumption &log) {
         Consume::log(log.time, card.cid, log.window, log.price, "failed Insufficient account balance");
         //指定时间内消费
     } else if (hour >= 7 && hour <= 9 || hour >= 11 && hour <= 13 || hour >= 17 && hour <= 19) {
-        //当前时间段内消费超过20,则需要输入密码
-        if (log.time / 1000000 - account->lastTime < 2 && account->lastTotal + log.price > 20) {
-            if (checkPasswd(card)) {
-                account->lastTotal = 0;
-                account->lastTime = log.time / 1000000;
-                Consume::baseConsume(*account, log.window, card, log.price, log.time);
-            }
-        }
-            //在分开时间段消费,则重置消费金额
-        else if (log.time / 1000000 - account->lastTime > 2) {
-            account->lastTotal = log.price;
-            account->lastTime = log.time / 1000000;
-            Consume::baseConsume(*account, log.window, card, log.price, log.time);
-        }
-            //在同一时间段内消费,则累加消费金额
-        else {
-            account->lastTotal += log.price;
-            account->lastTime = log.time / 1000000;
-            Consume::baseConsume(*account, log.window, card, log.price, log.time);
-        }
+        account->consume(log.price);
+        Consume::log(log.time, card.cid, log.window, log.price, "succeeded");
     } else {
         //当前时间不允许消费
         Consume::log(log.time, card.cid, log.window, log.price, "failed time not allowed");
