@@ -131,9 +131,9 @@ void execute() {
     unsigned int window;
     float price;
     while (true) {
-        printf("1:register an account 2:cancel account 3:report loss 4:lose register 5:reissue 6:recharge 7:consume -1:exit\nplease input the cmd:");
+        printf("1:register an account 2:cancel account 3:report loss 4:lose register 5:reissue 6:recharge 7:consume 9.init data -1:exit\nplease input the cmd:");
         scanf("%s", str);
-        cmd = strtol(str, &buf, 10);
+        cmd = std::stoi(str);
         switch (cmd) {
             //开户
             case 1: {
@@ -248,6 +248,11 @@ void execute() {
                 uid = strtol(str, &buf, 10);
                 auto account = DataStore::queryAccountByUid(uid);
                 printf("name:%s,uid:%u,balance:%.2f\n", account->name, account->uid, account->balance);
+                break;
+            }
+            case 9: {
+                printf("initializing...\n");
+                testTimeWrapper(init);
             }
                 //退出
             case -1: {
@@ -266,7 +271,6 @@ void execute() {
 }
 
 int main() {
-//    testTimeWrapper(init);
 
     execute();
 
