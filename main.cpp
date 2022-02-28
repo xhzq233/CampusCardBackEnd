@@ -111,92 +111,92 @@ void execute() {
     float price;
     while (true) {
         try {
-            printf("1:register an account 2: account cancellation \n"
-                   "3:report loss         4:lose register \n"
-                   "5:reissue             6:recharge \n"
-                   "7:consume             8:account description \n"
-                   "9.init data           -1:exit \n"
-                   "please input the cmd:");
+            printf("1: Register account 2: Account cancellation \n"
+                   "3: SetLoss          4: UnsetLost \n"
+                   "5: Reissue          6: Recharge \n"
+                   "7: Consume          8: Account description \n"
+                   "9. Init data        -1: Exit \n"
+                   );
             scanf("%s", str);
             cmd = std::stoi(str);
             switch (cmd) {
                 //开户
                 case 1: {
-                    printf("Registering an account is in progress.\nplease input your uid:");
+                    printf("Registering an account is in progress.\nplease input your uid: ");
                     scanf("%s", str);
                     uid = std::stol(str);
-                    printf("please input your name:");
+                    printf("Please input ur name: ");
                     scanf("%s", str);
                     name = str;
                     cid = CardManage::openAccount(uid, name);
                     if (cid) {
-                        printf("succeeded\nyour new cid is %u\n", cid);
+                        printf("Succeeded: ur new card id is %u\n ", cid);
                     } else {
-                        printf("failed account already in system\n");
+                        printf("Failed: account already in system\n");
                     }
                     break;
                 }
                     //销户
                 case 2: {
-                    printf("Account cancellation operation is in progress.\nplease input your uid:");
+                    printf("Account cancellation operation is in progress.\nInput ur uid:");
                     scanf("%s", str);
                     uid = std::stol(str);
                     res = CardManage::deleteAccount(uid);
                     if (res) {
-                        printf("succeeded\n");
+                        printf("Succeeded \n");
                     } else {
-                        printf("failed the uid is not in system\n");
+                        printf("Failed: uid is not in system\n");
                     }
                     break;
                 }
                     //挂失
                 case 3: {
-                    printf("Reporting loss is in progress.\nplease input your uid:");
+                    printf("Reporting loss is in progress.\nInput ur uid:");
                     scanf("%s", str);
                     uid = std::stol(str);
                     res = CardManage::setLost(uid);
                     if (res == 1) {
                         printf("succeeded\n");
                     } else if (res == -1) {
-                        printf("failed card already has been lost\n");
+                        printf("Failed: card already lost\n");
                     } else {
-                        printf("failed the uid is not in system\n");
+                        printf("Failed: uid is not in system\n");
                     }
                     break;
                 }
                     //解挂
                 case 4: {
-                    printf("Loss unregister is in progress.\nplease input your uid:");
+                    printf("Loss unregister is in progress.\nInput ur uid:");
                     scanf("%s", str);
                     uid = std::stol(str);
                     res = CardManage::unsetLost(uid);
                     if (res == 1) {
                         printf("succeeded\n");
                     } else if (res == -1) {
-                        printf("failed card already has been found\n");
+                        printf("Failed: card no lost yet\n");
                     } else {
-                        printf("failed the uid is not in system\n");
+                        printf("Failed: uid is not in system\n");
                     }
                     break;
                 }
                     //补卡
                 case 5: {
-                    printf("Reissuing a card is in progress.\nplease input your uid:");
+                    printf("Reissuing a card is in progress.\nInput your uid:");
                     scanf("%s", str);
                     uid = std::stol(str);
                     res = CardManage::reissue(uid);
                     if (res == 1) {
                         printf("succeeded\n");
                     } else if (res == -1) {
-                        printf("failed the number of reissuing card has reached the maximum.\n");
+                        printf("Failed: the number of reissuing card reached the upper limit\n");
                     } else {
-                        printf("failed the uid is not in system\n");
+                        printf("Failed: uid is not in system\n");
                     }
                     break;
                 }
                     //充值
                 case 6: {
-                    printf("A recharge operation is in progress.\nplease input your uid:");
+                    printf("A recharge operation is in progress.\nInput your uid:");
                     scanf("%s", str);
                     uid = std::stol(str);
                     printf("please input the amount you want to recharge:");
@@ -204,42 +204,42 @@ void execute() {
                     amount = std::stoi(str);
                     res = CardManage::recharge(uid, amount);
                     if (res == 0) {
-                        printf("failed the uid is not in system\n");
+                        printf("Failed: the uid is not in system\n");
                     } else if (res == -1) {
-                        printf("failed the account balance exceeds 1000.\n");
+                        printf("Failed: the account balance exceeds 1000.\n");
                     } else {
-                        printf("succeeded the account balance:%d\n", res);
+                        printf("Succeeded: the account balance:%d\n", res);
                     }
                     break;
                 }
                     //消费
                 case 7: {
-                    printf("A consumption operation is in progress.\nplease choose the window you want to consume:");
+                    printf("A consumption operation is in progress.\nPlease choose the window you want to consume:");
                     scanf("%s", str);
                     window = std::stoi(str);
-                    printf("please input your cid:");
+                    printf("Input your cid:");
                     scanf("%s", str);
                     cid = std::stol(str);
-                    printf("please input the amount you want to consume:");
+                    printf("Please input the amount you want to consume:");
                     scanf("%s", str);
                     price = std::stof(str);
-                    printf("insert in specified time? y or n");
+                    printf("Insert in specified time? y or n");
                     scanf("%s", str);
                     if (std::string(str) == "y") {
-                        printf("input specified time: (format be like 2021092411002598)");
+                        printf("Input specified time: (format be like 2021092411002598)");
                         scanf("%s", str);
                         time = std::stoll(str);
                         Consume::consume(window, cid, price, time);
                     } else if (std::string(str) == "n") {
                         Consume::consume(window, cid, price);
                     } else {
-                        printf("undefined cmd\n");
+                        printf("Undefined cmd\n");
                         break;
                     }
                     break;
                 }
                 case 8: {
-                    printf("please input your uid:");
+                    printf("Please input your uid:");
                     scanf("%s", str);
                     uid = std::stol(str);
                     auto account = DataStore::queryAccountByUid(uid);
@@ -247,7 +247,7 @@ void execute() {
                     break;
                 }
                 case 9: {
-                    printf("initializing...\n");
+                    printf("Initializing...\n");
                     testTimeWrapper(init);
                 }
                     //退出
@@ -256,7 +256,7 @@ void execute() {
                 }
                     //出错
                 default: {
-                    printf("undefined cmd\n");
+                    printf("Undefined cmd\n");
                     break;
                 }
             }
