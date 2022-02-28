@@ -155,8 +155,11 @@ public:
             }
 
             //movement
-            while (move_index > mid)
-                std::swap(data[move_index % size], data[(--move_index) % size]);
+            while (move_index > mid){
+                std::swap(data[move_index % size], data[(move_index-1) % size]);
+                move_index--;
+            }
+
             data[move_index % size] = value;
             current_index = (current_index + 1) % size;
             if (current_index == start_index) {

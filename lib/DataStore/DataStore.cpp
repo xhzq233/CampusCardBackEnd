@@ -42,7 +42,7 @@ Consumptions &DataStore::consumes_init() {
             // no longer to be sorted
         };
     }
-    JoinableMultiWork works(Device::MAX_THREAD, FileManager::CONSUME_CSV_QTY, tasks);
+    JoinableMultiWork works(Device::MAX_THREAD - 1, FileManager::CONSUME_CSV_QTY, tasks);
     printf("All threads joined!\n");
     return res;
 }
