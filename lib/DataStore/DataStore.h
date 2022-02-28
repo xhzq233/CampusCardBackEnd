@@ -57,7 +57,7 @@ public:
     static void pushConsumption(Window window, Consumption *data);
 
     /* OnSpecifiedTime */
-    static void insertConsumptionOnSpecifiedTime(Window window, Consumption *data, const FileManager::Time &time);
+    static void insertConsumptionOnSpecifiedTime(Window window, Consumption *data);
 
     /* on specified window and card id, return pointers matched */
     [[nodiscard]] static QueryResults queryConsumption(Window window, unsigned int cid);

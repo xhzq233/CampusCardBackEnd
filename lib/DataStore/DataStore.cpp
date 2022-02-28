@@ -136,15 +136,14 @@ void DataStore::pushConsumption(Window window, Consumption *data) {
     consumes_in_window->push_back(data);
 }
 
-void DataStore::insertConsumptionOnSpecifiedTime(Window window, Consumption *data, const FileManager::Time &time) {
+void DataStore::insertConsumptionOnSpecifiedTime(Window window, Consumption *data) {
     //error handle
     if (window == 0 || window > WINDOW_QTY) {
         printf("[ERROR] %u not in this for_loop: 1 - 99", window);
         return;
     }
     auto &consumes_in_window = getConsumptions()[window - 1];
-    auto &&position = getWindowPositions()[window - 1];
-
+    consumes_in_window->insert(data);
 }
 
 using DataQuery = DataStore;
