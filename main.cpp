@@ -21,31 +21,45 @@ void testTimeWrapper(const VoidCallBack &func) {
 using CSV = FileManager::CSV;
 
 constexpr static const unsigned int RESERVED_SIZE = 2'500'000;
+constexpr static const unsigned int MERGE_NUM = 64;
 typedef BaseOperation *SortedOperations[RESERVED_SIZE];
+
 
 void init() {
     // MARK:--- init operations
     auto *operations = new SortedOperations{nullptr};
     auto &res = DataStore::getConsumptions();
     unsigned int num = 0;
-    for (auto re: res)
+
+    int per_indexes[MERGE_NUM + 1]; // 记录每部分排好序的数组的下标
+    int per_indexes_index = 0;
+    for (auto re: res) {
+        if (re->count() == 0)
+            continue;
+        per_indexes[per_indexes_index++] = (int) num;
         re->for_loop([&](auto value) {
             operations[num++] = value;
         });
-
+    }
+    per_indexes[per_indexes_index++] = (int) num;
     CSV temp;
 
     FileManager::getInstance().getCSVDataSource(temp, 3, FileManager::CARD_MANAGE_CSV_NAME);
     for (const auto &item: temp)
         operations[num++] = new CardManageOperation(item);
+    per_indexes[per_indexes_index++] = (int) num;
     temp.clear();
 
     FileManager::getInstance().getCSVDataSource(temp, 4, FileManager::CARD_RECHARGE_CSV_NAME);
     for (const auto &item: temp)
         operations[num++] = new RechargeOperation(item);
+    per_indexes[per_indexes_index++] = (int) num;
+    for (int i = per_indexes_index; i < MERGE_NUM + 1; ++i) {
+        per_indexes[i] = (int) num;
+    }
     temp.clear();
 
-    MergeSort<BaseOperation *>::sort(operations, (int) num);
+    MergeSort<BaseOperation *>::sort(operations, per_indexes, MERGE_NUM);
 
     // separate complete
     RechargeOperation *rechargeOperation;
