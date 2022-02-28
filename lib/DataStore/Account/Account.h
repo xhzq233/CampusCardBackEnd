@@ -5,33 +5,10 @@
 #ifndef CAMPUSCARDBACKEND_ACCOUNT_H
 #define CAMPUSCARDBACKEND_ACCOUNT_H
 
-#include "Card/Card.h"
+#include "Card.h"
 #include "../../FileManager/FileManager.h"
 
-class CardList {
-private:
-    Card card;
-    CardList *next;
-
-public:
-
-    CardList(unsigned int uid, unsigned int serialNumber) : card(uid, serialNumber), next(nullptr) {};
-
-    ~CardList() = default;
-
-    void push(Card &newCard);
-
-    Card &begin();
-
-    void clear();
-
-    int size();
-};
-
-
 class Account {
-private:
-    /* data */
 public:
 
     unsigned int uid;//学号
@@ -60,7 +37,13 @@ public:
     ~Account() = default;
 
     // to string
-    [[nodiscard]] std::string to_string() const;
+    [[nodiscard]] std::string to_string() const {
+        std::string res;
+        res.append(std::to_string(uid));
+        res.append(" ");
+        res.append(name);
+        return res;
+    }
 
     void consume(float price) {
         this->balance -= price;
