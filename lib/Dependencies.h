@@ -12,6 +12,7 @@
 #include <numeric>
 #include <functional>
 #include <regex>
+#include <unordered_map>
 #include <chrono>
 
 #endif //CAMPUSCARDBACKEND_DEPENDENCIES_H
