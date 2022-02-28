@@ -54,7 +54,7 @@ void Consume::consume(const Window &window, const Card &card, const float &price
 
 void Consume::consume(const Window &window, const Card &card, const float &price, const Time &time) {
     int hour = (int) (time / 1000000 % 100);
-    auto account = DataStore::queryAccountByUid(card.cid);
+    auto account = DataStore::queryAccountByUid(card.uid);
     //无效的卡
     if (!card.condition) {
         printf("Invalid card.");
@@ -72,6 +72,13 @@ void Consume::consume(const Window &window, const Card &card, const float &price
         printf("Consumption is not allowed now."); //当前时间不允许消费
         Consume::log(time, card.cid, window, price, "failed");
     }
+}
+void Consume::consume(const Window &window, unsigned int uid, const float &price, const Consume::Time &time) {
+
+}
+
+void Consume::consume(const Window &window, unsigned int uid, const float &price) {
+
 }
 
 void Consume::consume(const Consumption &log) {

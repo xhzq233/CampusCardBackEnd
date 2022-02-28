@@ -22,7 +22,7 @@ inline void success(const char *title, const char *name, unsigned int &uid, cons
 unsigned int CardManage::openAccount(unsigned int uid, const string &name, const Time &time) {
     auto account = DataStore::queryAccountByUid(uid);
     if (account == DataStore::getAccounts().end()) {
-        Account newAccount(uid, name, ++serialNumber);
+        Account newAccount(uid, name, DataStore::getSerialNumber());
         DataStore::insertAccount(newAccount);
         return newAccount.cards.begin().cid;
         //log inside account constructor
@@ -104,7 +104,7 @@ int CardManage::reissue(unsigned int uid, const Time &time) {
         }, time);
         return -1;
     } else {
-        Card card(uid, ++serialNumber);
+        Card card(uid, DataStore::getSerialNumber());
         //将之前卡的状态设置为禁用状态
         account->cards.push(card);
         success("补卡", account->name, uid, time);

@@ -4,13 +4,13 @@
 
 #include "Account.h"
 
-void list::push(Card &newCard) {
+void CardList::push(Card &newCard) {
     if (!next) {
-        next = new list(0, 0);
+        next = new CardList(0, 0);
         next->card = newCard;
         std::swap(card, next->card);
     } else {
-        list *tmp = new list(0, 0);
+        auto *tmp = new CardList(0, 0);
         tmp->card = newCard;
         tmp->next = next;
         next = tmp;
@@ -18,12 +18,12 @@ void list::push(Card &newCard) {
     }
 }
 
-Card &list::begin() {
+Card &CardList::begin() {
     return card;
 }
 
-void list::clear() {
-    list *p, *q = next;
+void CardList::clear() {
+    CardList *p, *q = next;
     while (q) {
         p = q;
         q = q->next;
@@ -33,11 +33,11 @@ void list::clear() {
     next = nullptr;
 }
 
-int list::size() {
+int CardList::size() {
     if (!next) {
         return 1;
     }
-    list *p = next;
+    CardList *p = next;
     int size = 2;
     while (p->next) {
         ++size;

@@ -14,6 +14,10 @@
 /* 'Data Base' liked object */
 class DataStore {
 public:
+    static unsigned int getSerialNumber() {
+        static unsigned int serialNumber = 12345;                                    //流水号
+        return ++serialNumber;
+    }
 
     typedef std::vector<Account> Accounts;
     using Time = FileManager::Time;
@@ -100,7 +104,5 @@ public:
 
     ~DataStore() = delete;
 };
-
-static unsigned int serialNumber = 12345;                                    //流水号
 
 #endif //CAMPUSCARDBACKEND_DATASTORE_H

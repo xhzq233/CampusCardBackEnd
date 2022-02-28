@@ -18,7 +18,11 @@ namespace Consume {
 
     void consume(const Window &window, const Card &card, const float &price, const Time &time); //指定时间消费
 
+    void consume(const Window &window, unsigned int uid, const float &price, const Time &time); //指定时间消费
+
     void consume(const Window &window, const Card &card, const float &price); //当日消费
+
+    void consume(const Window &window, unsigned int uid, const float &price); //当日消费
 
     void consume(const Consumption &log); //通过消费记录消费
 

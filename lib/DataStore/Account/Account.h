@@ -8,16 +8,16 @@
 #include "Card/Card.h"
 #include "../../FileManager/FileManager.h"
 
-class list {
+class CardList {
 private:
     Card card;
-    list *next;
+    CardList *next;
 
 public:
 
-    list(unsigned int uid, unsigned int serialNumber) : card(uid, serialNumber), next(nullptr) {};
+    CardList(unsigned int uid, unsigned int serialNumber) : card(uid, serialNumber), next(nullptr) {};
 
-    ~list() = default;
+    ~CardList() = default;
 
     void push(Card &newCard);
 
@@ -33,6 +33,7 @@ class Account {
 private:
     /* data */
 public:
+
     unsigned int uid;//学号
     static const constexpr char NAME_SIZE = 15;
     typedef char Name[NAME_SIZE];
@@ -40,7 +41,7 @@ public:
     float totalConsumptionFromLastTime;//现在到上一次输入密码的消费总额
     Name name{0};//姓名
     float balance;//余额
-    list cards;//卡
+    CardList cards;//卡
 
     Account(unsigned int uid, const std::string &name1, unsigned int serialNumber) : uid(uid), balance(0),
                                                                                      lastTimeEnterPasswd(0),
