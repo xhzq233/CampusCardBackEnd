@@ -155,8 +155,8 @@ public:
             }
 
             //movement
-            while (move_index > mid){
-                std::swap(data[move_index % size], data[(move_index-1) % size]);
+            while (move_index > mid) {
+                std::swap(data[move_index % size], data[(move_index - 1) % size]);
                 move_index--;
             }
 
@@ -184,6 +184,13 @@ public:
     void for_loop(Range range) const {
         Index last = current_index < start_index ? current_index + size + 1 : current_index + 1;
         for (int i = (start_index + 1) % size; i < last; ++i) {
+            range(data[i % size]);
+        }
+    }
+
+    void for_loop(Index start, Index end, Range range) const {
+        Index last = end < start ? end + size + 1 : end + 1;
+        for (int i = (start + 1) % size; i < last; ++i) {
             range(data[i % size]);
         }
     }

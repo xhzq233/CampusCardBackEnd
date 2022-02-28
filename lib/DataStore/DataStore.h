@@ -16,7 +16,7 @@ class DataStore {
 public:
 
     typedef std::vector<Account> Accounts;
-
+    using Time = FileManager::Time;
     // 数组下标
     typedef std::vector<const Consumption *> QueryResults;
     typedef std::vector<unsigned int> Subscripts;
@@ -61,6 +61,9 @@ public:
 
     /* on specified window and card id, return pointers matched */
     [[nodiscard]] static QueryResults queryConsumption(Window window, unsigned int cid);
+
+    [[nodiscard]] static QueryResults
+    queryConsumptionInTimeRange(Window window, Time left, Time right = -1);
 
     /* on specified card id, return pointers matched */
     [[nodiscard]] static QueryResults queryConsumption(unsigned int cid);

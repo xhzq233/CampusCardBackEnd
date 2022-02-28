@@ -119,18 +119,10 @@ std::vector<Account>::iterator DataStore::queryAccountByUid(unsigned int uid) {
 std::vector<Account>::iterator DataStore::queryAccountByCid(unsigned int cid) {
     auto &accounts = getAccounts();
     //half search
-    int left = 0, right = (int) accounts.size() - 1, mid;
-    while (left <= right) {
-        mid = (left + right) / 2;
-        if (accounts[mid].cards.begin().cid == cid) {
-            return accounts.begin() + mid;
-        } else if (accounts[mid].cards.begin().cid > cid) {
-            right = mid - 1;
-        } else {
-            left = mid + 1;
-        }
+    for (auto i = accounts.begin(); i != accounts.end(); ++i) {
+        if (i->cards.begin().cid == cid)
+            return i;
     }
-    // result is not found
     return accounts.end();
 }
 
@@ -208,5 +200,37 @@ DataQuery::QueryResults DataStore::queryConsumption(unsigned int cid) {
                 res.emplace_back(value);
         });
     }
+    return res;
+}
+
+DataStore::QueryResults
+DataStore::queryConsumptionInTimeRange(Window window, DataStore::Time left, DataStore::Time right) {
+
+    //error handle
+    if (window == 0 || window > WINDOW_QTY) {
+        printf("[ERROR] %u not in this for_loop: 1 - 99", window);
+        return {};
+    }
+    QueryResults res;
+    auto &consumptions_in_window = *getConsumptions()[window - 1];
+    unsigned int r_index;
+    unsigned int l_index;
+    if (right == -1) {
+        r_index = consumptions_in_window.current_index;
+    } else if (left > right) {
+        throw;
+    } else {
+        r_index = consumptions_in_window.halfSearch([&](auto value) -> bool {
+            return value->time < right;
+        });
+    }
+    l_index = consumptions_in_window.halfSearch([&](auto value) -> bool {
+        return value->time < left;
+    });
+
+    consumptions_in_window.for_loop(l_index, r_index, [&](auto value) {
+        res.template emplace_back(value);
+    });
+
     return res;
 }
