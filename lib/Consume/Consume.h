@@ -23,9 +23,13 @@ namespace Consume {
 
     void show(const Window &window); //消费完后展示当日消费次数和数据
 
-    void log(const Time &time, unsigned int cid, Window window, float price, const char *info);
-
     bool checkPasswd(const Card &card); //输入密码
+
+    inline void log(const Time &time, unsigned int cid, Window window, float price, const char *info) {
+        static char content[72];
+        sprintf(content, "%d window %d price %.2f %s", cid, window, price, info);
+        FileManager::getInstance() << FileManager::toStandardLogString("消费", content, time);
+    }
 }
 
 

@@ -42,6 +42,9 @@ public:
      * */
     static Accounts &getAccounts();
 
+    /* identifier is cid of an Account, stores addresses of getAccounts() */
+    static std::unordered_map<unsigned int, Account *> &getAccountsMapByCid();
+
     /* sorted by < */
     static Consumptions &getConsumptions();
 
@@ -53,9 +56,6 @@ public:
 
     /* Query account by uid */
     static std::vector<Account>::iterator queryAccountByUid(unsigned int uid);
-
-    /* Query account by cid */
-    static std::vector<Account>::iterator queryAccountByCid(unsigned int uid);
 
     /* Consumption push back, window ranged from 1 to 99 */
     static void pushConsumption(Window window, Consumption *data);

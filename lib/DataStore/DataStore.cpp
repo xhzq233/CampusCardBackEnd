@@ -5,6 +5,7 @@
 #include "DataStore.h"
 #include "../Utils/ThreadPool.h"
 
+
 using Accounts = DataStore::Accounts;
 using Consumptions = DataStore::Consumptions;
 using WindowPositions = DataStore::WindowPositions;
@@ -96,6 +97,8 @@ void DataStore::insertAccount(const Account &data) {
         }
     }
     accounts.emplace(accounts.begin() + left, data);
+    auto *pointer = &(accounts[left]);
+    getAccountsMapByCid()[pointer->cards.begin().cid] = pointer;
 }
 
 std::vector<Account>::iterator DataStore::queryAccountByUid(unsigned int uid) {
@@ -113,16 +116,6 @@ std::vector<Account>::iterator DataStore::queryAccountByUid(unsigned int uid) {
         }
     }
     // result is not found
-    return accounts.end();
-}
-
-std::vector<Account>::iterator DataStore::queryAccountByCid(unsigned int cid) {
-    auto &accounts = getAccounts();
-    //half search
-    for (auto i = accounts.begin(); i != accounts.end(); ++i) {
-        if (i->cards.begin().cid == cid)
-            return i;
-    }
     return accounts.end();
 }
 
@@ -232,4 +225,15 @@ DataStore::queryConsumptionInTimeRange(Window window, DataStore::Time left, Data
     });
 
     return res;
+}
+
+std::unordered_map<unsigned int, Account *> &DataStore::getAccountsMapByCid() {
+    static auto &sortedAccounts = []() -> std::unordered_map<unsigned int, Account *> & {
+        static std::unordered_map<unsigned int, Account *> res;
+        for (auto &item: DataStore::getAccounts())
+            res[item.cards.begin().cid] = &item;
+        return res;
+    }();
+
+    return sortedAccounts;
 }
