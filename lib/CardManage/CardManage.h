@@ -16,19 +16,17 @@ namespace CardManage {
 
     void log(const char *title, const char *content, const Time &time); //日志记录
 
-    void openAccount(unsigned int uid, const std::string &name, const Time &time = 0); //开户
+    unsigned int openAccount(unsigned int uid, const std::string &name, const Time &time = 0); //开户
 
-    void deleteAccount(unsigned int uid, const Time &time = 0);             //销户
+    bool deleteAccount(unsigned int uid, const Time &time = 0);             //销户
 
-    void distribute(unsigned int uid, const Time &time = 0);                //发卡
+    int setLost(unsigned int uid, const Time &time = 0);                   //挂失
 
-    void setLost(unsigned int uid, const Time &time = 0);                   //挂失
+    int unsetLost(unsigned int uid, const Time &time = 0);                 //解挂
 
-    void unsetLost(unsigned int uid, const Time &time = 0);                 //解挂
+    int reissue(unsigned int uid, const Time &time = 0);                   //补卡
 
-    void reissue(unsigned int uid, const Time &time = 0);                   //补卡
-
-    void recharge(unsigned int uid, int amount, const Time &time = 0) noexcept;    //充值
+    int recharge(unsigned int uid, int amount, const Time &time = 0) noexcept;    //充值
 
     void recall();                                                                  //日志回溯
     void log(const char *title, const BufferCallBack &bufferCallBack, const Time &time);

@@ -18,10 +18,10 @@ void Consume::consume(const Window &window, const Card &card, const float &price
     int hour = static_cast<int>(time / 100'000'000 % 100);
     auto account = DataStore::queryAccountByUid(card.cid);
     if (!card.condition) {
-        printf("Invalid card.");
+        printf("Invalid card.\n");
         Consume::log(time, card.cid, window, price, "failed");
     } else if (account->balance < price) {
-        printf("Insufficient account balance."); //账户余额不足
+        printf("Insufficient account balance.\n"); //账户余额不足
         Consume::log(time, card.cid, window, price, "failed");
     } else if (hour >= 7 && hour <= 9 || hour >= 11 && hour <= 13 || hour >= 17 && hour <= 19) {
         //当前时间段内消费超过20,则需要输入密码
@@ -104,7 +104,7 @@ void Consume::consume(const Consumption &log) {
         Consume::log(log.time, card.cid, log.window, log.price, "failed Invalid card");
         //账户余额不足
     } else if (account->balance < log.price) {
-        Consume::log(log.time, card.cid, log.window, log.price, "failed Insufficient account balance.");
+        Consume::log(log.time, card.cid, log.window, log.price, "failed Insufficient account balance");
         //指定时间内消费
     } else if (hour >= 7 && hour <= 9 || hour >= 11 && hour <= 13 || hour >= 17 && hour <= 19) {
         //当前时间段内消费超过20,则需要输入密码
