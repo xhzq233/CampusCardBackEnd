@@ -81,7 +81,7 @@ public:
         }
     }
 
-    Card &begin() {
+    [[nodiscard]] Card &begin() {
         return card;
     }
 
@@ -96,7 +96,7 @@ public:
         next = nullptr;
     }
 
-    int size() {
+    [[nodiscard]] int size() const {
         if (!next) {
             return 1;
         }
@@ -107,6 +107,16 @@ public:
             p = p->next;
         }
         return size;
+    }
+
+    // to string
+    [[nodiscard]] std::string to_string() const {
+        std::string res(card.to_string());
+        res.push_back('\n');
+        while (next) {
+            res.append(next->card.to_string());
+        }
+        return res;
     }
 };
 
