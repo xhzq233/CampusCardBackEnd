@@ -56,7 +56,7 @@ public:
     constexpr static const char CONSUME_CSV_QTY = 57; // remove empty W58.csv
 
     /* .log file max length */
-    constexpr static const unsigned short MAX_LINE_PER_LOG = 1U << 14;
+    constexpr static const unsigned int MAX_LINE_PER_LOG = 1U << 17;
 
     /*
      * Get WZ CSV file path based on location ,

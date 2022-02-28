@@ -11,8 +11,9 @@ FileManager &FileManager::getInstance() {
     return instance;
 }
 
-void FileManager::refreshStartUpTime() {
+const std::string& FileManager::refreshedStartUpTime() {
     static unsigned int count = 0;
+    static std::string startUpTime;
     startUpTime.clear();
     time_t now = time(nullptr);
     auto *tm = std::localtime(&now);
@@ -21,11 +22,12 @@ void FileManager::refreshStartUpTime() {
     startUpTime.append(buf);
     startUpTime.append(std::to_string(count));
     count++;
+    return startUpTime;
 }
 
 FileManager &FileManager::shared_init() {
     static FileManager instance;
-    instance.refreshStartUpTime();
+    instance.refreshedStartUpTime();
     return instance;
 }
 
@@ -170,17 +172,16 @@ bool FileManager::writeCSVData(const CSV &container, const std::string &sourceNa
 void operator<<(FileManager &o, const std::string &content) {
     if (content.empty()) return; // return directly if empty
 
-    static unsigned short length = 0;
+    static unsigned int length = 0;
 
     FileManager::getLogger() << content << '\n';
 
     length++;
 
     if (length > FileManager::MAX_LINE_PER_LOG) {
-        o.refreshStartUpTime();
         FileManager::getLogger().close(); //remake
         FileManager::getLogger().open(
-                FileManager::DEFAULT_LOG_PATH + o.startUpTime + ".log",
+                FileManager::DEFAULT_LOG_PATH + FileManager::refreshedStartUpTime() + ".log",
                 std::ios::trunc);
         length = 0;
     }
@@ -251,6 +252,6 @@ void FileManager::append_standard_time(std::string &container, const Time &time)
 }
 
 std::ofstream &FileManager::getLogger() {
-    static std::ofstream logger(DEFAULT_LOG_PATH + getInstance().startUpTime + ".log", std::ios::trunc);
+    static std::ofstream logger(DEFAULT_LOG_PATH + FileManager::refreshedStartUpTime() + ".log", std::ios::trunc);
     return logger;
 }
