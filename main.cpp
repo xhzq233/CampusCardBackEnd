@@ -2,7 +2,7 @@
 #include "lib/DataStore/DataStore.h"
 #include "lib/CardManage/CardManage.h"
 #include "lib/Consume/Consume.h"
-#include "lib/Container/CircularArray.h"
+#include "lib/Utils/MergeSort.h"
 
 typedef std::function<void(void)> VoidCallBack;
 
@@ -45,12 +45,9 @@ void init() {
         operations[num++] = new RechargeOperation(item);
     temp.clear();
 
-    std::sort(operations, operations + num, [](BaseOperation *l, BaseOperation *r) -> bool {
-        return (*l) < (*r);
-    });
-    // sort complete
+    MergeSort<BaseOperation *>::sort(operations, (int) num);
 
-
+    // separate complete
     RechargeOperation *rechargeOperation;
     Consumption *consumption;
     CardManageOperation *cardManageOperation;

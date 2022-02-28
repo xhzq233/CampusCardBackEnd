@@ -3,7 +3,7 @@
 //
 
 #include "DataStore.h"
-#include "../ThreadPool.h"
+#include "../Utils/ThreadPool.h"
 
 using Accounts = DataStore::Accounts;
 using Consumptions = DataStore::Consumptions;
@@ -21,8 +21,6 @@ Accounts &DataStore::accounts_init() {
     return res;
 }
 
-const unsigned int MAX_THREAD = std::thread::hardware_concurrency();
-
 Consumptions &DataStore::consumes_init() {
     //99 x 60000
     static Consumptions res;
@@ -31,8 +29,9 @@ Consumptions &DataStore::consumes_init() {
         res[i] = new CircularArray<Consumption *>(MAXSIZE, windowPositions[i]);
     }
 
-    JoinableMultiWork works(MAX_THREAD, FileManager::CONSUME_CSV_QTY, [](int index) -> auto {
-        return [window_index = index, consumes = res]() {
+    std::function<void(void)> tasks[FileManager::CONSUME_CSV_QTY];
+    for (int i = 0; i < FileManager::CONSUME_CSV_QTY; ++i) {
+        tasks[i] = [window_index = i, consumes = res]() {
             printf("work %d executing!\n", window_index);
             CSV temp;
             FileManager().getCSVDataSource(temp, 4, FileManager::CONSUME_CSV(window_index + 1));
@@ -42,7 +41,8 @@ Consumptions &DataStore::consumes_init() {
             }
             // no longer to be sorted
         };
-    });
+    }
+    JoinableMultiWork works(Device::MAX_THREAD, FileManager::CONSUME_CSV_QTY, tasks);
     printf("All threads joined!\n");
     return res;
 }

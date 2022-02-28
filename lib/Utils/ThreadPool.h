@@ -10,6 +10,10 @@
 #include <queue>
 #include <thread>
 
+namespace Device {
+    const unsigned int MAX_THREAD = std::thread::hardware_concurrency();
+}
+
 class ThreadPool {
 public:
     explicit ThreadPool(size_t thread_count)
@@ -67,14 +71,15 @@ private:
     std::shared_ptr<data> data_;
 };
 
+/* no lock, so each work should not affect others */
 class JoinableMultiWork {
 public:
-    typedef std::function<std::function<void(void)>(int index)> TaskBuilder;
+    typedef std::function<void(void)>* Tasks;
 
-    JoinableMultiWork(size_t thread_count, int work_count, const TaskBuilder &taskBuilder)
+    JoinableMultiWork(size_t thread_count, int work_count, Tasks tasks)
             : data_(std::make_shared<data>()) {
         for (int i = 0; i < work_count; ++i) {
-            data_->tasks_.emplace(std::move(taskBuilder(i)));
+            data_->tasks_.emplace(std::move(tasks[i]));
         }
         std::thread threads[thread_count];
         for (int i = 0; i < thread_count; ++i) {

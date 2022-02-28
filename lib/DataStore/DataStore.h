@@ -9,7 +9,7 @@
 #include "Operation/Consumption.h"
 #include "Operation/CardManageOperation.h"
 #include "Operation/RechargeOperation.h"
-#include "../Container/CircularArray.h"
+#include "../Utils/CircularArray.h"
 
 /* 'Data Base' liked object */
 class DataStore {

@@ -53,7 +53,7 @@ public:
     constexpr static const char CAFE_POSITION_CSV_NAME[] = "wz.csv";
 
     /* W{\d}.csv 文件个数 */
-    constexpr static const char CONSUME_CSV_QTY = 12; // remove empty W58.csv
+    constexpr static const char CONSUME_CSV_QTY = 57; // remove empty W58.csv
 
     /* .log file max length */
     constexpr static const unsigned short MAX_LINE_PER_LOG = 1U << 14;
