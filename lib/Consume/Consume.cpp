@@ -25,25 +25,24 @@ void Consume::consume(const Window &window, const Card &card, const float &price
         Consume::log(time, card.cid, window, price, "failed");
     } else if (hour >= 7 && hour <= 9 || hour >= 11 && hour <= 13 || hour >= 17 && hour <= 19) {
         //当前时间段内消费超过20,则需要输入密码
-        if (time / 1000000 - account->lastTime < 2 && account->lastTotal + price > 20) {
+        if (time - account->lastTimeEnterPasswd < GAP_TIME && account->totalConsumptionFromLastTime + price > 20) {
             if (checkPasswd(card)) {
-                account->lastTotal = 0;
-                account->lastTime = time / 1000000;
+                account->totalConsumptionFromLastTime = 0;
+                account->lastTimeEnterPasswd = time;
                 Consume::baseConsume(*account, window, card, price, time);
                 show(window, time);
             }
         }
             //在分开时间段消费,则重置消费金额
-        else if (time / 1000000 - account->lastTime > 2) {
-            account->lastTotal = price;
-            account->lastTime = time / 1000000;
+        else if (time - account->lastTimeEnterPasswd > GAP_TIME) {
+            account->totalConsumptionFromLastTime = price;
+            account->lastTimeEnterPasswd = time;
             Consume::baseConsume(*account, window, card, price, time);
             show(window, time);
         }
             //在同一时间段内消费,则累加消费金额
         else {
-            account->lastTotal += price;
-            account->lastTime = time / 1000000;
+            account->totalConsumptionFromLastTime += price;
             Consume::baseConsume(*account, window, card, price, time);
             show(window, time);
         }

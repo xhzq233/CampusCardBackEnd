@@ -11,6 +11,7 @@
 
 namespace Consume {
     typedef unsigned long long Time;
+    static constexpr const Time GAP_TIME = 2'00'00'00;
 
     void baseConsume(Account &account, const Window &window, const Card &card, const float &price,
                      const Time &time); // 基础的消费行为

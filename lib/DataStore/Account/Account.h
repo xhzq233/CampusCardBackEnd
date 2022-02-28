@@ -17,7 +17,7 @@ public:
 
     list(unsigned int uid, unsigned int serialNumber) : card(uid, serialNumber), next(nullptr) {};
 
-    ~list()=default;
+    ~list() = default;
 
     void push(Card &newCard);
 
@@ -36,14 +36,15 @@ public:
     unsigned int uid;//学号
     static const constexpr char NAME_SIZE = 15;
     typedef char Name[NAME_SIZE];
-    unsigned int lastTime; //上一次输入密码的时间
-    float lastTotal;//现在到上一次输入密码的消费总额
+    FileManager::Time lastTimeEnterPasswd; //上一次输入密码的时间
+    float totalConsumptionFromLastTime;//现在到上一次输入密码的消费总额
     Name name{0};//姓名
     float balance;//余额
     list cards;//卡
 
-    Account(unsigned int uid, const std::string &name1, unsigned int serialNumber) : uid(uid), balance(0), lastTime(0),
-                                                                                     lastTotal(0),
+    Account(unsigned int uid, const std::string &name1, unsigned int serialNumber) : uid(uid), balance(0),
+                                                                                     lastTimeEnterPasswd(0),
+                                                                                     totalConsumptionFromLastTime(0),
                                                                                      cards(uid, serialNumber) {
         if (name1.size() > NAME_SIZE)
             throw;
