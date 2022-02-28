@@ -128,10 +128,13 @@ void execute() {
     unsigned int cid;
     std::string name;
     int amount;
+    CardManage::Time time;
     unsigned int window;
     float price;
     while (true) {
-        printf("1:register an account 2:cancel account 3:report loss 4:lose register 5:reissue 6:recharge 7:consume 9.init data -1:exit\nplease input the cmd:");
+        printf("1:register an account 2:cancel account 3:report loss "
+               "4:lose register 5:reissue 6:recharge 7:consume 8:account description"
+               "9.init data -1:exit\nplease input the cmd:");
         scanf("%s", str);
         cmd = std::stoi(str);
         switch (cmd) {
@@ -216,7 +219,7 @@ void execute() {
                 uid = strtol(str, &buf, 10);
                 printf("please input the amount you want to recharge:");
                 scanf("%s", str);
-                amount = strtol(str, &buf, 10);
+                amount = std::stoi(str);
                 res = CardManage::recharge(uid, amount);
                 if (res == 0) {
                     printf("failed the uid is not in system\n");
@@ -229,21 +232,37 @@ void execute() {
             }
                 //消费
             case 7: {
-                printf("A consumption operation is in progress.\nplease choose the window you want to consume:");
-                scanf("%s", str);
-                window = strtol(str, &buf, 10);
-                printf("please input your cid:");
-                scanf("%s", str);
-                cid = strtol(str, &buf, 10);
-                printf("please input the amount you want to consume:");
-                scanf("%s", str);
-                price = strtof(str, &buf);
-                auto card = DataStore::queryAccountByCid(cid)->cards.begin();
-                Consume::consume(window, card, price);
+                try {
+                    printf("A consumption operation is in progress.\nplease choose the window you want to consume:");
+                    scanf("%s", str);
+                    window = strtol(str, &buf, 10);
+                    printf("please input your cid:");
+                    scanf("%s", str);
+                    cid = strtol(str, &buf, 10);
+                    printf("please input the amount you want to consume:");
+                    scanf("%s", str);
+                    price = strtof(str, &buf);
+                    printf("insert in specified time? y or n");
+                    scanf("%s", str);
+                    if (std::string(str) == "y") {
+                        printf("input specified time: (format be like 2021092411002598)");
+                        scanf("%s", str);
+                        time = strtoll(str, &buf, 10);
+                        Consume::consume(window, cid, price, time);
+                    } else if (std::string(str) == "n") {
+                        Consume::consume(window, cid, price);
+                    } else {
+                        printf("undefined cmd\n");
+                        break;
+                    }
+
+                } catch (std::exception &exception) {
+                    printf("%s", exception.what());
+                }
                 break;
             }
             case 8: {
-                printf("Loss unregister is in progress.\nplease input your uid:");
+                printf("please input your uid:");
                 scanf("%s", str);
                 uid = strtol(str, &buf, 10);
                 auto account = DataStore::queryAccountByUid(uid);
