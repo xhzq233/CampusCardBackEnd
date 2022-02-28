@@ -9,12 +9,20 @@
 
 namespace CardManage {
     typedef unsigned long long Time;
-    typedef std::function<void(char *)> BufferCallBack;
 
     static const constexpr float BALANCE_CEILING = 999.99; //账户余额上限
     static const constexpr char MAX_REISSUE_TIMES = 100; // 最大补卡
 
-    void log(const char *title, const char *content, const Time &time); //日志记录
+    template<typename... Args>
+    inline void log(const Time &time, const char *title, const char *format, Args &&...args) {
+        static char buffer[90];
+        sprintf(buffer, format, args...);
+        if (!time) {
+            FileManager::getInstance() << FileManager::toStandardLogString(title, buffer);
+        } else {
+            FileManager::getInstance() << FileManager::toStandardLogString(title, buffer, time);
+        }
+    }
 
     unsigned int openAccount(unsigned int uid, const std::string &name, const Time &time = 0); //开户
 
@@ -28,8 +36,7 @@ namespace CardManage {
 
     int recharge(unsigned int uid, int amount, const Time &time = 0) noexcept;    //充值
 
-    void recall();                                                                  //日志回溯
-    void log(const char *title, const BufferCallBack &bufferCallBack, const Time &time);
+    void recall();
 }
 
 #endif // CAMPUSCARDBACKEND_CARDMANAGE_H

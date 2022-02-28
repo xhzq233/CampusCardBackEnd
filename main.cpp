@@ -88,7 +88,7 @@ void init() {
                     CardManage::deleteAccount(cardManageOperation->uid, cardManageOperation->time);
                     break;
                 case CardManageOperation::Recharge:
-                    throw;// no recharge
+                    throw;// no recharge_account
             }
         } else {
             throw; // "Unknown Operation"
@@ -115,8 +115,8 @@ void execute() {
                    "3: SetLoss          4: UnsetLost \n"
                    "5: Reissue          6: Recharge \n"
                    "7: Consume          8: Account description \n"
-                   "9. Init data        -1: Exit \n"
-                   );
+                   "9. Init data        -1: Exit \nInput command: \n"
+            );
             scanf("%s", str);
             cmd = std::stoi(str);
             switch (cmd) {
@@ -243,7 +243,9 @@ void execute() {
                     scanf("%s", str);
                     uid = std::stol(str);
                     auto account = DataStore::queryAccountByUid(uid);
-                    printf("name:%s,uid:%u,balance:%.2f\n", account->name, account->uid, account->balance);
+                    printf("name:%s, uid:%u, balance:%.2f cards:\n%s",
+                           account->name, account->uid, account->balance,
+                           account->cards.to_string().c_str());
                     break;
                 }
                 case 9: {

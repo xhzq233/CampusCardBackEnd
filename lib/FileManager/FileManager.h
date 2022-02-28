@@ -90,6 +90,10 @@ private:
     // and only called once during the whole program lifetime
     static FileManager &shared_init();
 
+    /*
+     * instance initialized time，used on naming log data
+     * */
+    [[nodiscard]] static const std::string& refreshedStartUpTime();
 public:
     // multi thread
     // not multi thread please use getInstance instead
@@ -97,12 +101,7 @@ public:
 
     ~FileManager() = default;
 
-    /*
-     * instance initialized time，used on naming log data
-     * notice that default constructor not have startUpTime
-     * only shared instance have this value
-     * */
-    std::string startUpTime;
+
 
     // delete copy methods
     FileManager(const FileManager &) = delete;
@@ -172,17 +171,17 @@ public:
     friend void operator<<(FileManager &o, const std::string &content);
 
     static std::string toStandardLogString(const char *title, const char *content);
+
     static std::string toStandardLogString(const char *title, const std::string &content);
+
     /* 自定义时间的StandardLog */
     static std::string toStandardLogString(const char *title, const char *content, const Time &time);
+
     /* literally */
     static void append_standard_time(std::string &container, const Time &time);
 
-
     //now -> Time
     static Time nowTime();
-
-    void refreshStartUpTime();
 };
 
 #endif //CAMPUSCARDBACKEND_FILEMANAGER_H
