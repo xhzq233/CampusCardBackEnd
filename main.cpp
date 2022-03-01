@@ -3,6 +3,7 @@
 #include "lib/CardManage/CardManage.h"
 #include "lib/Consume/Consume.h"
 #include "lib/Utils/MergeSort.h"
+#include "lib/DataAnalyze/DataAnalyze.h"
 
 typedef std::function<void(void)> VoidCallBack;
 
@@ -20,12 +21,13 @@ void testTimeWrapper(const VoidCallBack &func) {
 
 using CSV = FileManager::CSV;
 
-constexpr static const unsigned int RESERVED_SIZE = 2'500'000;
+constexpr static const unsigned int RESERVED_SIZE = 2'200'000;
 constexpr static const unsigned int MERGE_NUM = 64;
 typedef BaseOperation *SortedOperations[RESERVED_SIZE];
 
 
 void init() {
+
     // MARK:--- init operations
     auto *operations = new SortedOperations{nullptr};
     auto &res = DataStore::getConsumptions();
@@ -69,9 +71,14 @@ void init() {
     // start_index operation
     using namespace Consume;
     for (int i = 0; i < num; ++i) {
+//        if (operations[i]->time == 2021'09'23'07'03'11'04){
+//            consumption = dynamic_cast<Consumption *>(operations[i]);
+//            consume(*consumption);
+//        }
         if ((rechargeOperation = dynamic_cast<RechargeOperation *>(operations[i]))) {
             CardManage::recharge(rechargeOperation->uid, rechargeOperation->price, rechargeOperation->time);
         } else if ((consumption = dynamic_cast<Consumption *>(operations[i]))) {
+//            if (consumption->cid == 3204659)
             consume(*consumption);
         } else if ((cardManageOperation = dynamic_cast<CardManageOperation *>(operations[i]))) {
             switch (cardManageOperation->operationName) {
@@ -115,7 +122,9 @@ void execute() {
                    "3: SetLoss          4: UnsetLost \n"
                    "5: Reissue          6: Recharge \n"
                    "7: Consume          8: Account description \n"
-                   "9. Init data        -1: Exit \nInput command: \n"
+                   "9: Init data        10: Query total consumption\n"
+                   "11: Fuzzy query     -1: Exit \n"
+                   "Input command: \n"
             );
             scanf("%s", str);
             cmd = std::stoi(str);
@@ -251,6 +260,36 @@ void execute() {
                 case 9: {
                     printf("Initializing...\n");
                     testTimeWrapper(init);
+                    break;
+                }//消费记录总额查询
+                case 10: {
+                    printf("Please input your uid:");
+                    scanf("%s", str);
+                    uid = std::stol(str);
+                    DataAnalyze::Time begin, end;
+                    printf("Please input the beginning time:");
+                    scanf("%s", str);
+                    begin = std::stoull(str);
+                    printf("Please input the end time:");
+                    scanf("%s", str);
+                    end = std::stoull(str);
+                    float total = DataAnalyze::accumulatedConsumption(uid, begin, end);
+                    printf("The account with uid %u spent a total of %.2f yuan during this time frame", uid, total);
+                }
+                    //模糊查询
+                case 11: {
+                    printf("Please input fuzzy string:");
+                    scanf("%s", str);
+                    std::string s(str);
+                    auto results = DataAnalyze::fuzzyQueryOnUid(DataAnalyze::customRegex2CommonRegexSyntax(s));
+                    if (!results.empty()) {
+                        printf("No results found\n");
+                    } else {
+                        printf("A total of %lu results have been found", results.size());
+                        for (auto &&result: results) {
+                            printf("%d\n", result);
+                        }
+                    }
                 }
                     //退出
                 case -1: {
@@ -269,11 +308,6 @@ void execute() {
             printf("%s \n", exception.what());
         }
     }
-}
-
-int main() {
-
-    execute();
 
     // Reference:
     // https://stackoverflow.com/questions/8588541/c-should-i-bother-deleting-pointers-to-application-lifetime-variables
@@ -281,5 +315,12 @@ int main() {
     for (auto item: DataStore::getConsumptions()) {
         delete item;
     }
+}
+
+int main() {
+
+    execute();
+
+
     return 0;
 }
