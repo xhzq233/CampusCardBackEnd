@@ -1,9 +1,4 @@
-#include "lib/FileManager/FileManager.h"
-#include "lib/DataStore/DataStore.h"
-#include "lib/CardManage/CardManage.h"
-#include "lib/Consume/Consume.h"
-#include "lib/Utils/MergeSort.h"
-#include "lib/DataAnalyze/DataAnalyze.h"
+#include "main.h"
 
 typedef std::function<void(void)> VoidCallBack;
 
@@ -104,6 +99,8 @@ void init() {
     // ---
     delete[] operations;
 }
+
+using namespace Main;
 
 void execute() {
     int cmd;
@@ -273,10 +270,8 @@ void execute() {
                     printf("Please input your uid:");
                     scanf("%s", str);
                     uid = std::stol(str);
-                    auto account = *DataStore::queryAccountByUid(uid);
-                    printf("name:%s, uid:%u, balance:%.2f cards:\n%s",
-                           account->name, account->uid, account->balance,
-                           account->cards.to_string().c_str());
+                    auto account = DataStore::queryAccountByUid(uid);
+                    printf("%s", (*account)->to_string().c_str());
                     break;
                 }
                     //初始化数据
@@ -315,7 +310,6 @@ void execute() {
                             printf("%d\n", result);
                         }
                     }
-                    break;
                 }
                     //退出
                 case -1: {
@@ -344,9 +338,6 @@ void execute() {
 }
 
 int main() {
-
     execute();
-
-
     return 0;
 }
