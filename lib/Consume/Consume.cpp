@@ -100,7 +100,7 @@ void Consume::consume(const Consumption &consumption) {
     }
 
     auto account = DataStore::getAccountsMapByCid().at(consumption.cid);
-    auto card = account->cards.begin();
+    auto &card = account->cards.begin();
     char hour = (char) (consumption.time / 1000000 % 100);
     //无效的卡
     if (!card.condition) {

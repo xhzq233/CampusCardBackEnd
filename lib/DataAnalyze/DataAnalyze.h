@@ -25,7 +25,12 @@ namespace DataAnalyze {
     * 将?替换成 .
     * 将*替换成 .{2,}
    * */
-    static std::regex customRegex2CommonRegexSyntax(std::string &regex);
+    static std::regex customRegex2CommonRegexSyntax(std::string &regex) {
+        regex.replace(regex.find('?'), 1, ".");
+        regex.replace(regex.find('*'), 1, ".{2,}");
+        return std::regex(regex);
+    }
+
 
     float accumulatedConsumption(unsigned int uid, Time begin, Time end); //统计一个账户在指定时间范围内所有的消费记录总额
 };

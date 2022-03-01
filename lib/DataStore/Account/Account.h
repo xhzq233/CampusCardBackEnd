@@ -23,7 +23,7 @@ public:
     Account(unsigned int uid, const std::string &name1, unsigned int serialNumber) : uid(uid), balance(0),
                                                                                      lastTimeEnterPasswd(0),
                                                                                      totalConsumptionFromLastTime(0),
-                                                                                     cards(uid, serialNumber) {
+                                                                                     cards(Card(uid, serialNumber)) {
         if (name1.size() > NAME_SIZE)
             throw;
         strncpy(name, name1.c_str(), name1.size());

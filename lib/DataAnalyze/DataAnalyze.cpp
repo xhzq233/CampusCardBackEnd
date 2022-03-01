@@ -2,12 +2,6 @@
 
 using namespace DataAnalyze;
 
-std::regex customRegex2CommonRegexSyntax(std::string &regex) {
-    regex.replace(regex.find('?'), 1, ".");
-    regex.replace(regex.find('*'), 1, ".{2,}");
-    return std::regex(regex);
-}
-
 std::vector<unsigned int> DataAnalyze::fuzzyQueryOnUid(const std::regex &re) {
     std::vector<unsigned int> res;
     for (auto account: DataStore::getAccounts()) {

@@ -60,43 +60,37 @@ class CardList {
 private:
     Card card;
     CardList *next;
-
 public:
 
-    CardList(unsigned int uid, unsigned int serialNumber) : card(uid, serialNumber), next(nullptr) {};
+    explicit CardList(const Card& newCard) : card(newCard), next(nullptr) {};
 
     ~CardList() = default;
 
-    void push(Card &newCard) {
-        if (!next) {
-            next = new CardList(0, 0);
-            next->card = newCard;
-            std::swap(card, next->card);
-        } else {
-            auto *tmp = new CardList(0, 0);
-            tmp->card = newCard;
-            tmp->next = next;
-            next = tmp;
-            std::swap(card, next->card);
-        }
+    void push(const Card &newCard) {
+        head()->next = new CardList(newCard);
+    }
+
+    [[nodiscard]] CardList* head() {
+        auto pointer = this;
+        while (pointer->next)
+            pointer = pointer->next;
+        return pointer;
     }
 
     [[nodiscard]] Card &begin() {
-        return card;
+        return head()->card;
     }
 
     void clear() {
-        CardList *p, *q = next;
-        while (q) {
-            p = q;
-            q = q->next;
-            delete p;
-            next = q;
+        CardList *pre_list = this, *cur_list = next;
+        while (cur_list) {
+            delete cur_list;
+            cur_list = pre_list->next;
         }
         next = nullptr;
     }
 
-    [[nodiscard]] int size() const {
+    [[nodiscard]] unsigned int size() const {
         if (!next) {
             return 1;
         }
