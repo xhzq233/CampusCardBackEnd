@@ -12,12 +12,11 @@ std::vector<unsigned int> DataAnalyze::fuzzyQueryOnUid(const std::regex &re) {
     return res;
 }
 
-std::vector<unsigned int> fuzzyQueryOnName(const std::regex &re) {
+std::vector<unsigned int> DataAnalyze::fuzzyQueryOnName(const std::regex &re) {
     std::vector<unsigned int> res;
     for (auto account: DataStore::getAccounts()) {
-        if (std::regex_match(account->name, re)) {
+        if (std::regex_match(account->name, re))
             res.emplace_back(account->uid);
-        }
     }
     return res;
 }
@@ -56,45 +55,54 @@ float DataAnalyze::accumulatedConsumption(unsigned int uid, Time begin, Time end
     return total;
 }
 
-std::vector<unsigned int> DataAnalyze::analyze(unsigned int uid) {
+k_min_students_res DataAnalyze::analyze(unsigned int uid) {
+
     auto account = *DataStore::queryAccountByUid(uid);
     if (!account) {
         return {};
     }
     std::vector<unsigned int> allCid = account->cards.getAllCid();
-    std::map<unsigned int, unsigned int> count;
-    for (int i = 0; i < DataStore::WINDOW_QTY; ++i) {
-        auto &consumptions_in_window = *DataStore::getConsumptions()[i];
+    std::unordered_map<unsigned int, unsigned char> student_count_map;
+    for (int window = 0; window < DataStore::WINDOW_QTY; ++window) {
+        auto &consumptions_in_window = *DataStore::getConsumptions()[window];
         if (!consumptions_in_window.count()) {
             continue;
         }
         consumptions_in_window.for_loop([&](auto index, auto value) {
+            auto &map = DataStore::getAccountsMapByCid();
             for (auto &&cid: allCid) { //找出和指定uid相隔5个以内的uid
                 if (value->cid == cid) {
-                    for (int j = -5; j < 6; ++j) {
-                        if (!j) {
+                    for (int student = -5; student < 6; ++student) {
+                        if (!student) {
                             continue;
                         }
-                        auto a = DataStore::getAccountsMapByCid()[consumptions_in_window[(index + j) %
-                                                                                         consumptions_in_window.size]->cid];
-                        if (count.find(a->uid) != count.end()) {
-                            count[a->uid] = 1;
-                        } else {
-                            ++count[a->uid];
-                        }
+                        int current =
+                                (int) index + student < 0 ? consumptions_in_window.size + student : index + student;
+                        auto &cur_cid = consumptions_in_window[current]->cid;
+                        if (map.count(cur_cid) == 0)
+                            continue;
+                        auto acc = map[cur_cid];
+                        if (student_count_map.count(acc->uid) == 0) {
+                            student_count_map[acc->uid] = 1;
+                        } else
+                            ++student_count_map[acc->uid];
                     }
                 }
             }
         });
     }
-    int size = count.size() < 5 ? (int) (count.size()) : 5;
-    std::vector<unsigned int> res(size);
-    int index = 0;
-    for (auto &&c: count) {
-        res[index] = c.second;
-        if (++index == size) {
-            break;
-        }
+    std::priority_queue<priority_value> queue;
+
+    k_min_students_res res;
+
+    for (auto &&c: student_count_map)
+        queue.push({c.first, c.second});
+
+    for (auto &&re: res) {
+        if (queue.empty()) break;
+        auto value = queue.top();
+        re = value;
+        queue.pop();
     }
     return res;
 }

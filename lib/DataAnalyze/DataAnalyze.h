@@ -25,26 +25,22 @@ namespace DataAnalyze {
     * 将?替换成 .
     * 将*替换成 .{2,}
    * */
-    static std::regex customRegex2CommonRegexSyntax(std::string &str) {
-//        while (true) {
-//            int index1 = (int) (str.find('?')), index2 = (int) (str.find('*'));
-//            if (index1 != std::string::npos) {
-//                str = str.replace(str.find('?'), 1, ".");
-//            }
-//            if (index2 != std::string::npos) {
-//                str = str.replace(str.find('*'), 1, ".{0,}");
-//            }
-//            if (index1 == std::string::npos && index2 == std::string::npos) {
-//                break;
-//            }
-//        }
-        return std::regex(str);
-    }
+    static std::regex customRegex2CommonRegexSyntax(std::string &str);
 
+    struct priority_value {
+        unsigned int student_id;
+        unsigned char count;
+
+        bool operator<(const priority_value &rhs) const {
+            return count < rhs.count;
+        }
+    };
+
+    typedef std::array<priority_value, 5> k_min_students_res;
 
     float accumulatedConsumption(unsigned int uid, Time begin, Time end); //统计一个账户在指定时间范围内所有的消费记录总额
 
-    std::vector<unsigned int> analyze(unsigned int uid); //分析该名同学和哪些同学一起排队购餐
+    [[nodiscard]] k_min_students_res analyze(unsigned int uid); //分析该名同学和哪些同学一起排队购餐
 };
 
 

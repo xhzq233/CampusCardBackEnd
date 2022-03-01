@@ -1,4 +1,5 @@
 #include "main.h"
+
 using namespace Main;
 
 void execute() {
@@ -19,7 +20,8 @@ void execute() {
                    "5: Reissue          6: Recharge \n"
                    "7: Consume          8: Account description \n"
                    "9: Init data        10: Query total consumption\n"
-                   "11: Fuzzy query     -1: Exit \n"
+                   "11: Fuzzy query     12: Query name\n"
+                   "-1: Exit \n"
                    "Input command: "
             );
             scanf("%s", str);
@@ -203,8 +205,22 @@ void execute() {
                     printf("Please input fuzzy string:");
                     scanf("%s", str);
                     std::string s(str);
-                    auto results = DataAnalyze::fuzzyQueryOnUid(DataAnalyze::customRegex2CommonRegexSyntax(s));
-                    if (!results.empty()) {
+                    auto results = DataAnalyze::fuzzyQueryOnUid(std::regex(str));
+                    if (results.empty()) {
+                        printf("No results found.\n");
+                    } else {
+                        printf("A total of %lu results have been found.\n", results.size());
+                        for (auto &&result: results) {
+                            printf("%d\n", result);
+                        }
+                    }
+                }
+                case 12: {
+                    printf("Input name u want to search:");
+                    scanf("%s", str);
+                    std::string s(str);
+                    auto results = DataAnalyze::fuzzyQueryOnName(std::regex(str));
+                    if (results.empty()) {
                         printf("No results found.\n");
                     } else {
                         printf("A total of %lu results have been found.\n", results.size());
