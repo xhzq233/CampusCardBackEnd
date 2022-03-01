@@ -6,67 +6,65 @@
 
 using namespace std;
 
-void Consume::consume(const Window &window, unsigned int cid, const float &price, const Consume::Time &time) {
-
-
+int Consume::consume(const Window &window, unsigned int cid, const float &price, const Consume::Time &time) {
     if (DataStore::getAccountsMapByCid().count(cid) == 0) {
-        printf("No such a card");
+        printf("No such a card.\n");
         Consume::log(time, cid, window, price, "failed");
-        return;
+        return 0;
     }
     auto account = DataStore::getAccountsMapByCid().at(cid);
     char hour = (char) (time / 1'00'00'00 % 100);
     auto card = account->cards.begin();
-
     if (!card.condition) {//already set lost
-        printf("Invalid card.");
         Consume::log(time, cid, window, price, "failed");
+        return 1;
 
     } else if (account->balance < price) {//Insufficient balance
-        printf("Insufficient account balance.");
         Consume::log(time, cid, window, price, "failed");
+        return 2;
         //指定时间内消费
     } else if (hour >= 7 && hour <= 9 || hour >= 11 && hour <= 13 || hour >= 17 && hour <= 19) {
         account->consume(price);
         DataStore::insertConsumptionOnSpecifiedTime(window, new Consumption(cid, window, time, price));
         Consume::log(time, cid, window, price, "succeeded");
+        return 3;
     } else {
-        printf("Consumption is not allowed now."); //当前时间不允许消费
+ //当前时间不允许消费
         Consume::log(time, cid, window, price, "failed");
+        return 4;
     }
 }
 
-void Consume::consume(const Window &window, unsigned int cid, const float &price) {
+int Consume::consume(const Window &window, unsigned int cid, const float &price) {
     auto time = FileManager::nowTime();
-
     if (DataStore::getAccountsMapByCid().count(cid) == 0) {
-        printf("No such a card");
         Consume::log(time, cid, window, price, "failed");
-        return;
+        return 0;
     }
-
     auto account = DataStore::getAccountsMapByCid().at(cid);
     char hour = (char) (time / 100'000'000 % 100);
     auto card = account->cards.begin();
     if (!card.condition) {
-        printf("Invalid card.\n");
         Consume::log(time, cid, window, price, "failed");
+        return 1;
     } else if (account->balance < price) {
-        printf("Insufficient account balance.\n"); //账户余额不足
+         //账户余额不足
         Consume::log(time, cid, window, price, "failed");
+        return 2;
     } else if (hour >= 7 && hour <= 9 || hour >= 11 && hour <= 13 || hour >= 17 && hour <= 19) {
         //当前时间段内消费超过20,则需要输入密码
         if (time - account->lastTimeEnterPasswd < GAP_TIME && account->totalConsumptionFromLastTime + price > 20) {
             if (checkPasswd(card)) {
                 account->totalConsumptionFromLastTime = 0;
                 account->lastTimeEnterPasswd = time;
-
                 account->consume(price);
                 DataStore::pushConsumption(window, new Consumption(cid, window, time, price));
                 Consume::log(time, cid, window, price, "succeeded");
                 show(window, time);
+                return 3;
+            } else {
+                return 5;
             }
-            return;
         }
             //在分开时间段消费,则重置消费金额
         else if (time - account->lastTimeEnterPasswd > GAP_TIME) {
@@ -79,14 +77,14 @@ void Consume::consume(const Window &window, unsigned int cid, const float &price
             account->totalConsumptionFromLastTime += price;
             show(window, time);
         }
-
         account->consume(price);
         DataStore::pushConsumption(window, new Consumption(cid, window, time, price));
         Consume::log(time, cid, window, price, "succeeded");
-
+        return 3;
     } else {
-        printf("Consumption is not allowed now."); //当前时间不允许消费
+         //当前时间不允许消费
         Consume::log(time, cid, window, price, "failed");
+        return 4;
     }
 }
 
@@ -131,7 +129,7 @@ void Consume::show(const Window &window) {
             revenue += consumptions[i]->price;
         }
     }
-    printf("日期:%d 收费次数:%d\n营收:%f", date, count, revenue);
+    printf("日期:%d 收费次数:%d\n营收:%.2f\n", date, count, revenue);
 }
 
 void Consume::show(const Window &window, const Time &time) {
@@ -146,7 +144,7 @@ void Consume::show(const Window &window, const Time &time) {
             revenue += consumptions[i]->price;
         }
     }
-    printf("日期:%d 收费次数:%d\n营收:%.2f", date, count, revenue);
+    printf("日期:%d 收费次数:%d\n营收:%.2f\n", date, count, revenue);
 }
 
 bool Consume::checkPasswd(const Card &card) {
@@ -156,10 +154,10 @@ bool Consume::checkPasswd(const Card &card) {
         printf("Please input your password:");
         scanf("%s", password); //输入密码
         if (card.checkPassword(strtol(password, nullptr, 10))) {
-            printf("Password entered successfully.");
+            printf("Password entered successfully.\n");
             return true;
         }
     }
-    printf("Incorrect password.");
+    printf("Incorrect password.\n");
     return false;
 }

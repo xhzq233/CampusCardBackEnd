@@ -16,9 +16,11 @@ Accounts &DataStore::accounts_init() {
     CSV temp;
     FileManager::getInstance().getCSVDataSource(temp, 2, FileManager::OPEN_ACCOUNT_CSV_NAME);
     for (auto &&info: temp) {
-        res.emplace_back(Account(info, getSerialNumber()));
+        res.emplace_back(new Account(info, getSerialNumber()));
     }
-    std::sort(res.begin(), res.end());
+    std::sort(res.begin(), res.end(),[](auto l,auto r){
+        return l->uid < r->uid;
+    });
     return res;
 }
 
@@ -84,32 +86,32 @@ Accounts &DataStore::getAccounts() {
     return accounts;
 }
 
-void DataStore::insertAccount(const Account &data) {
+void DataStore::insertAccount(Account *data) {
     auto &accounts = getAccounts();
     int left = 0, right = (int) accounts.size() - 1, mid;
     //half search
     while (left <= right) {
         mid = (left + right) / 2;
-        if (accounts[mid] > data) {
+        if (accounts[mid]->uid > data->uid) {
             right = mid - 1;
         } else {
             left = mid + 1;
         }
     }
     accounts.emplace(accounts.begin() + left, data);
-    auto *pointer = &(accounts[left]);
+    auto pointer = accounts[left];
     getAccountsMapByCid()[pointer->cards.begin().cid] = pointer;
 }
 
-std::vector<Account>::iterator DataStore::queryAccountByUid(unsigned int uid) {
+std::vector<Account*>::iterator DataStore::queryAccountByUid(unsigned int uid) {
     auto &accounts = getAccounts();
     //half search
     int left = 0, right = (int) accounts.size() - 1, mid;
     while (left <= right) {
         mid = (left + right) / 2;
-        if (accounts[mid].uid == uid) {
+        if (accounts[mid]->uid == uid) {
             return accounts.begin() + mid;
-        } else if (accounts[mid].uid > uid) {
+        } else if (accounts[mid]->uid > uid) {
             right = mid - 1;
         } else {
             left = mid + 1;
@@ -224,8 +226,8 @@ DataStore::queryConsumptionInTimeRange(Window window, DataStore::Time left, Data
 DataStore::AccountsMap &DataStore::getAccountsMapByCid() {
     static auto &sortedAccounts = []() -> DataStore::AccountsMap & {
         static DataStore::AccountsMap res;
-        for (auto &item: DataStore::getAccounts())
-            res[item.cards.begin().cid] = &item;
+        for (auto item: DataStore::getAccounts())
+            res[item->cards.begin().cid] = item;
         return res;
     }();
 

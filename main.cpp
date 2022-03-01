@@ -21,7 +21,7 @@ void execute() {
                    "7: Consume          8: Account description \n"
                    "9: Init data        10: Query total consumption\n"
                    "11: Fuzzy query     -1: Exit \n"
-                   "Input command: \n"
+                   "Input command: "
             );
             scanf("%s", str);
             cmd = std::stoi(str);
@@ -33,8 +33,7 @@ void execute() {
                     uid = std::stol(str);
                     printf("Please input ur name: ");
                     scanf("%s", str);
-                    name = str;
-                    cid = CardManage::openAccount(uid, name);
+                    cid = CardManage::openAccount(uid, str);
                     if (cid) {
                         printf("Succeeded: ur new card id is %u\n ", cid);
                     } else {
@@ -135,28 +134,53 @@ void execute() {
                         printf("Input specified time: (format be like 2021092411002598)");
                         scanf("%s", str);
                         time = std::stoll(str);
-                        Consume::consume(window, cid, price, time);
+                        res = Consume::consume(window, cid, price, time);
+                        if (res == 0) {
+                            printf("No such a card\n");
+                        } else if (res == 1) {
+                            printf("Invalid card.\n");
+                        } else if (res == 2) {
+                            printf("Insufficient account balance.\n");
+                        } else if (res == 3) {
+                            printf("succeeded");
+                        } else if (res == 4) {
+                            printf("Consumption is not allowed now.\n");
+                        }
                     } else if (std::string(str) == "n") {
-                        Consume::consume(window, cid, price);
+                        res = Consume::consume(window, cid, price);
+                        if (res == 0) {
+                            printf("No such a card\n");
+                        } else if (res == 1) {
+                            printf("Invalid card.\n");
+                        } else if (res == 2) {
+                            printf("Insufficient account balance.\n");
+                        } else if (res == 3) {
+                            printf("succeeded");
+                        } else if (res == 4) {
+                            printf("Consumption is not allowed now.\n");
+                        }
                     } else {
                         printf("Undefined cmd\n");
                         break;
                     }
                     break;
                 }
+                    //查询信息
                 case 8: {
                     printf("Please input your uid:");
                     scanf("%s", str);
                     uid = std::stol(str);
                     auto account = DataStore::queryAccountByUid(uid);
-                    printf("%s", account->to_string().c_str());
+                    printf("%s", (*account)->to_string().c_str());
                     break;
                 }
+                    //初始化数据
                 case 9: {
                     printf("Initializing...\n");
                     testTimeWrapper(init);
                     break;
-                }//消费记录总额查询
+                }
+                    //消费记录总额查询
                 case 10: {
                     printf("Please input your uid:");
                     scanf("%s", str);
@@ -170,6 +194,7 @@ void execute() {
                     end = std::stoull(str);
                     float total = DataAnalyze::accumulatedConsumption(uid, begin, end);
                     printf("The account with uid %u spent a total of %.2f yuan during this time frame", uid, total);
+                    break;
                 }
                     //模糊查询
                 case 11: {
@@ -178,13 +203,13 @@ void execute() {
                     std::string s(str);
                     auto results = DataAnalyze::fuzzyQueryOnUid(DataAnalyze::customRegex2CommonRegexSyntax(s));
                     if (!results.empty()) {
-                        printf("No results found\n");
+                        printf("No results found.\n");
                     } else {
-                        printf("A total of %lu results have been found", results.size());
+                        printf("A total of %lu results have been found.\n", results.size());
                         for (auto &&result: results) {
                             printf("%d\n", result);
                         }
-                    }o
+                    }
                 }
                     //退出
                 case -1: {

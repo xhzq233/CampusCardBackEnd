@@ -13,9 +13,9 @@ namespace Consume {
     typedef unsigned long long Time;
     static constexpr const Time GAP_TIME = 2'00'00'00;
 
-    void consume(const Window &window, unsigned int cid, const float &price, const Time &time); //指定时间消费
+    int consume(const Window &window, unsigned int cid, const float &price, const Time &time); //指定时间消费
 
-    void consume(const Window &window, unsigned int cid, const float &price); //当日消费
+    int consume(const Window &window, unsigned int cid, const float &price); //当日消费
 
     void consume(const Consumption &consumption); //通过消费记录消费
 

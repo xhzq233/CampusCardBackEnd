@@ -19,7 +19,7 @@ public:
         return ++serialNumber;
     }
 
-    typedef std::vector<Account> Accounts;
+    typedef std::vector<Account *> Accounts;
     typedef std::unordered_map<unsigned int, Account *> AccountsMap;
     using Time = FileManager::Time;
     // 数组下标
@@ -53,10 +53,10 @@ public:
     static const WindowPositions &getWindowPositions();
 
     /* Account insert func, designed by half find and insert */
-    static void insertAccount(const Account &data);
+    static void insertAccount(Account *data);
 
     /* Query account by uid */
-    static std::vector<Account>::iterator queryAccountByUid(unsigned int uid);
+    static std::vector<Account*>::iterator queryAccountByUid(unsigned int uid);
 
     /* Consumption push back, window ranged from 1 to 99 */
     static void pushConsumption(Window window, Consumption *data);
