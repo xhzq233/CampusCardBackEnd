@@ -101,7 +101,7 @@ int CardManage::reissue(unsigned int uid, const Time &time) {
         return -1;
     } else {
         Card card(uid, DataStore::getSerialNumber());
-        DataStore::getAccountsMapByCid().erase(account->cards.begin().cid); // erase old value from map
+//        DataStore::getAccountsMapByCid().erase(account->cards.begin().cid); // erase old value from map
         //将之前卡的状态设置为禁用状态
         account->cards.push(card);
         DataStore::getAccountsMapByCid()[card.cid] = &(*account); // push into map

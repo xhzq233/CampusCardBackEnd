@@ -18,7 +18,7 @@ Accounts &DataStore::accounts_init() {
     for (auto &&info: temp) {
         res.emplace_back(new Account(info, getSerialNumber()));
     }
-    std::sort(res.begin(), res.end(),[](auto l,auto r){
+    std::sort(res.begin(), res.end(), [](auto l, auto r) {
         return l->uid < r->uid;
     });
     return res;
@@ -103,7 +103,7 @@ void DataStore::insertAccount(Account *data) {
     getAccountsMapByCid()[pointer->cards.begin().cid] = pointer;
 }
 
-std::vector<Account*>::iterator DataStore::queryAccountByUid(unsigned int uid) {
+std::vector<Account *>::iterator DataStore::queryAccountByUid(unsigned int uid) {
     auto &accounts = getAccounts();
     //half search
     int left = 0, right = (int) accounts.size() - 1, mid;
@@ -172,7 +172,7 @@ DataQuery::QueryResults DataStore::queryConsumption(Window window, unsigned int 
     }
     QueryResults res;
     const auto &consumptions_in_window = *getConsumptions()[window - 1];
-    consumptions_in_window.for_loop([&](auto value) {
+    consumptions_in_window.for_loop([&](auto index, auto value) {
         if (cid == value->cid)
             res.emplace_back(value);
     });
@@ -183,7 +183,7 @@ DataQuery::QueryResults DataStore::queryConsumption(unsigned int cid) {
     QueryResults res;
     auto &consumptions = getConsumptions();
     for (auto &consumption: consumptions) {
-        consumption->for_loop([&](auto value) {
+        consumption->for_loop([&](auto index, auto value) {
             if (cid == value->cid)
                 res.emplace_back(value);
         });
@@ -216,7 +216,7 @@ DataStore::queryConsumptionInTimeRange(Window window, DataStore::Time left, Data
         return value->time < left;
     });
 
-    consumptions_in_window.for_loop(l_index, r_index, [&](auto value) {
+    consumptions_in_window.for_loop(l_index, r_index, [&](auto index, auto value) {
         res.template emplace_back(value);
     });
 

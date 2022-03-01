@@ -108,6 +108,16 @@ public:
         }
         return res;
     }
+
+    std::vector<unsigned int> getAllCid(){
+        std::vector<unsigned int> res;
+        CardList* curr = this;
+        while(curr->next){
+            res.push_back(curr->card.cid);
+            curr = curr->next;
+        }
+        return res;
+    }
 };
 
 #endif // CARD_H

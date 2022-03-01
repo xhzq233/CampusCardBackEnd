@@ -43,6 +43,8 @@ namespace DataAnalyze {
 
 
     float accumulatedConsumption(unsigned int uid, Time begin, Time end); //统计一个账户在指定时间范围内所有的消费记录总额
+
+    std::vector<unsigned int> analyze(unsigned int uid); //分析该名同学和哪些同学一起排队购餐
 };
 
 
