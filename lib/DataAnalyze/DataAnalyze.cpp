@@ -43,13 +43,9 @@ float DataAnalyze::accumulatedConsumption(unsigned int uid, Time begin, Time end
         } else if (begin > end) {
             throw;
         } else {
-            r_index = consumptions_in_window.halfSearch([&](auto value) -> bool {
-                return value->time < end;
-            });
+            r_index = consumptions_in_window.halfSearch(BaseOperation(end));
         }
-        l_index = consumptions_in_window.halfSearch([&](auto value) -> bool {
-            return value->time < begin;
-        });
+        l_index = consumptions_in_window.halfSearch(BaseOperation(begin));
         consumptions_in_window.for_loop(l_index, r_index, [&](auto index, auto value) {
             for (auto &&cid: res) {
                 if (value->cid == cid) {

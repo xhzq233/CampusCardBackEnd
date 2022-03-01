@@ -46,7 +46,7 @@ namespace Main {
             if (re->count() == 0)
                 continue;
             per_indexes[per_indexes_index++] = (int) num;
-            re->for_loop([&](auto value) {
+            re->for_loop([&](auto _,auto value) {
                 operations[num++] = value;
             });
         }

@@ -208,13 +208,9 @@ DataStore::queryConsumptionInTimeRange(Window window, DataStore::Time left, Data
     } else if (left > right) {
         throw;
     } else {
-        r_index = consumptions_in_window.halfSearch([&](auto value) -> bool {
-            return value->time < right;
-        });
+        r_index = consumptions_in_window.halfSearch(BaseOperation(right));
     }
-    l_index = consumptions_in_window.halfSearch([&](auto value) -> bool {
-        return value->time < left;
-    });
+    l_index = consumptions_in_window.halfSearch(BaseOperation(left));
 
     consumptions_in_window.for_loop(l_index, r_index, [&](auto index, auto value) {
         res.template emplace_back(value);

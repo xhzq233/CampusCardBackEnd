@@ -17,8 +17,7 @@ class CircularArray {
 public:
     typedef unsigned int Index;
     typedef unsigned int Size;
-    typedef std::function<bool(ValueType value)> Compare;
-    typedef std::function<void(const unsigned int &,const ValueType &value)> Range;
+    typedef std::function<void(const unsigned int &, const ValueType &value)> Range;
 
     Size size;
     /* current data index , always have value */
@@ -43,7 +42,7 @@ public:
         return start_index > current_index ? current_index + 1 + size - start_index : current_index - start_index;
     }
 
-    inline ValueType& operator[](Index subscript) const {
+    inline ValueType &operator[](Index subscript) const {
         return data[subscript];
     }
 
@@ -71,13 +70,14 @@ public:
     /**
      * return subscript meet the conditions
      *
-     * for example, compare = [](ValueType value)->bool{ return value < 2; }
+     * for example, compare = 2
      * return the subscript of value which **last** less than 2
      * */
-    [[nodiscard]] inline Index halfSearch(Compare compare) {
-        if (compare(top())) {
+    template<class value_t>
+    [[nodiscard]] inline Index halfSearch(value_t compare) {
+        if (*top() < compare) {
             return (current_index + 1) % size;
-        } else if (!compare(bottom())) {
+        } else if (compare < *bottom()) {
             return start_index;
         } else {
             if (current_index < start_index) {
@@ -85,25 +85,25 @@ public:
                 //half search
                 while (left <= right) {
                     mid = (left + right) / 2;
-                    if (!compare(data[mid % size])) {
+                    if (compare < *data[mid % size]) {
                         right = mid - 1;
                     } else {
                         left = mid + 1;
                     }
                 }
-                return (mid - 1) % size;
+                return (left - 1) % size;
             } else {
                 int left = start_index + 1, right = current_index, mid;
                 //half search
                 while (left <= right) {
                     mid = (left + right) / 2;
-                    if (!compare(data[mid])) {
+                    if (compare < *data[mid]) {
                         right = mid - 1;
                     } else {
                         left = mid + 1;
                     }
                 }
-                return mid - 1;
+                return left - 1;
             }
         }
     }
@@ -171,7 +171,7 @@ public:
 
     // delete pointer
     ~CircularArray() {
-        for_loop([](auto _,ValueType value) {
+        for_loop([](auto _, ValueType value) {
             delete value; //must add this, otherwise it can't be deleted correctly
         });
         delete[] data;
@@ -182,16 +182,31 @@ private:
 public:
     // only iterate none null values
     void for_loop(Range range) const {
-        Index last = current_index < start_index ? current_index + size + 1 : current_index + 1;
-        for (int i = (start_index + 1) % size; i < last; ++i) {
-            range(i,data[i % size]);
+        Index last;
+        if (current_index < start_index) {
+            last = current_index + size + 1;
+            for (int i = (start_index + 1) % size; i < last; ++i) {
+                range(i % size, data[i % size]);
+            }
+        } else {
+            last = current_index + 1;
+            for (int i = (start_index + 1) % size; i < last; ++i) {
+                range(i, data[i]);
+            }
         }
     }
 
     void for_loop(Index start, Index end, Range range) const {
-        Index last = end < start ? end + size + 1 : end + 1;
-        for (int i = (start + 1) % size; i < last; ++i) {
-            range(i,data[i % size]);
+        if (end < start) {
+            Index last;
+            last = end + size;
+            for (unsigned int i = start; i < last; ++i) {
+                range(i % size, data[i % size]);
+            }
+        } else {
+            for (unsigned int i = start; i < end; ++i) {
+                range(i, data[i]);
+            }
         }
     }
 
