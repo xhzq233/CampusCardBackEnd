@@ -39,7 +39,7 @@ public:
     CircularArray &operator=(const CircularArray &) = delete;
 
     [[nodiscard]] inline Size count() const {
-        return start_index > current_index ? current_index + 1 + size - start_index : current_index - start_index;
+        return start_index > current_index ? current_index + size - start_index : current_index - start_index;
     }
 
     inline ValueType &operator[](Index subscript) const {

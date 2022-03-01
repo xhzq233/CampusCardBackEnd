@@ -28,7 +28,6 @@ float DataAnalyze::accumulatedConsumption(unsigned int uid, Time begin, Time end
     if (!account) {
         return 0;
     }
-    unsigned int cid = account->cards.begin().cid;
     unsigned int r_index;
     unsigned int l_index;
     std::vector<unsigned int> res = account->cards.getAllCid();
