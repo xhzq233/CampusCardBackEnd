@@ -17,11 +17,11 @@ static const constexpr char reissue_account[] = "补卡";
 
 //系统具备正常状态的学号、姓名等信息的，即属于开户状态
 unsigned int CardManage::openAccount(unsigned int uid, const string &name, const Time &time) {
-    auto account = DataStore::queryAccountByUid(uid);
-    if (account == DataStore::getAccounts().end()) {
-        Account newAccount(uid, name, DataStore::getSerialNumber());
+    auto iter = DataStore::queryAccountByUid(uid);
+    if (iter == DataStore::getAccounts().end()) {
+        auto newAccount = new Account(uid, name, DataStore::getSerialNumber());
         DataStore::insertAccount(newAccount);
-        return newAccount.cards.begin().cid;
+        return newAccount->cards.begin().cid;
         //log inside account constructor
     } else {
         log(time, open_account, not_in_sys, uid);
@@ -31,11 +31,12 @@ unsigned int CardManage::openAccount(unsigned int uid, const string &name, const
 
 //删除学号等数据项，或进行标识，只有经过恢复开户后才能恢复到开户状态；
 bool CardManage::deleteAccount(unsigned int uid, const Time &time) {
-    auto account = DataStore::queryAccountByUid(uid);
-    if (account != DataStore::getAccounts().end()) {
+    auto iter = DataStore::queryAccountByUid(uid);
+    auto account = *iter;
+    if (iter != DataStore::getAccounts().end()) {
         account->cards.clear();
         log(time, delete_account, success, uid, account->name);
-        DataStore::getAccounts().erase(account);
+        DataStore::getAccounts().erase(iter);
         DataStore::getAccountsMapByCid().erase(account->cards.begin().cid); //already nullptr
         return true;
     } else {
@@ -46,8 +47,9 @@ bool CardManage::deleteAccount(unsigned int uid, const Time &time) {
 
 //设置当前学号最新分配的卡号的卡片为禁用的状态；
 int CardManage::setLost(unsigned int uid, const Time &time) {
-    auto account = DataStore::queryAccountByUid(uid);
-    if (account == DataStore::getAccounts().end()) {
+    auto iter = DataStore::queryAccountByUid(uid);
+    auto account = *iter;
+    if (iter == DataStore::getAccounts().end()) {
         log(time, set_lost, not_in_sys, uid);
         return 0;
     } else {
@@ -65,8 +67,9 @@ int CardManage::setLost(unsigned int uid, const Time &time) {
 
 //设置当前学号最新分配的卡号的卡片为正常的状态；
 int CardManage::unsetLost(unsigned int uid, const Time &time) {
-    auto account = DataStore::queryAccountByUid(uid);
-    if (account == DataStore::getAccounts().end()) {
+    auto iter = DataStore::queryAccountByUid(uid);
+    auto account = *iter;
+    if (iter == DataStore::getAccounts().end()) {
         log(time, un_set_lost, not_in_sys, uid);
         return 0;
     } else {
@@ -84,9 +87,9 @@ int CardManage::unsetLost(unsigned int uid, const Time &time) {
 
 //为当前学号分配新的卡号，即发放新的校园卡；该学号关联的其他卡片同时全部处于挂失禁用状态；
 int CardManage::reissue(unsigned int uid, const Time &time) {
-    auto account = DataStore::queryAccountByUid(uid);
-
-    if (account == DataStore::getAccounts().end()) {
+    auto iter = DataStore::queryAccountByUid(uid);
+    auto account = *iter;
+    if (iter == DataStore::getAccounts().end()) {
         log(time, reissue_account, not_in_sys, uid);
         return 0;
     }
@@ -109,8 +112,9 @@ int CardManage::reissue(unsigned int uid, const Time &time) {
 
 //为该学号账户充值；账户余额上限999.99元；
 int CardManage::recharge(unsigned int uid, int amount, const Time &time) noexcept {
-    auto account = DataStore::queryAccountByUid(uid);
-    if (account == DataStore::getAccounts().end()) {
+    auto iter = DataStore::queryAccountByUid(uid);
+    auto account = *iter;
+    if (iter == DataStore::getAccounts().end()) {
         log(time, recharge_account, not_in_sys, uid);
         return 0;
     } else {

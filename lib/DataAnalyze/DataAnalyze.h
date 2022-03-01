@@ -25,10 +25,20 @@ namespace DataAnalyze {
     * 将?替换成 .
     * 将*替换成 .{2,}
    * */
-    static std::regex customRegex2CommonRegexSyntax(std::string &regex) {
-        regex.replace(regex.find('?'), 1, ".");
-        regex.replace(regex.find('*'), 1, ".{2,}");
-        return std::regex(regex);
+    static std::regex customRegex2CommonRegexSyntax(std::string &str) {
+//        while (true) {
+//            int index1 = (int) (str.find('?')), index2 = (int) (str.find('*'));
+//            if (index1 != std::string::npos) {
+//                str = str.replace(str.find('?'), 1, ".");
+//            }
+//            if (index2 != std::string::npos) {
+//                str = str.replace(str.find('*'), 1, ".{0,}");
+//            }
+//            if (index1 == std::string::npos && index2 == std::string::npos) {
+//                break;
+//            }
+//        }
+        return std::regex(str);
     }
 
 

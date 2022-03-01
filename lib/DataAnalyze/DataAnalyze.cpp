@@ -5,8 +5,8 @@ using namespace DataAnalyze;
 std::vector<unsigned int> DataAnalyze::fuzzyQueryOnUid(const std::regex &re) {
     std::vector<unsigned int> res;
     for (auto account: DataStore::getAccounts()) {
-        if (std::regex_match(std::to_string(account.uid), re)) {
-            res.emplace_back(account.uid);
+        if (std::regex_match(std::to_string(account->uid), re)) {
+            res.emplace_back(account->uid);
         }
     }
     return res;
@@ -15,8 +15,8 @@ std::vector<unsigned int> DataAnalyze::fuzzyQueryOnUid(const std::regex &re) {
 std::vector<unsigned int> fuzzyQueryOnName(const std::regex &re) {
     std::vector<unsigned int> res;
     for (auto account: DataStore::getAccounts()) {
-        if (std::regex_match(account.name, re)) {
-            res.emplace_back(account.uid);
+        if (std::regex_match(account->name, re)) {
+            res.emplace_back(account->uid);
         }
     }
     return res;
@@ -24,7 +24,7 @@ std::vector<unsigned int> fuzzyQueryOnName(const std::regex &re) {
 
 
 float DataAnalyze::accumulatedConsumption(unsigned int uid, Time begin, Time end) {
-    unsigned int cid = DataStore::queryAccountByUid(uid)->cards.begin().cid;
+    unsigned int cid = (*DataStore::queryAccountByUid(uid))->cards.begin().cid;
     float total = 0;
     for (int i = 0; i < 99; ++i) {
         auto &consumptions_in_window = *DataStore::getConsumptions()[i];
