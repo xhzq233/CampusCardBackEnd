@@ -268,6 +268,7 @@ void execute() {
                     }
                     break;
                 }
+                    //查询信息
                 case 8: {
                     printf("Please input your uid:");
                     scanf("%s", str);
@@ -278,11 +279,13 @@ void execute() {
                            account->cards.to_string().c_str());
                     break;
                 }
+                    //初始化数据
                 case 9: {
                     printf("Initializing...\n");
                     testTimeWrapper(init);
                     break;
-                }//消费记录总额查询
+                }
+                    //消费记录总额查询
                 case 10: {
                     printf("Please input your uid:");
                     scanf("%s", str);
@@ -296,6 +299,7 @@ void execute() {
                     end = std::stoull(str);
                     float total = DataAnalyze::accumulatedConsumption(uid, begin, end);
                     printf("The account with uid %u spent a total of %.2f yuan during this time frame", uid, total);
+                    break;
                 }
                     //模糊查询
                 case 11: {
@@ -311,6 +315,7 @@ void execute() {
                             printf("%d\n", result);
                         }
                     }
+                    break;
                 }
                     //退出
                 case -1: {

@@ -24,10 +24,17 @@ std::vector<unsigned int> fuzzyQueryOnName(const std::regex &re) {
 
 
 float DataAnalyze::accumulatedConsumption(unsigned int uid, Time begin, Time end) {
-    unsigned int cid = (*DataStore::queryAccountByUid(uid))->cards.begin().cid;
+    auto account = *DataStore::queryAccountByUid(uid);
+    if (!account) {
+        return 0;
+    }
+    unsigned int cid = account->cards.begin().cid;
     float total = 0;
-    for (int i = 0; i < 99; ++i) {
+    for (int i = 0; i < DataStore::WINDOW_QTY; ++i) {
         auto &consumptions_in_window = *DataStore::getConsumptions()[i];
+        if (!consumptions_in_window.count()) {
+            continue;
+        }
         unsigned int r_index;
         unsigned int l_index;
         if (end == -1) {
@@ -44,6 +51,7 @@ float DataAnalyze::accumulatedConsumption(unsigned int uid, Time begin, Time end
         });
         consumptions_in_window.for_loop(l_index, r_index, [&](auto value) {
             if (value->cid == cid) {
+                printf("%.2f\n", value->price);
                 total += value->price;
             }
         });
