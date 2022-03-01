@@ -10,15 +10,20 @@
 
 class Account {
 public:
-
-    unsigned int uid;//学号
     static const constexpr char NAME_SIZE = 15;
     typedef char Name[NAME_SIZE];
+
+    unsigned int uid;//学号
+
     FileManager::Time lastTimeEnterPasswd; //上一次输入密码的时间
+
     float totalConsumptionFromLastTime;//现在到上一次输入密码的消费总额
-    Name name{0};//姓名
+
+    Name name{};//姓名
+
     float balance;//余额
-    CardList cards;//卡
+
+    CardList cards;
 
     Account(unsigned int uid, const std::string &name1, unsigned int serialNumber) : uid(uid), balance(0),
                                                                                      lastTimeEnterPasswd(0),
@@ -40,8 +45,12 @@ public:
     [[nodiscard]] std::string to_string() const {
         std::string res;
         res.append(std::to_string(uid));
-        res.append(" ");
+        res.push_back(' ');
         res.append(name);
+        res.push_back(' ');
+        res.append(std::to_string(balance));
+        res.push_back(' ');
+        res.append(cards.to_string());
         return res;
     }
 
