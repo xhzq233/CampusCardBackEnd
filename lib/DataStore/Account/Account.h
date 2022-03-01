@@ -32,7 +32,8 @@ public:
         if (name1.size() > NAME_SIZE)
             throw;
         strncpy(name, name1.c_str(), name1.size());
-        FileManager::getInstance() << FileManager::toStandardLogString("开户", std::to_string(uid) + name);
+        FileManager::getInstance()
+                << FileManager::toStandardLogString("开户", (std::to_string(uid) + name).c_str(), 2021'09'01'24'00'00);
     }
 
     // from strings

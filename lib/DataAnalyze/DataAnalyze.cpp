@@ -48,7 +48,6 @@ float DataAnalyze::accumulatedConsumption(unsigned int uid, Time begin, Time end
         consumptions_in_window.for_loop(l_index, r_index, [&](auto index, auto value) {
             for (auto &&cid: res) {
                 if (value->cid == cid) {
-                    printf("%.2f\n", value->price);
                     total += value->price;
                 }
             }
