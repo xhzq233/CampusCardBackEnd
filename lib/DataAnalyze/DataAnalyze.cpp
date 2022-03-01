@@ -29,14 +29,14 @@ float DataAnalyze::accumulatedConsumption(unsigned int uid, Time begin, Time end
         return 0;
     }
     unsigned int cid = account->cards.begin().cid;
+    unsigned int r_index;
+    unsigned int l_index;
     float total = 0;
     for (int i = 0; i < DataStore::WINDOW_QTY; ++i) {
         auto &consumptions_in_window = *DataStore::getConsumptions()[i];
         if (!consumptions_in_window.count()) {
             continue;
         }
-        unsigned int r_index;
-        unsigned int l_index;
         if (end == -1) {
             r_index = consumptions_in_window.current_index;
         } else if (begin > end) {

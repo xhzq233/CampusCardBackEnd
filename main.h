@@ -78,17 +78,10 @@ namespace Main {
         // start_index operation
         using namespace Consume;
         for (int i = 0; i < num; ++i) {
-//        if (operations[i]->time == 2021'09'23'07'03'11'04){
-//            consumption = dynamic_cast<Consumption *>(operations[i]);
-//            consume(*consumption);
-//        }
             if ((rechargeOperation = dynamic_cast<RechargeOperation *>(operations[i]))) {
-                if (rechargeOperation->uid == 2020922101)
-                    printf("");
                 CardManage::recharge(rechargeOperation->uid, rechargeOperation->price, rechargeOperation->time);
             } else if ((consumption = dynamic_cast<Consumption *>(operations[i]))) {
-                if (consumption->cid == 3204659)
-                    consume(*consumption);
+                consume(*consumption);
             } else if ((cardManageOperation = dynamic_cast<CardManageOperation *>(operations[i]))) {
                 switch (cardManageOperation->operationName) {
                     case CardManageOperation::Reissue:

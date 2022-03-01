@@ -48,11 +48,7 @@ public:
 
     // to string
     [[nodiscard]] std::string to_string() const {
-        std::string res;
-        res.append(std::to_string(uid));
-        res.push_back(' ');
-        res.append(std::to_string(cid));
-        return res;
+        return std::to_string(cid);
     }
 };
 

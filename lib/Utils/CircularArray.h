@@ -43,7 +43,7 @@ public:
         return start_index > current_index ? current_index + 1 + size - start_index : current_index - start_index;
     }
 
-    inline ValueType operator[](Index subscript) const {
+    inline ValueType& operator[](Index subscript) const {
         return data[subscript];
     }
 

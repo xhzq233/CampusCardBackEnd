@@ -171,7 +171,10 @@ void execute() {
                     scanf("%s", str);
                     uid = std::stol(str);
                     auto account = DataStore::queryAccountByUid(uid);
-                    printf("%s", (*account)->to_string().c_str());
+                    if (account != DataStore::getAccounts().end())
+                        printf("%s", (*account)->to_string().c_str());
+                    else
+                        printf("no such an account");
                     break;
                 }
                     //初始化数据
