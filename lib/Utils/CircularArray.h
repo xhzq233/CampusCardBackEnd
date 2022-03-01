@@ -199,12 +199,12 @@ public:
     void for_loop(Index start, Index end, Range range) const {
         if (end < start) {
             Index last;
-            last = end + size;
-            for (unsigned int i = start; i < last; ++i) {
+            last = end + size + 1;
+            for (unsigned int i = (start + 1) % size; i < last; ++i) {
                 range(i % size, data[i % size]);
             }
         } else {
-            for (unsigned int i = start; i < end; ++i) {
+            for (unsigned int i = (start + 1) % size; i < end + 1; ++i) {
                 range(i, data[i]);
             }
         }
