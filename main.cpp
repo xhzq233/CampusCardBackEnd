@@ -2,6 +2,7 @@
 #include "lib/DataStore/DataStore.h"
 #include "lib/CardManage/CardManage.h"
 #include "lib/Consume/Consume.h"
+#include "lib/DataAnalyze/DataAnalyze.h"
 #include "lib/Utils/MergeSort.h"
 
 typedef std::function<void(void)> VoidCallBack;
@@ -115,7 +116,9 @@ void execute() {
                    "3: SetLoss          4: UnsetLost \n"
                    "5: Reissue          6: Recharge \n"
                    "7: Consume          8: Account description \n"
-                   "9. Init data        -1: Exit \nInput command: \n"
+                   "9: Init data        10: Query total consumption\n"
+                   "11: Fuzzy query     -1: Exit \n"
+                   "Input command: \n"
             );
             scanf("%s", str);
             cmd = std::stoi(str);
@@ -238,6 +241,7 @@ void execute() {
                     }
                     break;
                 }
+                    //查询账户信息
                 case 8: {
                     printf("Please input your uid:");
                     scanf("%s", str);
@@ -248,9 +252,40 @@ void execute() {
                            account->cards.to_string().c_str());
                     break;
                 }
+                    //初始化数据
                 case 9: {
                     printf("Initializing...\n");
                     testTimeWrapper(init);
+                }
+                    //消费记录总额查询
+                case 10: {
+                    printf("Please input your uid:");
+                    scanf("%s", str);
+                    uid = std::stol(str);
+                    DataAnalyze::Time begin, end;
+                    printf("Please input the begin time:");
+                    scanf("%s", str);
+                    begin = std::stoull(str);
+                    printf("Please input the end time:");
+                    scanf("%s", str);
+                    end = std::stoull(str);
+                    float total = DataAnalyze::accumulatedConsumption(uid, begin, end);
+                    printf("The account with uid %u spent a total of %.2f yuan during this time frame", uid, total);
+                }
+                    //模糊查询
+                case 11: {
+                    printf("Please input fuzzy string:");
+                    scanf("%s",str);
+                    auto results = DataAnalyze::fuzzyQuery(str);
+                    if (!results.empty())
+                    {
+                        printf("No results found\n");
+                    }else{
+                        printf("A total of %d results have been found",results.size());
+                        for (auto && result:results) {
+                            printf("%d\n",result);
+                        }
+                    }
                 }
                     //退出
                 case -1: {

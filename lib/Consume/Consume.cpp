@@ -1,7 +1,3 @@
-//
-// Created by 夏侯臻 on 2022/2/22.
-//
-
 #include "Consume.h"
 
 using namespace std;
@@ -10,7 +6,7 @@ void Consume::consume(const Window &window, unsigned int cid, const float &price
 
 
     if (DataStore::getAccountsMapByCid().count(cid) == 0) {
-        printf("No such a card");
+        printf("No such a card.\n");
         Consume::log(time, cid, window, price, "failed");
         return;
     }
@@ -19,11 +15,11 @@ void Consume::consume(const Window &window, unsigned int cid, const float &price
     auto card = account->cards.begin();
 
     if (!card.condition) {//already set lost
-        printf("Invalid card.");
+        printf("Invalid card.\n");
         Consume::log(time, cid, window, price, "failed");
 
     } else if (account->balance < price) {//Insufficient balance
-        printf("Insufficient account balance.");
+        printf("Insufficient account balance.\n");
         Consume::log(time, cid, window, price, "failed");
         //指定时间内消费
     } else if (hour >= 7 && hour <= 9 || hour >= 11 && hour <= 13 || hour >= 17 && hour <= 19) {
@@ -31,7 +27,7 @@ void Consume::consume(const Window &window, unsigned int cid, const float &price
         DataStore::insertConsumptionOnSpecifiedTime(window, new Consumption(cid, window, time, price));
         Consume::log(time, cid, window, price, "succeeded");
     } else {
-        printf("Consumption is not allowed now."); //当前时间不允许消费
+        printf("Consumption is not allowed now.\n"); //当前时间不允许消费
         Consume::log(time, cid, window, price, "failed");
     }
 }
@@ -40,7 +36,7 @@ void Consume::consume(const Window &window, unsigned int cid, const float &price
     auto time = FileManager::nowTime();
 
     if (DataStore::getAccountsMapByCid().count(cid) == 0) {
-        printf("No such a card");
+        printf("No such a card\n");
         Consume::log(time, cid, window, price, "failed");
         return;
     }
@@ -123,9 +119,9 @@ void Consume::show(const Window &window) {
     const auto &consumptions = *(DataStore::getConsumptions()[window]);
     int count = 0;      //当日收费次数
     float revenue = 0; // 当日营收
-    int date = (int) (FileManager::nowTime() / 10'000'000'000); //日期
+    int date = (int) (FileManager::nowTime() / 1'000'000); //日期
     for (int i = 0; i < DataStore::MAXSIZE; ++i) {
-        int _date = (int) (consumptions[i]->time / 10'000'000'000); //消费记录里的日期
+        int _date = (int) (consumptions[i]->time / 1'000'000); //消费记录里的日期
         if (_date == date) {
             count++;
             revenue += consumptions[i]->price;
@@ -138,9 +134,9 @@ void Consume::show(const Window &window, const Time &time) {
     const auto &consumptions = *(DataStore::getConsumptions()[window]);
     int count = 0;//指定时间的收费次数
     float revenue = 0; // 指定时间营收
-    int date = (int) (time / 100000000); //日期
+    int date = (int) (time / 1'000'000); //日期
     for (int i = 0; i < DataStore::MAXSIZE; ++i) {
-        int _date = (int) (consumptions[i]->time / 10'000'000'000);
+        int _date = (int) (consumptions[i]->time / 1'000'000);
         if (_date == date) {
             count++;
             revenue += consumptions[i]->price;

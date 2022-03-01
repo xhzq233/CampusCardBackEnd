@@ -1,7 +1,3 @@
-//
-// Created by 夏侯臻 on 2022/2/25.
-//
-
 #ifndef CAMPUSCARDBACKEND_THREADPOOL_H
 #define CAMPUSCARDBACKEND_THREADPOOL_H
 
