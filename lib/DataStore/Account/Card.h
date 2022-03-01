@@ -58,7 +58,7 @@ private:
     CardList *next;
 public:
 
-    explicit CardList(const Card& newCard) : card(newCard), next(nullptr) {};
+    explicit CardList(const Card &newCard) : card(newCard), next(nullptr) {};
 
     ~CardList() = default;
 
@@ -66,7 +66,7 @@ public:
         head()->next = new CardList(newCard);
     }
 
-    [[nodiscard]] CardList* head() {
+    [[nodiscard]] CardList *head() {
         auto pointer = this;
         while (pointer->next)
             pointer = pointer->next;
@@ -109,11 +109,12 @@ public:
         return res;
     }
 
-    std::vector<unsigned int> getAllCid(){
+    std::vector<unsigned int> getAllCid() {
         std::vector<unsigned int> res;
-        CardList* curr = this;
-        while(curr->next){
-            res.push_back(curr->card.cid);
+        CardList *curr = this;
+        res.emplace_back(curr->card.cid);
+        while (curr->next) {
+            res.emplace_back(curr->card.cid);
             curr = curr->next;
         }
         return res;
