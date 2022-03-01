@@ -39,7 +39,7 @@ void init() {
         if (re->count() == 0)
             continue;
         per_indexes[per_indexes_index++] = (int) num;
-        re->for_loop([&](auto value) {
+        re->for_loop([&](auto index, auto value) {
             operations[num++] = value;
         });
     }

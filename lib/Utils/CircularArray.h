@@ -18,7 +18,7 @@ public:
     typedef unsigned int Index;
     typedef unsigned int Size;
     typedef std::function<bool(ValueType value)> Compare;
-    typedef std::function<void(const ValueType &value)> Range;
+    typedef std::function<void(const unsigned int &,const ValueType &value)> Range;
 
     Size size;
     /* current data index , always have value */
@@ -171,7 +171,7 @@ public:
 
     // delete pointer
     ~CircularArray() {
-        for_loop([](ValueType value) {
+        for_loop([](auto _,ValueType value) {
             delete value; //must add this, otherwise it can't be deleted correctly
         });
         delete[] data;
@@ -184,14 +184,14 @@ public:
     void for_loop(Range range) const {
         Index last = current_index < start_index ? current_index + size + 1 : current_index + 1;
         for (int i = (start_index + 1) % size; i < last; ++i) {
-            range(data[i % size]);
+            range(i,data[i % size]);
         }
     }
 
     void for_loop(Index start, Index end, Range range) const {
         Index last = end < start ? end + size + 1 : end + 1;
         for (int i = (start + 1) % size; i < last; ++i) {
-            range(data[i % size]);
+            range(i,data[i % size]);
         }
     }
 
