@@ -20,6 +20,7 @@ public:
     }
 
     typedef std::vector<Account> Accounts;
+    typedef std::unordered_map<unsigned int, Account *> AccountsMap;
     using Time = FileManager::Time;
     // 数组下标
     typedef std::vector<const Consumption *> QueryResults;
@@ -43,7 +44,7 @@ public:
     static Accounts &getAccounts();
 
     /* identifier is cid of an Account, stores addresses of getAccounts() */
-    static std::unordered_map<unsigned int, Account *> &getAccountsMapByCid();
+    static AccountsMap &getAccountsMapByCid();
 
     /* sorted by < */
     static Consumptions &getConsumptions();
@@ -86,13 +87,6 @@ private:
     static Accounts &accounts_init();
 
 public:
-    /**
-     * #模糊匹配的格式中，？代表一个字符或一个汉字，*表示多个字符或多个汉字，或代表空；
-     * 汉字：[\u4e00-\u9fa5]
-     * 将?替换成 .
-     * 将*替换成 .{2,}
-    * */
-    static std::regex customRegex2CommonRegexSyntax(std::string &regex);
 
     // query on specified multi string, return Subscripts matched
     static Subscripts query(FileManager::Strings &container, const std::regex &regex);

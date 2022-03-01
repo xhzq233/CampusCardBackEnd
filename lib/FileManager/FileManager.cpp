@@ -27,7 +27,7 @@ const std::string& FileManager::refreshedStartUpTime() {
 
 FileManager &FileManager::shared_init() {
     static FileManager instance;
-    instance.refreshedStartUpTime();
+    auto _ = instance.refreshedStartUpTime();
     return instance;
 }
 

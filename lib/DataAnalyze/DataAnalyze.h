@@ -11,9 +11,21 @@
  * 对指定的学号统计给定起止日期内的累计消费金额
  * */
 namespace DataAnalyze {
-    typedef unsigned long long Time;
+    using Time = DataStore::Time;
 
-    std::vector<unsigned int> fuzzyQuery(const std::string & str); //模糊查询
+    /* return student uid matched */
+    std::vector<unsigned int> fuzzyQueryOnUid(const std::regex &re); //模糊查询
+
+    /* return student uid matched */
+    std::vector<unsigned int> fuzzyQueryOnName(const std::regex &re); //模糊查询
+
+    /**
+    * #模糊匹配的格式中，？代表一个字符或一个汉字，*表示多个字符或多个汉字，或代表空；
+    * 汉字：[\u4e00-\u9fa5]
+    * 将?替换成 .
+    * 将*替换成 .{2,}
+   * */
+    static std::regex customRegex2CommonRegexSyntax(std::string &regex);
 
     float accumulatedConsumption(unsigned int uid, Time begin, Time end); //统计一个账户在指定时间范围内所有的消费记录总额
 };

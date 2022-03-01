@@ -2,16 +2,32 @@
 
 using namespace DataAnalyze;
 
-std::vector<unsigned int> DataAnalyze::fuzzyQuery(const std::string &str) {
+std::regex customRegex2CommonRegexSyntax(std::string &regex) {
+    regex.replace(regex.find('?'), 1, ".");
+    regex.replace(regex.find('*'), 1, ".{2,}");
+    return std::regex(regex);
+}
+
+std::vector<unsigned int> DataAnalyze::fuzzyQueryOnUid(const std::regex &re) {
     std::vector<unsigned int> res;
-    for (auto account:DataStore::getAccounts()) {
-        if (std::regex_match(std::to_string(account.uid),std::regex(str)))
-        {
-            res.push_back(account.uid);
+    for (auto account: DataStore::getAccounts()) {
+        if (std::regex_match(std::to_string(account.uid), re)) {
+            res.emplace_back(account.uid);
         }
     }
     return res;
 }
+
+std::vector<unsigned int> fuzzyQueryOnName(const std::regex &re) {
+    std::vector<unsigned int> res;
+    for (auto account: DataStore::getAccounts()) {
+        if (std::regex_match(account.name, re)) {
+            res.emplace_back(account.uid);
+        }
+    }
+    return res;
+}
+
 
 float DataAnalyze::accumulatedConsumption(unsigned int uid, Time begin, Time end) {
     unsigned int cid = DataStore::queryAccountByUid(uid)->cards.begin().cid;

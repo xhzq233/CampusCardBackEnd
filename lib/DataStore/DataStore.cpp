@@ -141,12 +141,6 @@ void DataStore::insertConsumptionOnSpecifiedTime(Window window, Consumption *dat
 
 using DataQuery = DataStore;
 
-std::regex DataQuery::customRegex2CommonRegexSyntax(std::string &regex) {
-    regex.replace(regex.find('?'), 1, ".");
-    regex.replace(regex.find('*'), 1, ".{2,}");
-    return std::regex(regex);
-}
-
 DataQuery::Subscripts
 DataQuery::query(FileManager::Strings &container, const std::regex &regex) {
     Subscripts res;
@@ -227,9 +221,9 @@ DataStore::queryConsumptionInTimeRange(Window window, DataStore::Time left, Data
     return res;
 }
 
-std::unordered_map<unsigned int, Account *> &DataStore::getAccountsMapByCid() {
-    static auto &sortedAccounts = []() -> std::unordered_map<unsigned int, Account *> & {
-        static std::unordered_map<unsigned int, Account *> res;
+DataStore::AccountsMap &DataStore::getAccountsMapByCid() {
+    static auto &sortedAccounts = []() -> DataStore::AccountsMap & {
+        static DataStore::AccountsMap res;
         for (auto &item: DataStore::getAccounts())
             res[item.cards.begin().cid] = &item;
         return res;
