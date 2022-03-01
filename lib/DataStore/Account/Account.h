@@ -32,7 +32,7 @@ public:
         if (name1.size() > NAME_SIZE)
             throw;
         strncpy(name, name1.c_str(), name1.size());
-        FileManager::getInstance() << FileManager::toStandardLogString("开户", this->to_string());
+        FileManager::getInstance() << FileManager::toStandardLogString("开户", std::to_string(uid) + name);
     }
 
     // from strings
