@@ -76,7 +76,7 @@ public:
     template<class value_t>
     [[nodiscard]] inline Index halfSearch(value_t compare) {
         if (*top() < compare) {
-            return (current_index + 1) % size;
+            return current_index;
         } else if (compare < *bottom()) {
             return start_index;
         } else {
