@@ -56,13 +56,13 @@ public:
         res.append(std::to_string(window)); // window
         res.push_back(' ');
         char _price[6];
-        sprintf(_price,"%.2f",price);
+        sprintf(_price, "%.2f", price);
         res.append(_price);  // price
-        res.append(" succeeded");
         return res;
     }
-    [[nodiscard]] unsigned long long hash_value() const override{
-        return BaseOperation::hash_value() ^ cid ^ window ^(unsigned int)price;
+
+    [[nodiscard]] unsigned long long hash_value() const override {
+        return BaseOperation::hash_value() ^ cid ^ window ^ (unsigned int) price;
     }
 };
 

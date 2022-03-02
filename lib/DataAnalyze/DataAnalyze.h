@@ -16,8 +16,6 @@ namespace DataAnalyze {
     /* return student uid matched */
     std::vector<unsigned int> fuzzyQueryOnUid(std::string &str); //模糊查询
 
-    std::regex convertUid(std::string &str);
-
     struct priority_value {
         unsigned int student_id;
         unsigned char count;
@@ -32,6 +30,8 @@ namespace DataAnalyze {
     float accumulatedConsumption(unsigned int uid, Time begin, Time end); //统计一个账户在指定时间范围内所有的消费记录总额
 
     [[nodiscard]] k_min_students_res analyze(unsigned int uid); //分析该名同学和哪些同学一起排队购餐
+
+    std::pair<Window ,unsigned int> mostFrequentWindowOfSomeone(unsigned int uid);
 };
 
 

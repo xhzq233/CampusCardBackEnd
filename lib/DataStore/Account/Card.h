@@ -17,10 +17,18 @@ private:
     unsigned int password; //密码
 
 public:
-    unsigned int date;                                //有效日期
-    unsigned int cid;                                 //卡号
-    unsigned int uid;                                 //学号
-    bool condition;                                   //卡的状态
+    /* expire time */
+    unsigned int date;
+
+    /* card id */
+    unsigned int cid;
+
+    /* student id */
+    unsigned int uid;
+
+    /* true represents valid, false represents invalid */
+    bool condition;
+
     Card(unsigned int uid, unsigned int serialNumber) : uid(uid), date(DEFAULT_EXPIRE_DATE), condition(true),
                                                         password(DEFAULT_PASSWORD) {
         unsigned int checkNode = 0, tmp = serialNumber;
