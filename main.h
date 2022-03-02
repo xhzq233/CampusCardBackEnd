@@ -34,7 +34,7 @@ namespace Main {
     typedef BaseOperation *SortedOperations[RESERVED_SIZE];
 
     void init() {
-        unsigned long long checkNode = 0;
+        unsigned long long manageCheckNode= 0,rechargeCheckNode= 0 ,consumeCheckNode= 0;
         // MARK:--- init operations
         auto *operations = new SortedOperations{nullptr};
         auto &res = DataStore::getConsumptions();
@@ -79,13 +79,13 @@ namespace Main {
         using namespace Consume;
         for (int i = 0; i < num; ++i) {
             if ((rechargeOperation = dynamic_cast<RechargeOperation *>(operations[i]))) {
-                checkNode = (checkNode + rechargeOperation->hash_value()) % 0xffffffffffffffff;
+                rechargeCheckNode = (rechargeCheckNode + rechargeOperation->hash_value()) % 0xffffffffffffffff;
                 CardManage::recharge(rechargeOperation->uid, rechargeOperation->price, rechargeOperation->time);
             } else if ((consumption = dynamic_cast<Consumption *>(operations[i]))) {
-                checkNode = (checkNode + consumption->hash_value()) % 0xffffffffffffffff;
+                consumeCheckNode = (consumeCheckNode  + consumption->hash_value()) % 0xffffffffffffffff;
                 consume(*consumption);
             } else if ((cardManageOperation = dynamic_cast<CardManageOperation *>(operations[i]))) {
-                checkNode = (checkNode + cardManageOperation->hash_value()) % 0xffffffffffffffff;
+                manageCheckNode = (manageCheckNode + cardManageOperation->hash_value()) % 0xffffffffffffffff;
                 switch (cardManageOperation->operationName) {
                     case CardManageOperation::Reissue:
                         CardManage::reissue(cardManageOperation->uid, cardManageOperation->time);
@@ -108,7 +108,10 @@ namespace Main {
         }
         // ---
         delete[] operations;
-        printf("checkNode:%llu\n",checkNode);
+
+        printf("manageCheckNode:%llu\n",manageCheckNode);
+        printf("rechargeCheckNode:%llu\n",rechargeCheckNode);
+        printf("consumeCheckNode:%llu\n",consumeCheckNode);
     }
 }
 

@@ -51,9 +51,9 @@ void execute() {
                     uid = std::stol(str);
                     res = CardManage::deleteAccount(uid);
                     if (res) {
-                        printf("Succeeded \n");
+                        printf("Succeeded.\n");
                     } else {
-                        printf("Failed: uid is not in system\n");
+                        printf("Failed: uid is not in system.\n");
                     }
                     break;
                 }
@@ -64,11 +64,11 @@ void execute() {
                     uid = std::stol(str);
                     res = CardManage::setLost(uid);
                     if (res == 1) {
-                        printf("succeeded\n");
+                        printf("Succeeded.\n");
                     } else if (res == -1) {
-                        printf("Failed: card already lost\n");
+                        printf("Failed: card already lost.\n");
                     } else {
-                        printf("Failed: uid is not in system\n");
+                        printf("Failed: uid is not in system.\n");
                     }
                     break;
                 }
@@ -79,11 +79,11 @@ void execute() {
                     uid = std::stol(str);
                     res = CardManage::unsetLost(uid);
                     if (res == 1) {
-                        printf("succeeded\n");
+                        printf("Succeeded.\n");
                     } else if (res == -1) {
-                        printf("Failed: card no lost yet\n");
+                        printf("Failed: card no lost yet.\n");
                     } else {
-                        printf("Failed: uid is not in system\n");
+                        printf("Failed: uid is not in system.\n");
                     }
                     break;
                 }
@@ -93,12 +93,12 @@ void execute() {
                     scanf("%s", str);
                     uid = std::stol(str);
                     res = CardManage::reissue(uid);
-                    if (res == 1) {
-                        printf("succeeded\n");
+                    if (res == 0) {
+                        printf("Failed: uid is not in system.\n");
                     } else if (res == -1) {
-                        printf("Failed: the number of reissuing card reached the upper limit\n");
+                        printf("Failed: the number of reissuing card reached the upper limit.\n");
                     } else {
-                        printf("Failed: uid is not in system\n");
+                        printf("Succeeded: new card cid:%u.", res);
                     }
                     break;
                 }
@@ -112,11 +112,11 @@ void execute() {
                     amount = std::stoi(str);
                     res = CardManage::recharge(uid, amount);
                     if (res == 0) {
-                        printf("Failed: the uid is not in system\n");
+                        printf("Failed: the uid is not in system.\n");
                     } else if (res == -1) {
                         printf("Failed: the account balance exceeds 1000.\n");
                     } else {
-                        printf("Succeeded: the account balance:%d\n", res);
+                        printf("Succeeded: the account balance:%d.\n", res);
                     }
                     break;
                 }
@@ -139,31 +139,31 @@ void execute() {
                         time = std::stoll(str);
                         res = Consume::consume(window, cid, price, time);
                         if (res == 0) {
-                            printf("No such a card\n");
+                            printf("No such a card.\n");
                         } else if (res == 1) {
                             printf("Invalid card.\n");
                         } else if (res == 2) {
                             printf("Insufficient account balance.\n");
                         } else if (res == 3) {
-                            printf("succeeded");
+                            printf("Succeeded.\n");
                         } else if (res == 4) {
                             printf("Consumption is not allowed now.\n");
                         }
                     } else if (std::string(str) == "n") {
                         res = Consume::consume(window, cid, price);
                         if (res == 0) {
-                            printf("No such a card\n");
+                            printf("No such a card.\n");
                         } else if (res == 1) {
                             printf("Invalid card.\n");
                         } else if (res == 2) {
                             printf("Insufficient account balance.\n");
                         } else if (res == 3) {
-                            printf("succeeded");
+                            printf("Succeeded.\n");
                         } else if (res == 4) {
                             printf("Consumption is not allowed now.\n");
                         }
                     } else {
-                        printf("Undefined cmd\n");
+                        printf("Undefined cmd.\n");
                         break;
                     }
                     break;
@@ -177,7 +177,7 @@ void execute() {
                     if (account != DataStore::getAccounts().end())
                         printf("%s", (*account)->to_string().c_str());
                     else
-                        printf("N o such an account");
+                        printf("No such an account.\n");
                     break;
                 }
                     //初始化数据
@@ -238,7 +238,7 @@ void execute() {
                 }
                     //出错
                 default: {
-                    printf("Undefined cmd\n");
+                    printf("Undefined cmd.\n");
                     break;
                 }
             }
