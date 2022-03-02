@@ -103,9 +103,11 @@ public:
     // to string
     [[nodiscard]] std::string to_string() const {
         std::string res(card.to_string());
-        res.push_back('\n');
-        while (next) {
-            res.append(next->card.to_string());
+        auto temp_next = next;
+        while (temp_next) {
+            res.push_back('\n');
+            res.append(temp_next->card.to_string());
+            temp_next = temp_next->next;
         }
         return res;
     }
