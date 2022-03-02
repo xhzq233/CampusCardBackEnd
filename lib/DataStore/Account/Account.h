@@ -64,15 +64,6 @@ public:
     void recharge(float amount) {
         this->balance += amount;
     } //充值
-
-    /// comparable
-    bool operator>(const Account &right) const {
-        return uid > right.uid;
-    }
-
-    bool operator<(const Account &right) const {
-        return uid < right.uid;
-    }
 };
 
 

@@ -18,9 +18,12 @@ Accounts &DataStore::accounts_init() {
     for (auto &&info: temp) {
         res.emplace_back(new Account(info, getSerialNumber()));
     }
-    std::sort(res.begin(), res.end(), [](auto l, auto r) {
-        return l->uid < r->uid;
-    });
+    struct Compare {
+        bool operator()(const Account *l, const Account *r) const {
+            return l->uid < r->uid;
+        }
+    };
+    std::sort(res.begin(), res.end(), Compare());
     return res;
 }
 

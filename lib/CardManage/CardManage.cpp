@@ -6,8 +6,8 @@
 
 using namespace std;
 
-static const constexpr char not_in_sys[] = "%d failed: NOT IN SYS";
-static const constexpr char success[] = "%d %s succeeded";
+static const constexpr char not_in_sys[] = "%d Failed: NOT IN SYS";
+static const constexpr char success[] = "%d %s Success";
 static const constexpr char open_account[] = "开户";
 static const constexpr char delete_account[] = "销户";
 static const constexpr char set_lost[] = "挂失";
@@ -59,7 +59,7 @@ int CardManage::setLost(unsigned int uid, const Time &time) {
             log(time, set_lost, success, uid, account->name);
             return 1;
         } else {
-            log(time, set_lost, "%d %s failed: Already lost", uid, account->name);
+            log(time, set_lost, "%d %s Failed: already lost", uid, account->name);
         }
         return -1;
     }
@@ -78,7 +78,7 @@ int CardManage::unsetLost(unsigned int uid, const Time &time) {
             log(time, un_set_lost, success, uid, account->name);
             return 1;
         } else {
-            log(time, un_set_lost, "%d %s failed: not lost yet", uid, account->name);
+            log(time, un_set_lost, "%d %s Failed: not lost yet", uid, account->name);
             return -1;
         }
     }
@@ -92,7 +92,7 @@ int CardManage::reissue(unsigned int uid, const Time &time) {
     } else if (account->cards.size() >= CardManage::MAX_REISSUE_TIMES) {//no more than MAX_REISSUE_TIMES
         // reference:
         // https://sites.google.com/site/wyylview/dong-tai-fen-pei-nei-cun-zai-ke-nengheap-corruption-detected-de-yuan-yin-zhi-yi-2
-        log(time, reissue_account, "%d %s failed: Reached upper limit", uid, account->name);
+        log(time, reissue_account, "%d %s Failed: reached upper limit", uid, account->name);
         return -1;
     } else {
         Card card(uid, DataStore::getSerialNumber());
@@ -116,10 +116,10 @@ int CardManage::recharge(unsigned int uid, int amount, const Time &time) {
     } else {
         auto &card = account->cards.begin();
         if (account->balance + (float) amount > BALANCE_CEILING) {
-            log(time, recharge_account, "%d %s failed: Reached upper limit", uid, account->name);
+            log(time, recharge_account, "%d %s Failed: reached upper limit", uid, account->name);
             return -1;
         } else {
-            log(time, recharge_account, "%d %s success (cid: %d elder %.2f new %.2f)", uid,
+            log(time, recharge_account, "%d %s Success (cid: %d elder %.2f new %.2f)", uid,
                 account->name, card.cid,
                 account->balance,
                 account->balance + (float) amount);

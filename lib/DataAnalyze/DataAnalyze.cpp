@@ -21,7 +21,7 @@ float DataAnalyze::accumulatedConsumption(unsigned int uid, Time begin, Time end
     }
     unsigned int r_index;
     unsigned int l_index;
-    std::vector<unsigned int> res = account->cards.getAllCid();
+    std::vector<unsigned int> allCid = account->cards.getAllCid();
     float total = 0;
     for (int i = 0; i < DataStore::WINDOW_QTY; ++i) {
         auto &consumptions_in_window = *DataStore::getConsumptions()[i];
@@ -37,7 +37,7 @@ float DataAnalyze::accumulatedConsumption(unsigned int uid, Time begin, Time end
         }
         l_index = consumptions_in_window.halfSearch(BaseOperation(begin));
         consumptions_in_window.for_loop(l_index, r_index, [&](auto index, auto value) {
-            for (auto &&cid: res) {
+            for (auto &&cid: allCid) {
                 if (value->cid == cid) {
                     total += value->price;
                 }

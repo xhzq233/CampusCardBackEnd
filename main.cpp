@@ -2,6 +2,15 @@
 
 using namespace Main;
 
+std::vector<unsigned int> fuzzyQueryOnName(const std::regex &re) {
+    std::vector<unsigned int> res;
+    for (auto &account: DataStore::getAccounts()) {
+        if (std::regex_match(account->name, re))
+            res.emplace_back(account->uid);
+    }
+    return res;
+}
+
 void execute() {
     int cmd;
     int res;
@@ -15,21 +24,21 @@ void execute() {
     float price;
     while (true) {
         try {
-            printf("1: Register account 2: Account cancellation \n"
-                   "3: SetLoss          4: UnsetLost \n"
-                   "5: Reissue          6: Recharge \n"
-                   "7: Consume          8: Account description \n"
-                   "9: Init data        10: Query consumption\n"
-                   "11: Query uid       12: Analyze consumption\n"
-                   "-1: Exit \n"
+            printf("1: 开户             2: 销户 \n"
+                   "3: 挂失             4: 解挂 \n"
+                   "5: 补卡             6: 充值 \n"
+                   "7: 消费             8: 查询账户信息 \n"
+                   "9: 初始数据         10: 查询总消费 \n"
+                   "11: 查询学号        12: 分析5个最经常一起吃饭的同学 \n"
+                   "13: 查询名字        14: 分析最经常去的窗口\n"
+                   "-1: 退出 \n"
                    "Input command: "
             );
             scanf("%s", str);
             cmd = std::stoi(str);
             switch (cmd) {
-                //开户
                 case 1: {
-                    printf("Registering an account is in progress.\nplease input your uid: ");
+                    printf("开户.\nplease input your uid: ");
                     scanf("%s", str);
                     uid = std::stol(str);
                     printf("Please input your name: ");
@@ -40,31 +49,29 @@ void execute() {
                     } else if (cid == 0) {
                         printf("Failed: account already in system.\n");
                     } else {
-                        printf("Succeeded: your new card id is %u.\n ", cid);
+                        printf("Success: your new card id is %u.\n ", cid);
                     }
                     break;
                 }
-                    //销户
                 case 2: {
-                    printf("Account cancellation operation is in progress.\nPlease input your uid:");
+                    printf("销户\nPlease input your uid:");
                     scanf("%s", str);
                     uid = std::stol(str);
-                    res = CardManage::deleteAccount(uid);
+                    res = CardManage::account_cancellation(uid);
                     if (res) {
-                        printf("Succeeded.\n");
+                        printf("Success.\n");
                     } else {
                         printf("Failed: uid is not in system.\n");
                     }
                     break;
                 }
-                    //挂失
                 case 3: {
-                    printf("Reporting loss is in progress.\nPlease input your uid:");
+                    printf("挂失\nPlease input your uid:");
                     scanf("%s", str);
                     uid = std::stol(str);
                     res = CardManage::setLost(uid);
                     if (res == 1) {
-                        printf("Succeeded.\n");
+                        printf("Success.\n");
                     } else if (res == -1) {
                         printf("Failed: card already lost.\n");
                     } else {
@@ -72,14 +79,13 @@ void execute() {
                     }
                     break;
                 }
-                    //解挂
                 case 4: {
-                    printf("Loss unregister is in progress.\nPlease input your uid:");
+                    printf("解挂\nPlease input your uid:");
                     scanf("%s", str);
                     uid = std::stol(str);
                     res = CardManage::unsetLost(uid);
                     if (res == 1) {
-                        printf("Succeeded.\n");
+                        printf("Success.\n");
                     } else if (res == -1) {
                         printf("Failed: card no lost yet.\n");
                     } else {
@@ -87,9 +93,8 @@ void execute() {
                     }
                     break;
                 }
-                    //补卡
                 case 5: {
-                    printf("Reissuing a card is in progress.\nPlease input your uid:");
+                    printf("补卡.\nPlease input your uid:");
                     scanf("%s", str);
                     uid = std::stol(str);
                     res = CardManage::reissue(uid);
@@ -98,13 +103,12 @@ void execute() {
                     } else if (res == -1) {
                         printf("Failed: the number of reissuing card reached the upper limit.\n");
                     } else {
-                        printf("Succeeded: new card cid:%u.", res);
+                        printf("Success: new card cid:%u.", res);
                     }
                     break;
                 }
-                    //充值
                 case 6: {
-                    printf("A recharge operation is in progress.\nPlease input your uid:");
+                    printf("充值\nPlease input your uid:");
                     scanf("%s", str);
                     uid = std::stol(str);
                     printf("please input the amount you want to recharge:");
@@ -116,13 +120,12 @@ void execute() {
                     } else if (res == -1) {
                         printf("Failed: the account balance exceeds 1000.\n");
                     } else {
-                        printf("Succeeded: the account balance:%d.\n", res);
+                        printf("Success: the account balance:%d.\n", res);
                     }
                     break;
                 }
-                    //消费
                 case 7: {
-                    printf("A consumption operation is in progress.\nPlease choose the window you want to consume:");
+                    printf("消费.\nPlease choose the window you want to consume:");
                     scanf("%s", str);
                     window = std::stoi(str);
                     printf("Please input your cid:");
@@ -145,7 +148,7 @@ void execute() {
                         } else if (res == 2) {
                             printf("Insufficient account balance.\n");
                         } else if (res == 3) {
-                            printf("Succeeded.\n");
+                            printf("Success.\n");
                         } else if (res == 4) {
                             printf("Consumption is not allowed now.\n");
                         }
@@ -158,7 +161,7 @@ void execute() {
                         } else if (res == 2) {
                             printf("Insufficient account balance.\n");
                         } else if (res == 3) {
-                            printf("Succeeded.\n");
+                            printf("Success.\n");
                         } else if (res == 4) {
                             printf("Consumption is not allowed now.\n");
                         }
@@ -168,27 +171,24 @@ void execute() {
                     }
                     break;
                 }
-                    //查询信息
                 case 8: {
-                    printf("Querying an account is in progress.\nPlease input your uid:");
+                    printf("查询账户信息\nPlease input your uid:");
                     scanf("%s", str);
                     uid = std::stol(str);
-                    auto account = DataStore::queryAccountByUid(uid);
-                    if (account != DataStore::getAccounts().end())
-                        printf("%s", (*account)->to_string().c_str());
+                    auto account = DataStore::subscript2Account(DataStore::queryAccountByUid(uid));
+                    if (account)
+                        printf("%s", account->to_string().c_str());
                     else
                         printf("No such an account.\n");
                     break;
                 }
-                    //初始化数据
                 case 9: {
-                    printf("Initializing...\n");
+                    printf("初始化数据\n");
                     testTimeWrapper(init);
                     break;
                 }
-                    //消费记录总额查询
                 case 10: {
-                    printf("Querying consumption is in progress.\nPlease input your uid:");
+                    printf("消费记录总额查询（时间段） \nPlease input your uid:");
                     scanf("%s", str);
                     uid = std::stol(str);
                     DataAnalyze::Time begin, end;
@@ -198,7 +198,6 @@ void execute() {
                     printf("Please input the end time:");
                     scanf("%s", str);
                     end = std::stoull(str);
-                    printf("%llu,%llu\n", begin, end);
                     float total = DataAnalyze::accumulatedConsumption(uid, begin, end);
                     printf("The account with uid %u \nspent a total of %.2f yuan during this time frame.\n", uid,
                            total);
@@ -227,12 +226,33 @@ void execute() {
                     auto results = DataAnalyze::analyze(uid);
                     printf("Here are the probable friends:\n");
                     for (auto &&result: results) {
-                        printf("%d ", result);
+                        printf("%d ,count:%d\n", result.student_id, result.count);
                     }
                     printf("\n");
                     break;
                 }
-                    //退出
+                case 13: {
+                    printf("Query fuzzy name is in progress.\nPlease input fuzzy name:");
+                    scanf("%s", str);
+                    auto results = fuzzyQueryOnName(std::regex(str));
+                    if (results.empty()) {
+                        printf("No results found.\n");
+                    } else {
+                        printf("A total of %lu results have been found.\n", results.size());
+                        for (auto &&result: results) {
+                            printf("%d\n", result);
+                        }
+                    }
+                    break;
+                }
+                case 14: {
+                    printf("输入uid:\n");
+                    scanf("%s", str);
+                    uid = std::stol(str);
+                    auto r = DataAnalyze::mostFrequentWindowOfSomeone(uid);
+                    printf("最经常去 Window:%d,count:%d\n", r.first, r.second);
+                    break;
+                }
                 case -1: {
                     break;
                 }

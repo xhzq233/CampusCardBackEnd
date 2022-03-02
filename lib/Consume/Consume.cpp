@@ -9,28 +9,28 @@ using namespace std;
 int Consume::consume(const Window &window, unsigned int cid, const float &price, const Consume::Time &time) {
     if (DataStore::getAccountsMapByCid().count(cid) == 0) {
         printf("No such a card.\n");
-        Consume::log(time, cid, window, price, "failed");
+        Consume::log(time, cid, window, price, "Failed");
         return 0;
     }
     auto account = DataStore::getAccountsMapByCid().at(cid);
     char hour = (char) (time / 1'00'00'00 % 100);
     auto card = account->cards.begin();
     if (!card.condition) {//already set lost
-        Consume::log(time, cid, window, price, "failed");
+        Consume::log(time, cid, window, price, "Failed");
         return 1;
 
     } else if (account->balance < price) {//Insufficient balance
-        Consume::log(time, cid, window, price, "failed");
+        Consume::log(time, cid, window, price, "Failed");
         return 2;
         //指定时间内消费
-    } else if (hour >= 7 && hour <= 9 || hour >= 11 && hour <= 13 || hour >= 17 && hour <= 19) {
+    } else if ((hour >= 7 && hour <= 9) || (hour >= 11 && hour <= 13) || (hour >= 17 && hour <= 19)) {
         account->consume(price);
         DataStore::insertConsumptionOnSpecifiedTime(window, new Consumption(cid, window, time, price));
-        Consume::log(time, cid, window, price, "succeeded");
+        Consume::log(time, cid, window, price, "Success");
         return 3;
     } else {
         //当前时间不允许消费
-        Consume::log(time, cid, window, price, "failed");
+        Consume::log(time, cid, window, price, "Failed");
         return 4;
     }
 }
@@ -38,19 +38,20 @@ int Consume::consume(const Window &window, unsigned int cid, const float &price,
 int Consume::consume(const Window &window, unsigned int cid, const float &price) {
     auto time = FileManager::nowTime();
     if (DataStore::getAccountsMapByCid().count(cid) == 0) {
-        Consume::log(time, cid, window, price, "failed");
+        Consume::log(time, cid, window, price, "Failed");
         return 0;
     }
     auto account = DataStore::getAccountsMapByCid().at(cid);
     char hour = (char) (time / 100'000'000 % 100);
     auto &card = account->cards.begin();
     if (!card.condition) {
-        Consume::log(time, cid, window, price, "failed");
+        Consume::log(time, cid, window, price, "Failed");
         return 1;
     } else if (account->balance < price) {
-        Consume::log(time, cid, window, price, "failed");
+        Consume::log(time, cid, window, price, "Failed");
         return 2;
-    } else if (hour >= 7 && hour <= 9 || hour >= 11 && hour <= 13 || hour >= 17 && hour <= 19) {
+//    } else if ((hour >= 7 && hour <= 9) || (hour >= 11 && hour <= 13) || (hour >= 17 && hour <= 19)) {
+    } else if (hour >= 0 && hour <= 24) { //testable
         //当前时间段内消费超过20,则需要输入密码
         if (time - account->lastTimeEnterPasswd < GAP_TIME && account->totalConsumptionFromLastTime + price > 20) {
             if (checkPasswd(card)) {
@@ -58,7 +59,7 @@ int Consume::consume(const Window &window, unsigned int cid, const float &price)
                 account->lastTimeEnterPasswd = time;
                 account->consume(price);
                 DataStore::pushConsumption(window, new Consumption(cid, window, time, price));
-                Consume::log(time, cid, window, price, "succeeded");
+                Consume::log(time, cid, window, price, "Success");
                 show(window, time);
                 return 3;
             } else {
@@ -72,11 +73,11 @@ int Consume::consume(const Window &window, unsigned int cid, const float &price)
         }
         account->consume(price);
         DataStore::pushConsumption(window, new Consumption(cid, window, time, price));
-        Consume::log(time, cid, window, price, "succeeded");
+        Consume::log(time, cid, window, price, "Success");
         show(window, time);
         return 3;
     } else { //当前时间不允许消费
-        Consume::log(time, cid, window, price, "failed");
+        Consume::log(time, cid, window, price, "Failed");
         return 4;
     }
 }
@@ -85,7 +86,7 @@ void Consume::consume(const Consumption &consumption) {
 
     if (DataStore::getAccountsMapByCid().count(consumption.cid) == 0) {
         Consume::log(consumption.time, consumption.cid, consumption.window, consumption.price,
-                     "failed: No such a card");
+                     "Failed: No such a card");
         return;
     }
 
@@ -93,15 +94,15 @@ void Consume::consume(const Consumption &consumption) {
     auto &card = account->cards.begin();
     char hour = (char) (consumption.time / 1000000 % 100);
     if (!card.condition) {//invalid
-        Consume::log(consumption.time, card.cid, consumption.window, consumption.price, "failed: Invalid card");
+        Consume::log(consumption.time, card.cid, consumption.window, consumption.price, "Failed: Invalid card");
     } else if (account->balance < consumption.price) {
         Consume::log(consumption.time, card.cid, consumption.window, consumption.price,
-                     "failed Insufficient account balance");
+                     "Failed Insufficient account balance");
     } else if (hour >= 7 && hour <= 9 || hour >= 11 && hour <= 13 || hour >= 17 && hour <= 19) {
         account->consume(consumption.price);
-        Consume::log(consumption.time, card.cid, consumption.window, consumption.price, "succeeded");
+        Consume::log(consumption.time, card.cid, consumption.window, consumption.price, "Success");
     } else {
-        Consume::log(consumption.time, card.cid, consumption.window, consumption.price, "failed time not allowed");
+        Consume::log(consumption.time, card.cid, consumption.window, consumption.price, "Failed time not allowed");
     }
 }
 
