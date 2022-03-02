@@ -46,7 +46,7 @@ namespace Main {
             if (re->count() == 0)
                 continue;
             per_indexes[per_indexes_index++] = (int) num;
-            re->for_loop([&](auto _,auto value) {
+            re->for_loop([&](auto _, auto value) {
                 operations[num++] = value;
             });
         }
@@ -68,9 +68,10 @@ namespace Main {
         }
         temp.clear();
 
-        MergeSort<BaseOperation *>::sort(operations, per_indexes, MERGE_NUM);
+//        MergeSort<BaseOperation *>::sort(operations, per_indexes, MERGE_NUM);
+        MergeSort<BaseOperation *>::priority_sort(operations,per_indexes, 58);
 
-        // separate complete
+        // sort complete
         RechargeOperation *rechargeOperation;
         Consumption *consumption;
         CardManageOperation *cardManageOperation;
@@ -107,7 +108,6 @@ namespace Main {
         delete[] operations;
     }
 }
-
 
 
 #endif //CAMPUSCARDBACKEND_MAIN_H
