@@ -42,6 +42,7 @@ bool CardManage::deleteAccount(unsigned int uid, const Time &time) {
         log(time, delete_account, success, uid, account->name);
         DataStore::getAccounts().erase(iter);
         DataStore::getAccountsMapByCid().erase(account->cards.begin().cid); //already nullptr
+        delete account;
         return true;
     } else {
         log(time, delete_account, not_in_sys, uid);
@@ -110,7 +111,7 @@ int CardManage::reissue(unsigned int uid, const Time &time) {
         account->cards.push(card);
         DataStore::getAccountsMapByCid()[card.cid] = &(*account); // push into map
         log(time, reissue_account, success, uid, account->name);
-        return 1;
+        return card.cid;
     }
 }
 

@@ -32,6 +32,10 @@ public:
     bool operator<(const BaseOperation &right) const {
         return time < right.time;
     }
+
+    [[nodiscard]] virtual  unsigned long long hash_value() const{
+        return time;
+    }
 };
 
 

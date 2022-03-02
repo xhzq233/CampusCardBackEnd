@@ -61,6 +61,9 @@ public:
         res.append(" succeeded");
         return res;
     }
+    [[nodiscard]] unsigned long long hash_value() const override{
+        return BaseOperation::hash_value() ^ cid ^ window ^(unsigned int)price;
+    }
 };
 
 #endif // CAMPUSCARDBACKEND_CONSUMPTION_H

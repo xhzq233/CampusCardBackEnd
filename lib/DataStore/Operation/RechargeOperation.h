@@ -28,6 +28,9 @@ public:
         res.append(std::to_string(price));
         return res;
     }
+    [[nodiscard]] unsigned long long hash_value() const override{
+        return CardManageOperation::hash_value() ^ price;
+    }
 };
 
 #endif //CAMPUSCARDBACKEND_RECHARGEOPERATION_H

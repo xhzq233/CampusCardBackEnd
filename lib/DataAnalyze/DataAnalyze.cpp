@@ -2,7 +2,7 @@
 
 using namespace DataAnalyze;
 
-std::regex DataAnalyze::convert(std::string &str) {
+std::regex DataAnalyze::convertUid(std::string &str) {
     while (true) {
         int index1 = (int) (str.find('?')), index2 = (int) (str.find('*'));
         if (index1 != std::string::npos) {
@@ -19,22 +19,12 @@ std::regex DataAnalyze::convert(std::string &str) {
 }
 
 std::vector<unsigned int> DataAnalyze::fuzzyQueryOnUid(std::string &str) {
-    std::regex re = convert(str);
+    std::regex re = convertUid(str);
     std::vector<unsigned int> res;
     for (auto account: DataStore::getAccounts()) {
         if (std::regex_match(std::to_string(account->uid), re)) {
             res.emplace_back(account->uid);
         }
-    }
-    return res;
-}
-
-std::vector<unsigned int> DataAnalyze::fuzzyQueryOnName(std::string &str) {
-    std::regex re = convert(str);
-    std::vector<unsigned int> res;
-    for (auto account: DataStore::getAccounts()) {
-        if (std::regex_match(account->name, re))
-            res.emplace_back(account->uid);
     }
     return res;
 }
