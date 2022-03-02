@@ -33,7 +33,7 @@ public:
         return time < right.time;
     }
 
-    [[nodiscard]] virtual  unsigned long long hash_value() const{
+    [[nodiscard]] virtual unsigned long long hash_value() const{
         return time;
     }
 };

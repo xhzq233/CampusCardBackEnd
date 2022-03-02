@@ -37,12 +37,12 @@ namespace Main {
         unsigned long long manageCheckNode= 0,rechargeCheckNode= 0 ,consumeCheckNode= 0;
         // MARK:--- init operations
         auto *operations = new SortedOperations{nullptr};
-        auto &res = DataStore::getConsumptions();
+        auto &consumptions = DataStore::getConsumptions();
         unsigned int num = 0;
 
         int per_indexes[MERGE_NUM + 1]; // 记录每部分排好序的数组的下标
         int per_indexes_index = 0;
-        for (auto re: res) {
+        for (auto re: consumptions) {
             if (re->count() == 0)
                 continue;
             per_indexes[per_indexes_index++] = (int) num;
@@ -68,8 +68,8 @@ namespace Main {
         }
         temp.clear();
 
-//        MergeSort<BaseOperation *>::sort(operations, per_indexes, MERGE_NUM);
-        MergeSort<BaseOperation *>::priority_sort(operations,per_indexes, 58);
+        MergeSort<BaseOperation *>::sort(operations, per_indexes, MERGE_NUM);
+//        MergeSort<BaseOperation *>::priority_sort(operations,per_indexes, 58);
 
         // sort complete
         RechargeOperation *rechargeOperation;
