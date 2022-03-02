@@ -15,7 +15,7 @@
 class DataStore {
 public:
     static unsigned int getSerialNumber() {
-        static unsigned int serialNumber = 12345;                                    //流水号
+        static unsigned int serialNumber = 12345;
         return ++serialNumber;
     }
 
@@ -24,8 +24,6 @@ public:
     using Time = FileManager::Time;
     // 数组下标
     typedef std::vector<const Consumption *> QueryResults;
-    typedef std::vector<Subscript> Subscripts;
-
     constexpr static const char WINDOW_QTY = 99;
     constexpr static const unsigned int MAXSIZE = 60000;
 
@@ -67,14 +65,8 @@ public:
     /* OnSpecifiedTime */
     static void insertConsumptionOnSpecifiedTime(Window window, Consumption *data);
 
-    /* on specified window and card id, return pointers matched */
-    [[nodiscard]] static QueryResults queryConsumption(Window window, unsigned int cid);
-
     [[nodiscard]] static QueryResults
     queryConsumptionInTimeRange(Window window, Time left, Time right = -1);
-
-    /* on specified card id, return pointers matched */
-    [[nodiscard]] static QueryResults queryConsumption(unsigned int cid);
 
     /* localize file stored by DataStore ，be like cache */
     static void localize();
@@ -90,13 +82,6 @@ private:
     static Accounts &accounts_init();
 
 public:
-
-    // query on specified multi string, return Subscripts matched
-    static Subscripts query(FileManager::Strings &container, const std::regex &regex);
-
-    // query on CSV data specified column, return Subscripts matched
-    static Subscripts query(FileManager::CSV &container, unsigned int columnIndex, const std::regex &regex);
-
     DataStore() = delete;
 
     ~DataStore() = delete;

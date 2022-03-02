@@ -144,81 +144,21 @@ void DataStore::insertConsumptionOnSpecifiedTime(Window window, Consumption *dat
     consumes_in_window->insert(data);
 }
 
-using DataQuery = DataStore;
-
-DataQuery::Subscripts
-DataQuery::query(FileManager::Strings &container, const std::regex &regex) {
-    Subscripts res;
-    for (unsigned int i = 0; i < container.size(); ++i) {
-        if (std::regex_match(container[i], regex))
-            res.emplace_back(i);
-    }
-    return res;
-}
-
-DataQuery::Subscripts
-DataQuery::query(FileManager::CSV &container, unsigned int columnIndex, const std::regex &regex) {
-
-    Subscripts res;
-    for (unsigned int i = 0; i < container.size(); ++i) {
-        if (std::regex_match(container[i][columnIndex], regex))
-            res.emplace_back(i);
-    }
-    return res;
-}
-
-DataQuery::QueryResults DataStore::queryConsumption(Window window, unsigned int cid) {
-    //error handle
-    if (window == 0 || window > WINDOW_QTY) {
-        printf("[ERROR] %u not in this for_loop: 1 - 99", window);
-        return {};
-    }
-    QueryResults res;
-    const auto &consumptions_in_window = *getConsumptions()[window - 1];
-    consumptions_in_window.for_loop([&](auto index, auto value) {
-        if (cid == value->cid)
-            res.emplace_back(value);
-    });
-    return res;
-}
-
-DataQuery::QueryResults DataStore::queryConsumption(unsigned int cid) {
-    QueryResults res;
-    auto &consumptions = getConsumptions();
-    for (auto &consumption: consumptions) {
-        consumption->for_loop([&](auto index, auto value) {
-            if (cid == value->cid)
-                res.emplace_back(value);
-        });
-    }
-    return res;
-}
-
 DataStore::QueryResults
 DataStore::queryConsumptionInTimeRange(Window window, DataStore::Time left, DataStore::Time right) {
-
     //error handle
-    if (window == 0 || window > WINDOW_QTY) {
+    if (window == 0 || window > WINDOW_QTY ||left > right) {
         printf("[ERROR] %u not in this for_loop: 1 - 99", window);
         return {};
     }
     QueryResults res;
     auto &consumptions_in_window = *getConsumptions()[window - 1];
-    unsigned int r_index;
-    unsigned int l_index;
-    if (right == -1) {
-        r_index = consumptions_in_window.current_index;
-    } else if (left > right) {
-        throw;
-    } else {
-        r_index = consumptions_in_window.halfSearch(BaseOperation(right));
-    }
-    l_index = consumptions_in_window.halfSearch(BaseOperation(left));
+    unsigned int r_index = consumptions_in_window.halfSearch(BaseOperation(right));
+    unsigned int l_index = consumptions_in_window.halfSearch(BaseOperation(left));
 
     consumptions_in_window.for_loop(l_index, r_index, [&](auto index, auto value) {
         res.template emplace_back(value);
     });
-
     return res;
 }
 
