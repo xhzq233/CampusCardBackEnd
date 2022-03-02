@@ -209,7 +209,7 @@ void execute() {
                     printf("Query fuzzy uid is in progress.\nPlease input fuzzy uid:");
                     scanf("%s", str);
                     std::string s(str);
-                    auto results = DataAnalyze::fuzzyQueryOnUid(std::regex(str));
+                    auto results = DataAnalyze::fuzzyQueryOnUid(s);
                     if (results.empty()) {
                         printf("No results found.\n");
                     } else {
@@ -218,12 +218,13 @@ void execute() {
                             printf("%d\n", result);
                         }
                     }
+                    break;
                 }
                 case 12: {
                     printf("Query fuzzy name is in progress.\nPlease input fuzzy name:");
                     scanf("%s", str);
                     std::string s(str);
-                    auto results = DataAnalyze::fuzzyQueryOnName(std::regex(str));
+                    auto results = DataAnalyze::fuzzyQueryOnName(s);
                     if (results.empty()) {
                         printf("No results found.\n");
                     } else {
@@ -232,6 +233,7 @@ void execute() {
                             printf("%d\n", result);
                         }
                     }
+                    break;
                 }
                 case 13: {
                     printf("Analyze consumption is in progress.\nPlease input the uid:");
@@ -242,6 +244,7 @@ void execute() {
                     for (auto &&result: results) {
                         printf("%d ", result);
                     }
+                    printf("\n");
                     break;
                 }
                     //退出

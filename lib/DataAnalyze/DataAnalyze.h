@@ -14,10 +14,10 @@ namespace DataAnalyze {
     using Time = DataStore::Time;
 
     /* return student uid matched */
-    std::vector<unsigned int> fuzzyQueryOnUid(const std::regex &re); //模糊查询
+    std::vector<unsigned int> fuzzyQueryOnUid(std::string &str); //模糊查询
 
     /* return student uid matched */
-    std::vector<unsigned int> fuzzyQueryOnName(const std::regex &re); //模糊查询
+    std::vector<unsigned int> fuzzyQueryOnName(std::string &str); //模糊查询
 
     /**
     * #模糊匹配的格式中，？代表一个字符或一个汉字，*表示多个字符或多个汉字，或代表空；
@@ -25,7 +25,7 @@ namespace DataAnalyze {
     * 将?替换成 .
     * 将*替换成 .{2,}
    * */
-    static std::regex customRegex2CommonRegexSyntax(std::string &str);
+    std::regex convert(std::string &str);
 
     struct priority_value {
         unsigned int student_id;
