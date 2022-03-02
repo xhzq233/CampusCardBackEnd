@@ -19,10 +19,14 @@ static const constexpr char reissue_account[] = "补卡";
 unsigned int CardManage::openAccount(unsigned int uid, const string &name, const Time &time) {
     auto iter = DataStore::queryAccountByUid(uid);
     if (iter == DataStore::getAccounts().end()) {
-        auto newAccount = new Account(uid, name, DataStore::getSerialNumber());
-        DataStore::insertAccount(newAccount);
-        return newAccount->cards.begin().cid;
-        //log inside account constructor
+        if (to_string(uid).size() != 10) {
+            return -1;
+        } else {
+            auto newAccount = new Account(uid, name, DataStore::getSerialNumber());
+            DataStore::insertAccount(newAccount);
+            return newAccount->cards.begin().cid;
+            //log inside account constructor
+        }
     } else {
         log(time, open_account, not_in_sys, uid);
         return 0;
