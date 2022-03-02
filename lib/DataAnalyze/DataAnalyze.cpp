@@ -2,7 +2,7 @@
 
 using namespace DataAnalyze;
 
-std::vector<unsigned int> DataAnalyze::fuzzyQueryOnUid(std::string &str) {
+std::vector<unsigned int> DataAnalyze::fuzzyQueryOnUid(const std::regex &str) {
     std::regex re = std::regex(str);
     std::vector<unsigned int> res;
     for (auto account: DataStore::getAccounts()) {
@@ -21,10 +21,10 @@ float DataAnalyze::accumulatedConsumption(unsigned int uid, Time begin, Time end
     }
     unsigned int r_index;
     unsigned int l_index;
-    std::vector<unsigned int> res = account->cards.getAllCid();
+    std::vector<unsigned int> allCid = std::move(account->cards.getAllCid());
     float total = 0;
-    for (int i = 0; i < DataStore::WINDOW_QTY; ++i) {
-        auto &consumptions_in_window = *DataStore::getConsumptions()[i];
+    for (int window = 0; window < DataStore::WINDOW_QTY; ++window) {
+        auto &consumptions_in_window = *DataStore::getConsumptions()[window];
         if (!consumptions_in_window.count()) {
             continue;
         }
@@ -37,10 +37,9 @@ float DataAnalyze::accumulatedConsumption(unsigned int uid, Time begin, Time end
         }
         l_index = consumptions_in_window.halfSearch(BaseOperation(begin));
         consumptions_in_window.for_loop(l_index, r_index, [&](auto index, auto value) {
-            for (auto &&cid: res) {
-                if (value->cid == cid) {
+            for (const auto &cid: allCid) {
+                if (value->cid == cid) //showing it's this person consumption
                     total += value->price;
-                }
             }
         });
     }
@@ -126,4 +125,13 @@ std::pair<Window, unsigned int> DataAnalyze::mostFrequentWindowOfSomeone(unsigne
             max_count = item.second;
         }
     return {max_window, max_count};
+}
+
+std::vector<unsigned int> DataAnalyze::fuzzyQueryOnName(const std::regex &re) {
+    std::vector<unsigned int> res;
+    for (auto &account: DataStore::getAccounts()) {
+        if (std::regex_match(account->name, re))
+            res.emplace_back(account->uid);
+    }
+    return res;
 }

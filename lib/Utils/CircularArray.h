@@ -26,7 +26,7 @@ public:
     Subscript start_index;
 
     inline explicit CircularArray(Size size, Subscript start = 0) : size(size),
-                                                                start_index(start) {
+                                                                    start_index(start) {
         if (start >= size)
             throw;
         current_index = start;
@@ -43,19 +43,19 @@ public:
         return start_index > current_index ? current_index + size - start_index : current_index - start_index;
     }
 
-    inline ValueType &operator[](Subscript subscript) const {
+    [[nodiscard]] inline ValueType &operator[](Subscript subscript) const {
         return data[subscript];
     }
 
-    inline const ValueType *operator()() const {
+    [[nodiscard]] inline const ValueType *operator()() const {
         return data;
     }
 
-    inline ValueType top() const {
+    [[nodiscard]] inline ValueType top() const {
         return data[current_index];
     }
 
-    inline ValueType bottom() const {
+    [[nodiscard]] inline ValueType bottom() const {
         return data[(start_index + 1) % size];
     }
 
@@ -71,13 +71,13 @@ public:
     /**
      * return subscript meet the conditions
      *
-     * for example, compare = 2
-     * return the subscript of value which **last** less than 2
+     * for example, compare = 3, array is 0, 1, 2, 2, 3
+     * return 3 which is the subscript of value which **last** less than 3
      * */
     template<class value_t>
     [[nodiscard]] inline Subscript halfSearch(value_t compare) {
         if (*top() < compare) {
-            return (current_index + 1) % size;
+            return current_index;
         } else if (compare < *bottom()) {
             return start_index;
         } else {
@@ -172,7 +172,7 @@ public:
 
     // delete pointer
     ~CircularArray() {
-        for_loop([](auto _, ValueType value) {
+        for_loop([](auto _, auto value) {
             delete value; //must add this, otherwise it can't be deleted correctly
         });
         delete[] data;
@@ -182,11 +182,11 @@ private:
     ValueType *data{nullptr};
 public:
     // only iterate none null values
-    void for_loop(Range range) const {
+    void for_loop(const Range &range) const {
         Subscript last;
         if (current_index < start_index) {
             last = current_index + size + 1;
-            for (int i = (start_index + 1) % size; i < last; ++i) {
+            for (int i = start_index + 1; i < last; ++i) {
                 range(i % size, data[i % size]);
             }
         } else {
@@ -197,11 +197,10 @@ public:
         }
     }
 
-    void for_loop(Subscript start, Subscript end, Range range) const {
+    void for_loop(const Subscript start, const Subscript end, const Range &range) const {
         if (end < start) {
-            Subscript last;
-            last = end + size + 1;
-            for (unsigned int i = (start + 1) % size; i < last; ++i) {
+            Subscript last = end + size + 1;
+            for (unsigned int i = start + 1; i < last; ++i) {
                 range(i % size, data[i % size]);
             }
         } else {

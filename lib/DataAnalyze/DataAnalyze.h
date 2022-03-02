@@ -14,7 +14,7 @@ namespace DataAnalyze {
     using Time = DataStore::Time;
 
     /* return student uid matched */
-    std::vector<unsigned int> fuzzyQueryOnUid(std::string &str); //模糊查询
+    std::vector<unsigned int> fuzzyQueryOnUid(const std::regex &str); //模糊查询
 
     struct priority_value {
         unsigned int student_id;
@@ -32,6 +32,8 @@ namespace DataAnalyze {
     [[nodiscard]] k_min_students_res analyze(unsigned int uid); //分析该名同学和哪些同学一起排队购餐
 
     std::pair<Window ,unsigned int> mostFrequentWindowOfSomeone(unsigned int uid);
+
+    std::vector<unsigned int> fuzzyQueryOnName(const std::regex &re);
 };
 
 
