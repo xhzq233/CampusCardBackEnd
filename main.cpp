@@ -19,9 +19,9 @@ void execute() {
                    "3: SetLoss          4: UnsetLost \n"
                    "5: Reissue          6: Recharge \n"
                    "7: Consume          8: Account description \n"
-                   "9: Init data        10: Query total consumption\n"
-                   "11: Query uid       12: Query name\n"
-                   "13: Analyze consumption\n -1: Exit \n"
+                   "9: Init data        10: Query consumption\n"
+                   "11: Query uid       12: Analyze consumption\n"
+                   "-1: Exit \n"
                    "Input command: "
             );
             scanf("%s", str);
@@ -35,13 +35,12 @@ void execute() {
                     printf("Please input your name: ");
                     scanf("%s", str);
                     cid = CardManage::openAccount(uid, str);
-                    if (cid == 1) {
-                        printf("Succeeded: your new card id is %u.\n ", cid);
-                    } else if (cid == 0){
-                        printf("Failed: account already in system.\n");
-                    }else
-                    {
+                    if (cid == -1) {
                         printf("Failed: the uid format is wrong.\n");
+                    } else if (cid == 0) {
+                        printf("Failed: account already in system.\n");
+                    } else {
+                        printf("Succeeded: your new card id is %u.\n ", cid);
                     }
                     break;
                 }
@@ -199,9 +198,10 @@ void execute() {
                     printf("Please input the end time:");
                     scanf("%s", str);
                     end = std::stoull(str);
-                    printf("%llu,%llu\n",begin,end);
+                    printf("%llu,%llu\n", begin, end);
                     float total = DataAnalyze::accumulatedConsumption(uid, begin, end);
-                    printf("The account with uid %u \nspent a total of %.2f yuan during this time frame.\n", uid, total);
+                    printf("The account with uid %u \nspent a total of %.2f yuan during this time frame.\n", uid,
+                           total);
                     break;
                 }
                     //模糊查询
@@ -221,21 +221,6 @@ void execute() {
                     break;
                 }
                 case 12: {
-                    printf("Query fuzzy name is in progress.\nPlease input fuzzy name:");
-                    scanf("%s", str);
-                    std::string s(str);
-                    auto results = DataAnalyze::fuzzyQueryOnName(s);
-                    if (results.empty()) {
-                        printf("No results found.\n");
-                    } else {
-                        printf("A total of %lu results have been found.\n", results.size());
-                        for (auto &&result: results) {
-                            printf("%d\n", result);
-                        }
-                    }
-                    break;
-                }
-                case 13: {
                     printf("Analyze consumption is in progress.\nPlease input the uid:");
                     scanf("%s", str);
                     uid = std::stol(str);

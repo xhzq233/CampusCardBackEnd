@@ -34,7 +34,7 @@ namespace Main {
     typedef BaseOperation *SortedOperations[RESERVED_SIZE];
 
     void init() {
-
+        unsigned long long checkNode = 0;
         // MARK:--- init operations
         auto *operations = new SortedOperations{nullptr};
         auto &res = DataStore::getConsumptions();
@@ -46,7 +46,7 @@ namespace Main {
             if (re->count() == 0)
                 continue;
             per_indexes[per_indexes_index++] = (int) num;
-            re->for_loop([&](auto _,auto value) {
+            re->for_loop([&](auto _, auto value) {
                 operations[num++] = value;
             });
         }
@@ -79,10 +79,13 @@ namespace Main {
         using namespace Consume;
         for (int i = 0; i < num; ++i) {
             if ((rechargeOperation = dynamic_cast<RechargeOperation *>(operations[i]))) {
+                checkNode = (checkNode + rechargeOperation->hash_value()) % 0xffffffffffffffff;
                 CardManage::recharge(rechargeOperation->uid, rechargeOperation->price, rechargeOperation->time);
             } else if ((consumption = dynamic_cast<Consumption *>(operations[i]))) {
+                checkNode = (checkNode + consumption->hash_value()) % 0xffffffffffffffff;
                 consume(*consumption);
             } else if ((cardManageOperation = dynamic_cast<CardManageOperation *>(operations[i]))) {
+                checkNode = (checkNode + cardManageOperation->hash_value()) % 0xffffffffffffffff;
                 switch (cardManageOperation->operationName) {
                     case CardManageOperation::Reissue:
                         CardManage::reissue(cardManageOperation->uid, cardManageOperation->time);
@@ -105,9 +108,9 @@ namespace Main {
         }
         // ---
         delete[] operations;
+        printf("checkNode:%llu\n",checkNode);
     }
 }
-
 
 
 #endif //CAMPUSCARDBACKEND_MAIN_H
