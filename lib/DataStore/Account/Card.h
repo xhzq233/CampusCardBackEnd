@@ -78,10 +78,11 @@ public:
     }
 
     void clear() {
-        CardList *pre_list = this, *cur_list = next;
+        CardList *cur_list = next;
         while (cur_list) {
-            delete cur_list;
-            cur_list = pre_list->next;
+            auto temp = cur_list;
+            cur_list = cur_list->next;
+            delete temp;
         }
         next = nullptr;
     }
