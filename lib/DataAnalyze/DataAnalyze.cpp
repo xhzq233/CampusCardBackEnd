@@ -3,7 +3,7 @@
 using namespace DataAnalyze;
 
 std::vector<unsigned int> DataAnalyze::fuzzyQueryOnUid(std::string &str) {
-    std::regex re = std::regex (str);
+    std::regex re = std::regex(str);
     std::vector<unsigned int> res;
     for (auto account: DataStore::getAccounts()) {
         if (std::regex_match(std::to_string(account->uid), re)) {
@@ -15,7 +15,7 @@ std::vector<unsigned int> DataAnalyze::fuzzyQueryOnUid(std::string &str) {
 
 
 float DataAnalyze::accumulatedConsumption(unsigned int uid, Time begin, Time end) {
-    auto account = *DataStore::queryAccountByUid(uid);
+    auto account = DataStore::subscript2Account(DataStore::queryAccountByUid(uid));
     if (!account) {
         return 0;
     }
@@ -49,7 +49,7 @@ float DataAnalyze::accumulatedConsumption(unsigned int uid, Time begin, Time end
 
 k_min_students_res DataAnalyze::analyze(unsigned int uid) {
 
-    auto account = *DataStore::queryAccountByUid(uid);
+    auto account = DataStore::subscript2Account(DataStore::queryAccountByUid(uid));
     if (!account) {
         return {};
     }
@@ -97,4 +97,33 @@ k_min_students_res DataAnalyze::analyze(unsigned int uid) {
         queue.pop();
     }
     return res;
+}
+
+std::pair<Window, unsigned int> DataAnalyze::mostFrequentWindowOfSomeone(unsigned int uid) {
+    auto account = DataStore::subscript2Account(DataStore::queryAccountByUid(uid));
+    if (!account) {
+        return {0, 0};
+    }
+    auto cid = account->cards.begin().cid;
+    std::unordered_map<Window, unsigned int> windows_count;
+    auto &cons = DataStore::getConsumptions();
+    for (auto &con: cons) {
+        if (con->count() == 0)
+            continue;
+        con->for_loop([&](auto _, auto value) {
+            if (value->cid == cid) {
+                if (windows_count.count(value->window) == 0)
+                    windows_count[value->window] = 1;
+                else ++windows_count[value->window];
+            }
+        });
+    }
+    auto max_count = 0U;
+    Window max_window = 1U;
+    for (const auto &item: windows_count)
+        if (item.second > max_count) {
+            max_window = item.first;
+            max_count = item.second;
+        }
+    return {max_window, max_count};
 }
