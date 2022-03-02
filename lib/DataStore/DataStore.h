@@ -24,7 +24,7 @@ public:
     using Time = FileManager::Time;
     // 数组下标
     typedef std::vector<const Consumption *> QueryResults;
-    typedef std::vector<unsigned int> Subscripts;
+    typedef std::vector<Subscript> Subscripts;
 
     constexpr static const char WINDOW_QTY = 99;
     constexpr static const unsigned int MAXSIZE = 60000;
@@ -55,8 +55,11 @@ public:
     /* Account insert func, designed by half find and insert */
     static void insertAccount(Account *data);
 
-    /* Query account by uid */
-    static std::vector<Account*>::iterator queryAccountByUid(unsigned int uid);
+    /* Query account by uid, return subscript matched, no res return -1 */
+    static Subscript queryAccountByUid(unsigned int uid);
+
+    /* account subscript to account pointer, no res return nullptr */
+    static Account *subscript2Account(Subscript subscript);
 
     /* Consumption push back, window ranged from 1 to 99 */
     static void pushConsumption(Window window, Consumption *data);

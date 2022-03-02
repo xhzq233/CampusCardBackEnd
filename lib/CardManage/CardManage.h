@@ -35,8 +35,6 @@ namespace CardManage {
     int reissue(unsigned int uid, const Time &time = 0);                   //补卡
 
     int recharge(unsigned int uid, int amount, const Time &time = 0) noexcept;    //充值
-
-    void recall();
 }
 
 #endif // CAMPUSCARDBACKEND_CARDMANAGE_H

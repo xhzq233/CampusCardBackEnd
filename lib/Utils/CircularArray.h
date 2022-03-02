@@ -5,6 +5,8 @@
 #ifndef CAMPUSCARDBACKEND_CIRCULARARRAY_H
 #define CAMPUSCARDBACKEND_CIRCULARARRAY_H
 
+typedef unsigned int Subscript;
+
 /*
  * CircularArray,
  * item nullable if u haven't pushed any data yet,
@@ -15,16 +17,15 @@ template<typename ValueType>
 class CircularArray {
     static_assert(std::is_pointer<ValueType>(), "ValueType must be a pointer");
 public:
-    typedef unsigned int Index;
     typedef unsigned int Size;
     typedef std::function<void(const unsigned int &, const ValueType &value)> Range;
 
     Size size;
     /* current data index , always have value */
-    Index current_index;
-    Index start_index;
+    Subscript current_index;
+    Subscript start_index;
 
-    inline explicit CircularArray(Size size, Index start = 0) : size(size),
+    inline explicit CircularArray(Size size, Subscript start = 0) : size(size),
                                                                 start_index(start) {
         if (start >= size)
             throw;
@@ -42,7 +43,7 @@ public:
         return start_index > current_index ? current_index + size - start_index : current_index - start_index;
     }
 
-    inline ValueType &operator[](Index subscript) const {
+    inline ValueType &operator[](Subscript subscript) const {
         return data[subscript];
     }
 
@@ -74,7 +75,7 @@ public:
      * return the subscript of value which **last** less than 2
      * */
     template<class value_t>
-    [[nodiscard]] inline Index halfSearch(value_t compare) {
+    [[nodiscard]] inline Subscript halfSearch(value_t compare) {
         if (*top() < compare) {
             return (current_index + 1) % size;
         } else if (compare < *bottom()) {
@@ -127,7 +128,7 @@ public:
             }
         } else {// value ranged from bottom to top
             int mid;
-            Index move_index;
+            Subscript move_index;
             if (current_index < start_index) {// add extra size used on circular search
                 int left = start_index + 1, right = current_index + size;
                 //half search
@@ -182,7 +183,7 @@ private:
 public:
     // only iterate none null values
     void for_loop(Range range) const {
-        Index last;
+        Subscript last;
         if (current_index < start_index) {
             last = current_index + size + 1;
             for (int i = (start_index + 1) % size; i < last; ++i) {
@@ -196,9 +197,9 @@ public:
         }
     }
 
-    void for_loop(Index start, Index end, Range range) const {
+    void for_loop(Subscript start, Subscript end, Range range) const {
         if (end < start) {
-            Index last;
+            Subscript last;
             last = end + size + 1;
             for (unsigned int i = (start + 1) % size; i < last; ++i) {
                 range(i % size, data[i % size]);

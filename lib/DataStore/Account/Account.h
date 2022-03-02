@@ -40,7 +40,9 @@ public:
     explicit Account(const std::vector<std::string> &strings, unsigned int serialNumber) : Account(
             std::stoul(strings[0]), strings[1], serialNumber) {}
 
-    ~Account() = default;
+    ~Account() {
+        cards.clear();
+    };
 
     // to string
     [[nodiscard]] std::string to_string() const {

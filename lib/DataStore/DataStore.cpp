@@ -103,14 +103,14 @@ void DataStore::insertAccount(Account *data) {
     getAccountsMapByCid()[pointer->cards.begin().cid] = pointer;
 }
 
-std::vector<Account *>::iterator DataStore::queryAccountByUid(unsigned int uid) {
+Subscript DataStore::queryAccountByUid(unsigned int uid) {
     auto &accounts = getAccounts();
     //half search
     int left = 0, right = (int) accounts.size() - 1, mid;
     while (left <= right) {
         mid = (left + right) / 2;
         if (accounts[mid]->uid == uid) {
-            return accounts.begin() + mid;
+            return mid;
         } else if (accounts[mid]->uid > uid) {
             right = mid - 1;
         } else {
@@ -118,7 +118,7 @@ std::vector<Account *>::iterator DataStore::queryAccountByUid(unsigned int uid) 
         }
     }
     // result is not found
-    return accounts.end();
+    return -1;
 }
 
 void DataStore::pushConsumption(Window window, Consumption *data) {
@@ -228,4 +228,11 @@ DataStore::AccountsMap &DataStore::getAccountsMapByCid() {
     }();
 
     return sortedAccounts;
+}
+
+Account *DataStore::subscript2Account(Subscript subscript) {
+    if (subscript == -1U)
+        return nullptr;
+    else
+        return *(getAccounts().begin() + subscript);
 }
