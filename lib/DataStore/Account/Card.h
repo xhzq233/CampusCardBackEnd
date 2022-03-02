@@ -41,14 +41,6 @@ public:
         this->cid = (300000 + serialNumber) * 10 + checkNode;
     }
 
-    //修改密码
-    void changePassword() {
-        if (this->condition) {
-            char *buf;
-            this->password = strtoul("%u", &buf, 8);
-        }
-    }
-
     //验证密码
     [[nodiscard]] bool checkPassword(unsigned int passwd) const {
         return this->password == passwd;

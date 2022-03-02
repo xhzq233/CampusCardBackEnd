@@ -98,7 +98,7 @@ namespace Main {
                         CardManage::setLost(cardManageOperation->uid, cardManageOperation->time);
                         break;
                     case CardManageOperation::Cancellation:
-                        CardManage::deleteAccount(cardManageOperation->uid, cardManageOperation->time);
+                        CardManage::account_cancellation(cardManageOperation->uid, cardManageOperation->time);
                         break;
                     case CardManageOperation::Recharge:
                         throw;// no recharge_account

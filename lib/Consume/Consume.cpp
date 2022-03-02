@@ -83,7 +83,6 @@ int Consume::consume(const Window &window, unsigned int cid, const float &price)
 
 void Consume::consume(const Consumption &consumption) {
 
-
     if (DataStore::getAccountsMapByCid().count(consumption.cid) == 0) {
         Consume::log(consumption.time, consumption.cid, consumption.window, consumption.price,
                      "failed: No such a card");
