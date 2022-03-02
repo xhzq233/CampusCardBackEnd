@@ -1,3 +1,6 @@
+//
+// Created by 夏侯臻 on 2022/1/14.
+//
 #ifndef CARD_H
 #define CARD_H
 
@@ -14,10 +17,18 @@ private:
     unsigned int password; //密码
 
 public:
-    unsigned int date;                                //有效日期
-    unsigned int cid;                                 //卡号
-    unsigned int uid;                                 //学号
-    bool condition;                                   //卡的状态
+    /* expire time */
+    unsigned int date;
+
+    /* card id */
+    unsigned int cid;
+
+    /* student id */
+    unsigned int uid;
+
+    /* true represents valid, false represents invalid */
+    bool condition;
+
     Card(unsigned int uid, unsigned int serialNumber) : uid(uid), date(DEFAULT_EXPIRE_DATE), condition(true),
                                                         password(DEFAULT_PASSWORD) {
         unsigned int checkNode = 0, tmp = serialNumber;
@@ -30,14 +41,6 @@ public:
         this->cid = (300000 + serialNumber) * 10 + checkNode;
     }
 
-    //修改密码
-    void changePassword() {
-        if (this->condition) {
-            char *buf;
-            this->password = strtoul("%u", &buf, 8);
-        }
-    }
-
     //验证密码
     [[nodiscard]] bool checkPassword(unsigned int passwd) const {
         return this->password == passwd;
@@ -45,11 +48,7 @@ public:
 
     // to string
     [[nodiscard]] std::string to_string() const {
-        std::string res;
-        res.append(std::to_string(uid));
-        res.append(",");
-        res.append(std::to_string(cid));
-        return res;
+        return std::to_string(cid);
     }
 };
 
@@ -57,43 +56,38 @@ class CardList {
 private:
     Card card;
     CardList *next;
-
 public:
 
-    CardList(unsigned int uid, unsigned int serialNumber) : card(uid, serialNumber), next(nullptr) {};
+    explicit CardList(const Card &newCard) : card(newCard), next(nullptr) {};
 
     ~CardList() = default;
 
-    void push(Card &newCard) {
-        if (!next) {
-            next = new CardList(0, 0);
-            next->card = newCard;
-            std::swap(card, next->card);
-        } else {
-            auto *tmp = new CardList(0, 0);
-            tmp->card = newCard;
-            tmp->next = next;
-            next = tmp;
-            std::swap(card, next->card);
-        }
+    void push(const Card &newCard) {
+        head()->next = new CardList(newCard);
+    }
+
+    [[nodiscard]] CardList *head() {
+        auto pointer = this;
+        while (pointer->next)
+            pointer = pointer->next;
+        return pointer;
     }
 
     [[nodiscard]] Card &begin() {
-        return card;
+        return head()->card;
     }
 
     void clear() {
-        CardList *p, *q = next;
-        while (q) {
-            p = q;
-            q = q->next;
-            delete p;
-            next = q;
+        CardList *cur_list = next;
+        while (cur_list) {
+            auto temp = cur_list;
+            cur_list = cur_list->next;
+            delete temp;
         }
         next = nullptr;
     }
 
-    [[nodiscard]] int size() const {
+    [[nodiscard]] unsigned int size() const {
         if (!next) {
             return 1;
         }
@@ -112,6 +106,17 @@ public:
         res.push_back('\n');
         while (next) {
             res.append(next->card.to_string());
+        }
+        return res;
+    }
+
+    std::vector<unsigned int> getAllCid() {
+        std::vector<unsigned int> res;
+        CardList *curr = this;
+        res.emplace_back(curr->card.cid);
+        while (curr->next) {
+            res.emplace_back(curr->card.cid);
+            curr = curr->next;
         }
         return res;
     }

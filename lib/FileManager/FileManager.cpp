@@ -1,3 +1,8 @@
+//
+// Created by 夏侯臻 on 2022/1/14.
+//
+
+
 #include "FileManager.h"
 
 FileManager &FileManager::getInstance() {
@@ -22,7 +27,7 @@ const std::string& FileManager::refreshedStartUpTime() {
 
 FileManager &FileManager::shared_init() {
     static FileManager instance;
-    instance.refreshedStartUpTime();
+    auto _ = instance.refreshedStartUpTime();
     return instance;
 }
 

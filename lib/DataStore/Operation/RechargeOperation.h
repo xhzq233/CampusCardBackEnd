@@ -1,3 +1,6 @@
+//
+// Created by 夏侯臻 on 2022/2/24.
+//
 #include "CardManageOperation.h"
 
 #ifndef CAMPUSCARDBACKEND_RECHARGEOPERATION_H
@@ -24,6 +27,9 @@ public:
         res.push_back(',');
         res.append(std::to_string(price));
         return res;
+    }
+    [[nodiscard]] unsigned long long hash_value() const override{
+        return CardManageOperation::hash_value() ^ price;
     }
 };
 

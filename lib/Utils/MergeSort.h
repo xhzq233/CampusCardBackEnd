@@ -1,3 +1,7 @@
+//
+// Created by 夏侯臻 on 2022/2/27.
+//
+
 #ifndef CAMPUSCARDBACKEND_MERGESORT_H
 #define CAMPUSCARDBACKEND_MERGESORT_H
 
@@ -29,6 +33,7 @@ private:
     }
 
 public:
+
     static void sort(ValueType *begin, const int *per_indexes, int merge_numer) {
         for (int merge_times = merge_numer / 2; merge_times > 0; merge_times /= 2) {
             auto factor = merge_numer / merge_times;
@@ -37,12 +42,43 @@ public:
                 int left = per_indexes[j * factor];
                 int sub = (int) ((j + 1.0 / 2) * factor);
                 int mid = per_indexes[sub];
-//                printf("times:%d,sub:%d, %d \n", merge_times, sub, mid);
                 int right = per_indexes[(j + 1) * factor] - 1;
                 if (left >= right) continue;
                 merge(begin, left, mid, right);
             }
         }
+    }
+
+
+    struct Compare {
+        int index;// record now indexes
+        unsigned int position;// which array
+        ValueType value;
+
+        bool operator<(const Compare &rhs) const {
+            return *value > *(rhs.value);
+        }
+    };
+
+    static void priority_sort(ValueType *begin, const int *per_indexes, int merge_numer) {
+
+        auto temp_container = new ValueType[per_indexes[merge_numer]];
+        std::priority_queue<Compare> queue;
+        for (unsigned int i = 0; i < merge_numer; ++i) {
+            queue.push(Compare{per_indexes[i], i, *(begin + per_indexes[i])});
+        }
+        auto temp_index = 0;
+        while (!queue.empty()) {
+            auto i = queue.top();
+            queue.pop();
+            temp_container[temp_index++] = i.value;
+            if (i.index + 1 < per_indexes[i.position + 1])
+                queue.push({i.index + 1, i.position, *(begin + i.index)});
+        }
+
+        //赋值回去
+        std::copy(temp_container, temp_container + temp_index, begin);
+        delete[] temp_container;
     }
 };
 

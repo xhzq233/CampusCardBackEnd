@@ -1,3 +1,7 @@
+//
+// Created by 夏侯臻 on 2022/2/20.
+//
+
 #ifndef CAMPUSCARDBACKEND_DATASTORE_H
 #define CAMPUSCARDBACKEND_DATASTORE_H
 
@@ -15,11 +19,12 @@ public:
         return ++serialNumber;
     }
 
-    typedef std::vector<Account> Accounts;
+    typedef std::vector<Account *> Accounts;
+    typedef std::unordered_map<unsigned int, Account *> AccountsMap;
     using Time = FileManager::Time;
     // 数组下标
     typedef std::vector<const Consumption *> QueryResults;
-    typedef std::vector<unsigned int> Subscripts;
+    typedef std::vector<Subscript> Subscripts;
 
     constexpr static const char WINDOW_QTY = 99;
     constexpr static const unsigned int MAXSIZE = 60000;
@@ -39,7 +44,7 @@ public:
     static Accounts &getAccounts();
 
     /* identifier is cid of an Account, stores addresses of getAccounts() */
-    static std::unordered_map<unsigned int, Account *> &getAccountsMapByCid();
+    static AccountsMap &getAccountsMapByCid();
 
     /* sorted by < */
     static Consumptions &getConsumptions();
@@ -48,10 +53,13 @@ public:
     static const WindowPositions &getWindowPositions();
 
     /* Account insert func, designed by half find and insert */
-    static void insertAccount(const Account &data);
+    static void insertAccount(Account *data);
 
-    /* Query account by uid */
-    static std::vector<Account>::iterator queryAccountByUid(unsigned int uid);
+    /* Query account by uid, return subscript matched, no res return -1 */
+    static Subscript queryAccountByUid(unsigned int uid);
+
+    /* account subscript to account pointer, no res return nullptr */
+    static Account *subscript2Account(Subscript subscript);
 
     /* Consumption push back, window ranged from 1 to 99 */
     static void pushConsumption(Window window, Consumption *data);
@@ -82,13 +90,6 @@ private:
     static Accounts &accounts_init();
 
 public:
-    /**
-     * #模糊匹配的格式中，？代表一个字符或一个汉字，*表示多个字符或多个汉字，或代表空；
-     * 汉字：[\u4e00-\u9fa5]
-     * 将?替换成 .
-     * 将*替换成 .{2,}
-    * */
-    static std::regex customRegex2CommonRegexSyntax(std::string &regex);
 
     // query on specified multi string, return Subscripts matched
     static Subscripts query(FileManager::Strings &container, const std::regex &regex);

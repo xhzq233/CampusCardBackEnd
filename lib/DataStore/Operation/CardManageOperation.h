@@ -1,3 +1,7 @@
+//
+// Created by 夏侯臻 on 2022/2/24.
+//
+
 #ifndef CAMPUSCARDBACKEND_CARDMANAGEOPERATION_H
 #define CAMPUSCARDBACKEND_CARDMANAGEOPERATION_H
 
@@ -56,6 +60,10 @@ public:
         res.append(std::to_string(uid));
 
         return res;
+    }
+
+    [[nodiscard]] unsigned long long hash_value() const override{
+        return BaseOperation::hash_value() ^ operationName ^ uid;
     }
 };
 

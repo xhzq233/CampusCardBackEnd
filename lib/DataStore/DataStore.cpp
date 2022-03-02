@@ -1,3 +1,7 @@
+//
+// Created by 夏侯臻 on 2022/2/20.
+//
+
 #include "DataStore.h"
 #include "../Utils/ThreadPool.h"
 
@@ -12,9 +16,11 @@ Accounts &DataStore::accounts_init() {
     CSV temp;
     FileManager::getInstance().getCSVDataSource(temp, 2, FileManager::OPEN_ACCOUNT_CSV_NAME);
     for (auto &&info: temp) {
-        res.emplace_back(Account(info, getSerialNumber()));
+        res.emplace_back(new Account(info, getSerialNumber()));
     }
-    std::sort(res.begin(), res.end());
+    std::sort(res.begin(), res.end(), [](auto l, auto r) {
+        return l->uid < r->uid;
+    });
     return res;
 }
 
@@ -80,39 +86,39 @@ Accounts &DataStore::getAccounts() {
     return accounts;
 }
 
-void DataStore::insertAccount(const Account &data) {
+void DataStore::insertAccount(Account *data) {
     auto &accounts = getAccounts();
     int left = 0, right = (int) accounts.size() - 1, mid;
     //half search
     while (left <= right) {
         mid = (left + right) / 2;
-        if (accounts[mid] > data) {
+        if (accounts[mid]->uid > data->uid) {
             right = mid - 1;
         } else {
             left = mid + 1;
         }
     }
     accounts.emplace(accounts.begin() + left, data);
-    auto *pointer = &(accounts[left]);
+    auto pointer = accounts[left];
     getAccountsMapByCid()[pointer->cards.begin().cid] = pointer;
 }
 
-std::vector<Account>::iterator DataStore::queryAccountByUid(unsigned int uid) {
+Subscript DataStore::queryAccountByUid(unsigned int uid) {
     auto &accounts = getAccounts();
     //half search
     int left = 0, right = (int) accounts.size() - 1, mid;
     while (left <= right) {
         mid = (left + right) / 2;
-        if (accounts[mid].uid == uid) {
-            return accounts.begin() + mid;
-        } else if (accounts[mid].uid > uid) {
+        if (accounts[mid]->uid == uid) {
+            return mid;
+        } else if (accounts[mid]->uid > uid) {
             right = mid - 1;
         } else {
             left = mid + 1;
         }
     }
     // result is not found
-    return accounts.end();
+    return -1;
 }
 
 void DataStore::pushConsumption(Window window, Consumption *data) {
@@ -136,12 +142,6 @@ void DataStore::insertConsumptionOnSpecifiedTime(Window window, Consumption *dat
 }
 
 using DataQuery = DataStore;
-
-std::regex DataQuery::customRegex2CommonRegexSyntax(std::string &regex) {
-    regex.replace(regex.find('?'), 1, ".");
-    regex.replace(regex.find('*'), 1, ".{2,}");
-    return std::regex(regex);
-}
 
 DataQuery::Subscripts
 DataQuery::query(FileManager::Strings &container, const std::regex &regex) {
@@ -172,7 +172,7 @@ DataQuery::QueryResults DataStore::queryConsumption(Window window, unsigned int 
     }
     QueryResults res;
     const auto &consumptions_in_window = *getConsumptions()[window - 1];
-    consumptions_in_window.for_loop([&](auto value) {
+    consumptions_in_window.for_loop([&](auto index, auto value) {
         if (cid == value->cid)
             res.emplace_back(value);
     });
@@ -183,7 +183,7 @@ DataQuery::QueryResults DataStore::queryConsumption(unsigned int cid) {
     QueryResults res;
     auto &consumptions = getConsumptions();
     for (auto &consumption: consumptions) {
-        consumption->for_loop([&](auto value) {
+        consumption->for_loop([&](auto index, auto value) {
             if (cid == value->cid)
                 res.emplace_back(value);
         });
@@ -208,28 +208,31 @@ DataStore::queryConsumptionInTimeRange(Window window, DataStore::Time left, Data
     } else if (left > right) {
         throw;
     } else {
-        r_index = consumptions_in_window.halfSearch([&](auto value) -> bool {
-            return value->time < right;
-        });
+        r_index = consumptions_in_window.halfSearch(BaseOperation(right));
     }
-    l_index = consumptions_in_window.halfSearch([&](auto value) -> bool {
-        return value->time < left;
-    });
+    l_index = consumptions_in_window.halfSearch(BaseOperation(left));
 
-    consumptions_in_window.for_loop(l_index, r_index, [&](auto value) {
+    consumptions_in_window.for_loop(l_index, r_index, [&](auto index, auto value) {
         res.template emplace_back(value);
     });
 
     return res;
 }
 
-std::unordered_map<unsigned int, Account *> &DataStore::getAccountsMapByCid() {
-    static auto &sortedAccounts = []() -> std::unordered_map<unsigned int, Account *> & {
-        static std::unordered_map<unsigned int, Account *> res;
-        for (auto &item: DataStore::getAccounts())
-            res[item.cards.begin().cid] = &item;
+DataStore::AccountsMap &DataStore::getAccountsMapByCid() {
+    static auto &sortedAccounts = []() -> DataStore::AccountsMap & {
+        static DataStore::AccountsMap res;
+        for (auto item: DataStore::getAccounts())
+            res[item->cards.begin().cid] = item;
         return res;
     }();
 
     return sortedAccounts;
+}
+
+Account *DataStore::subscript2Account(Subscript subscript) {
+    if (subscript == -1U)
+        return nullptr;
+    else
+        return *(getAccounts().begin() + subscript);
 }
