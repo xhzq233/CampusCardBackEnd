@@ -13,6 +13,7 @@
 #include "lib/DataAnalyze/DataAnalyze.h"
 
 namespace Main {
+    using namespace Consume;
     typedef std::function<void(void)> VoidCallBack;
 
     void testTimeWrapper(const VoidCallBack &func) {
@@ -34,7 +35,6 @@ namespace Main {
     typedef BaseOperation *SortedOperations[RESERVED_SIZE];
 
     void init() {
-        unsigned long long manageCheckNode= 0,rechargeCheckNode= 0 ,consumeCheckNode= 0;
         // MARK:--- init operations
         auto *operations = new SortedOperations{nullptr};
         auto &consumptions = DataStore::getConsumptions();
@@ -42,13 +42,16 @@ namespace Main {
 
         int per_indexes[MERGE_NUM + 1]; // 记录每部分排好序的数组的下标
         int per_indexes_index = 0;
-        for (auto re: consumptions) {
-            if (re->count() == 0)
-                continue;
+
+        for (int window_index = 0; window_index < FileManager::CONSUME_CSV_QTY; ++window_index) {
+            CSV temp;
+            FileManager().getCSVDataSource(temp, 4, FileManager::CONSUME_CSV(window_index + 1));
+            auto size = temp.size();
             per_indexes[per_indexes_index++] = (int) num;
-            re->for_loop([&](auto _, auto value) {
-                operations[num++] = value;
-            });
+            for (unsigned int i = 0; i < size; ++i) {
+                operations[num++] = new Consumption(window_index + 1, temp[i]);
+            }
+            // no longer to be sorted
         }
         per_indexes[per_indexes_index++] = (int) num;
         CSV temp;
@@ -69,7 +72,6 @@ namespace Main {
         temp.clear();
 
         MergeSort<BaseOperation *>::sort(operations, per_indexes, MERGE_NUM);
-//        MergeSort<BaseOperation *>::priority_sort(operations,per_indexes, 58);
 
         // sort complete
         RechargeOperation *rechargeOperation;
@@ -77,16 +79,12 @@ namespace Main {
         CardManageOperation *cardManageOperation;
 
         // start_index operation
-        using namespace Consume;
         for (int i = 0; i < num; ++i) {
             if ((rechargeOperation = dynamic_cast<RechargeOperation *>(operations[i]))) {
-                rechargeCheckNode = (rechargeCheckNode + rechargeOperation->hash_value()) % 0xffffffffffffffff;
                 CardManage::recharge(rechargeOperation->uid, rechargeOperation->price, rechargeOperation->time);
             } else if ((consumption = dynamic_cast<Consumption *>(operations[i]))) {
-                consumeCheckNode = (consumeCheckNode  + consumption->hash_value()) % 0xffffffffffffffff;
-                consume(*consumption);
+                consume(consumptions[consumption->window - 1], consumption);
             } else if ((cardManageOperation = dynamic_cast<CardManageOperation *>(operations[i]))) {
-                manageCheckNode = (manageCheckNode + cardManageOperation->hash_value()) % 0xffffffffffffffff;
                 switch (cardManageOperation->operationName) {
                     case CardManageOperation::Reissue:
                         CardManage::reissue(cardManageOperation->uid, cardManageOperation->time);
@@ -106,13 +104,11 @@ namespace Main {
             } else {
                 throw; // "Unknown Operation"
             }
+            delete operations[i];
         }
         // ---
-        delete[] operations;
 
-        printf("manageCheckNode:%llu\n",manageCheckNode);
-        printf("rechargeCheckNode:%llu\n",rechargeCheckNode);
-        printf("consumeCheckNode:%llu\n",consumeCheckNode);
+        delete[] operations;
     }
 }
 

@@ -81,27 +81,28 @@ int Consume::consume(const Window &window, unsigned int cid, const float &price)
     }
 }
 
-void Consume::consume(const Consumption &consumption) {
+void
+Consume::consume(CircularArray<Consumption *> *container, const Consumption *consumption) {
 
-    if (DataStore::getAccountsMapByCid().count(consumption.cid) == 0) {
-        Consume::log(consumption.time, consumption.cid, consumption.window, consumption.price,
+    if (DataStore::getAccountsMapByCid().count(consumption->cid) == 0) {
+        Consume::log(consumption->time, consumption->cid, consumption->window, consumption->price,
                      "failed: No such a card");
         return;
     }
-
-    auto account = DataStore::getAccountsMapByCid().at(consumption.cid);
+    auto account = DataStore::getAccountsMapByCid().at(consumption->cid);
     auto &card = account->cards.begin();
-    char hour = (char) (consumption.time / 1000000 % 100);
+    char hour = (char) (consumption->time / 1000000 % 100);
     if (!card.condition) {//invalid
-        Consume::log(consumption.time, card.cid, consumption.window, consumption.price, "failed: Invalid card");
-    } else if (account->balance < consumption.price) {
-        Consume::log(consumption.time, card.cid, consumption.window, consumption.price,
+        Consume::log(consumption->time, card.cid, consumption->window, consumption->price, "failed: Invalid card");
+    } else if (account->balance < consumption->price) {
+        Consume::log(consumption->time, card.cid, consumption->window, consumption->price,
                      "failed Insufficient account balance");
     } else if (hour >= 7 && hour <= 9 || hour >= 11 && hour <= 13 || hour >= 17 && hour <= 19) {
-        account->consume(consumption.price);
-        Consume::log(consumption.time, card.cid, consumption.window, consumption.price, "succeeded");
+        account->consume(consumption->price);
+        container->push_back(new Consumption(*consumption));
+        Consume::log(consumption->time, card.cid, consumption->window, consumption->price, "success");
     } else {
-        Consume::log(consumption.time, card.cid, consumption.window, consumption.price, "failed time not allowed");
+        Consume::log(consumption->time, card.cid, consumption->window, consumption->price, "failed time not allowed");
     }
 }
 

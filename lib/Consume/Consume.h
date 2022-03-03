@@ -17,7 +17,7 @@ namespace Consume {
 
     int consume(const Window &window, unsigned int cid, const float &price); //当日消费
 
-    void consume(const Consumption &consumption); //通过消费记录消费
+    void consume(CircularArray<Consumption *> *container,const Consumption * consumption); //通过消费记录消费
 
     void show(const Window &window, const Time &time); //消费完后展示指定时间消费次数和数据
 

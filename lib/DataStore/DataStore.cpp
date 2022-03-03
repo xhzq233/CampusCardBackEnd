@@ -5,7 +5,6 @@
 #include "DataStore.h"
 #include "../Utils/ThreadPool.h"
 
-
 using Accounts = DataStore::Accounts;
 using Consumptions = DataStore::Consumptions;
 using WindowPositions = DataStore::WindowPositions;
@@ -31,22 +30,6 @@ Consumptions &DataStore::consumes_init() {
     for (int i = 0; i < WINDOW_QTY; ++i) {
         res[i] = new CircularArray<Consumption *>(MAXSIZE, windowPositions[i]);
     }
-
-    std::function<void(void)> tasks[FileManager::CONSUME_CSV_QTY];
-    for (int i = 0; i < FileManager::CONSUME_CSV_QTY; ++i) {
-        tasks[i] = [window_index = i, consumes = res]() {
-            printf("work %d executing!\n", window_index);
-            CSV temp;
-            FileManager().getCSVDataSource(temp, 4, FileManager::CONSUME_CSV(window_index + 1));
-            unsigned int size = temp.size();
-            for (unsigned int i = 0; i < size; ++i) {
-                consumes[window_index]->push_back(new Consumption(window_index + 1, temp[i]));
-            }
-            // no longer to be sorted
-        };
-    }
-    JoinableMultiWork works(Device::MAX_THREAD - 1, FileManager::CONSUME_CSV_QTY, tasks);
-    printf("All threads joined!\n");
     return res;
 }
 
@@ -201,7 +184,7 @@ DataStore::queryConsumptionInTimeRange(Window window, DataStore::Time left, Data
     }
     QueryResults res;
     auto &consumptions_in_window = *getConsumptions()[window - 1];
-    unsigned int r_index  = consumptions_in_window.halfSearch(BaseOperation(right));
+    unsigned int r_index = consumptions_in_window.halfSearch(BaseOperation(right));
     unsigned int l_index = consumptions_in_window.halfSearch(BaseOperation(left));
 
     consumptions_in_window.for_loop(l_index, r_index, [&](auto index, auto value) {

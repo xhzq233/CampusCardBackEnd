@@ -18,12 +18,6 @@ public:
         return std::to_string(time);
     }
 
-    // delete copy methods
-    BaseOperation(const BaseOperation &) = delete;
-
-    // disable copied BaseOperation
-    BaseOperation &operator=(const BaseOperation &) = delete;
-
     /// comparable
     bool operator>(const BaseOperation &right) const {
         return time > right.time;
