@@ -34,6 +34,7 @@ private:
 
 public:
 
+    /* per_indexes represents each array beginning position */
     static void sort(ValueType *begin, const int *per_indexes, int merge_numer) {
         for (int merge_times = merge_numer / 2; merge_times > 0; merge_times /= 2) {
             auto factor = merge_numer / merge_times;
@@ -51,7 +52,6 @@ public:
 
 
     struct Compare {
-        int index;// record now indexes
         unsigned int position;// which array
         ValueType value;
 
@@ -61,19 +61,25 @@ public:
     };
 
     static void priority_sort(ValueType *begin, const int *per_indexes, int merge_numer) {
+        int per_indexes_copy[merge_numer];
+        std::copy(per_indexes, per_indexes + merge_numer, per_indexes_copy);//no need the last one
 
         auto temp_container = new ValueType[per_indexes[merge_numer]];
         std::priority_queue<Compare> queue;
         for (unsigned int i = 0; i < merge_numer; ++i) {
-            queue.push(Compare{per_indexes[i], i, *(begin + per_indexes[i])});
+            queue.push(Compare{i, *(begin + per_indexes[i])});
         }
+
         auto temp_index = 0;
         while (!queue.empty()) {
             auto i = queue.top();
             queue.pop();
             temp_container[temp_index++] = i.value;
-            if (i.index + 1 < per_indexes[i.position + 1])
-                queue.push({i.index + 1, i.position, *(begin + i.index)});
+            if (per_indexes_copy[i.position] + 1 < per_indexes[i.position + 1])//if still have value
+                queue.push({
+                                   i.position,
+                                   *(begin + (++per_indexes_copy[i.position]))
+                           });
         }
 
         //赋值回去

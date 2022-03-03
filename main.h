@@ -33,8 +33,15 @@ namespace Main {
     constexpr static const unsigned int RESERVED_SIZE = 2'200'000;
     constexpr static const unsigned int MERGE_NUM = 64;
     typedef BaseOperation *SortedOperations[RESERVED_SIZE];
+    static bool is_initialized = false;
 
     void init() {
+
+        if (is_initialized) {
+            printf("already initialized...");
+            return;
+        }
+
         // MARK:--- init operations
         auto *operations = new SortedOperations{nullptr};
         auto &consumptions = DataStore::getConsumptions();
@@ -48,11 +55,11 @@ namespace Main {
             FileManager().getCSVDataSource(temp, 4, FileManager::CONSUME_CSV(window_index + 1));
             auto size = temp.size();
             per_indexes[per_indexes_index++] = (int) num;
-            for (unsigned int i = 0; i < size; ++i) {
+            for (unsigned int i = 0; i < size; ++i)
                 operations[num++] = new Consumption(window_index + 1, temp[i]);
-            }
             // no longer to be sorted
         }
+
         per_indexes[per_indexes_index++] = (int) num;
         CSV temp;
 
@@ -71,7 +78,7 @@ namespace Main {
         }
         temp.clear();
 
-        MergeSort<BaseOperation *>::sort(operations, per_indexes, MERGE_NUM);
+        MergeSort<BaseOperation *>::priority_sort(operations, per_indexes, 59);
 
         // sort complete
         RechargeOperation *rechargeOperation;
@@ -109,6 +116,7 @@ namespace Main {
         // ---
 
         delete[] operations;
+        is_initialized = true;
     }
 }
 
