@@ -200,7 +200,6 @@ int main() {
                         printf("Please input the end time:");
                         scanf("%s", str);
                         end = std::stoull(str);
-                        printf("%llu,%llu\n", begin, end);
                         float total = DataAnalyze::accumulatedConsumption(uid, begin, end);
                         printf("The account with uid %u \nspent a total of %.2f yuan during this time frame.\n", uid,
                                total);

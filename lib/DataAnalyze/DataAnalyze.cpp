@@ -16,25 +16,19 @@ std::vector<unsigned int> DataAnalyze::fuzzyQueryOnUid(const std::regex &str) {
 
 float DataAnalyze::accumulatedConsumption(unsigned int uid, Time begin, Time end) {
     auto account = DataStore::subscript2Account(DataStore::queryAccountByUid(uid));
-    if (!account) {
+    if (!account || begin > end) {
         return 0;
     }
     unsigned int r_index;
     unsigned int l_index;
-    std::vector<unsigned int> allCid = std::move(account->cards.getAllCid());
+    auto allCid = std::move(account->cards.getAllCid());
     float total = 0;
     for (int window = 0; window < DataStore::WINDOW_QTY; ++window) {
         auto &consumptions_in_window = *DataStore::getConsumptions()[window];
         if (!consumptions_in_window.count()) {
             continue;
         }
-        if (end == -1) {
-            r_index = consumptions_in_window.current_index;
-        } else if (begin > end) {
-            throw;
-        } else {
-            r_index = consumptions_in_window.halfSearch(BaseOperation(end));
-        }
+        r_index = consumptions_in_window.halfSearch(BaseOperation(end));
         l_index = consumptions_in_window.halfSearch(BaseOperation(begin));
         consumptions_in_window.for_loop(l_index, r_index, [&](auto index, auto value) {
             for (const auto &cid: allCid) {

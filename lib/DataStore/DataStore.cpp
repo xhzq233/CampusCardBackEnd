@@ -195,22 +195,14 @@ DataStore::QueryResults
 DataStore::queryConsumptionInTimeRange(Window window, DataStore::Time left, DataStore::Time right) {
 
     //error handle
-    if (window == 0 || window > WINDOW_QTY) {
+    if (window == 0 || window > WINDOW_QTY || left > right) {
         printf("[ERROR] %u not in this for_loop: 1 - 99", window);
         return {};
     }
     QueryResults res;
     auto &consumptions_in_window = *getConsumptions()[window - 1];
-    unsigned int r_index;
-    unsigned int l_index;
-    if (right == -1) {
-        r_index = consumptions_in_window.current_index;
-    } else if (left > right) {
-        throw;
-    } else {
-        r_index = consumptions_in_window.halfSearch(BaseOperation(right));
-    }
-    l_index = consumptions_in_window.halfSearch(BaseOperation(left));
+    unsigned int r_index  = consumptions_in_window.halfSearch(BaseOperation(right));
+    unsigned int l_index = consumptions_in_window.halfSearch(BaseOperation(left));
 
     consumptions_in_window.for_loop(l_index, r_index, [&](auto index, auto value) {
         res.template emplace_back(value);
