@@ -26,19 +26,19 @@ C((Card))
 D((Account))
 
 E((Consumption))
-F((Consume))
 G((DataStore))
 H((CardManage))
 I((CardDataAnalyze))
 J((BaseOperation))
 K((CardManageOperation))
+RC((RechargeOperation))
 
-J-->K
+
 J-->E
-B-->E
-D-->E
-E-->F
-F-->G
+J-->K
+K-->RC
+
+E-->G
 B-->G
 C-->D
 D-->G
