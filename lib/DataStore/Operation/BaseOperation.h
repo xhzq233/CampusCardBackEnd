@@ -8,10 +8,10 @@
 #include "../../FileManager/FileManager.h"
 
 class BaseOperation {
-public:
+protected:
     using Time = FileManager::Time;
     Time time;
-
+public:
     explicit BaseOperation(Time time) : time(time) {}
 
     [[nodiscard]] virtual std::string to_string() const {
@@ -27,7 +27,8 @@ public:
         return time < right.time;
     }
 
-    [[nodiscard]] virtual unsigned long long hash_value() const{
+    /// used on check data integrity
+    [[nodiscard]] virtual unsigned long long hash_value() const {
         return time;
     }
 };
