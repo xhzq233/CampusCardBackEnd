@@ -170,21 +170,21 @@ bool FileManager::writeCSVData(const CSV &container, const std::string &sourceNa
 }
 
 void operator<<(FileManager &o, const std::string &content) {
-    if (content.empty()) return; // return directly if empty
-
-    static unsigned int length = 0;
-
-    FileManager::getLogger() << content << '\n';
-
-    length++;
-
-    if (length > FileManager::MAX_LINE_PER_LOG) {
-        FileManager::getLogger().close(); //remake
-        FileManager::getLogger().open(
-                FileManager::DEFAULT_LOG_PATH + FileManager::refreshedStartUpTime() + ".log",
-                std::ios::trunc);
-        length = 0;
-    }
+//    if (content.empty()) return; // return directly if empty
+//
+//    static unsigned int length = 0;
+//
+//    FileManager::getLogger() << content << '\n';
+//
+//    length++;
+//
+//    if (length > FileManager::MAX_LINE_PER_LOG) {
+//        FileManager::getLogger().close(); //remake
+//        FileManager::getLogger().open(
+//                FileManager::DEFAULT_LOG_PATH + FileManager::refreshedStartUpTime() + ".log",
+//                std::ios::trunc);
+//        length = 0;
+//    }
 }
 
 std::string FileManager::toStandardLogString(const char *title, const char *content) {

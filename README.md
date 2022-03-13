@@ -4,19 +4,18 @@
 
 ## Current Project Structure
 
-|        Name         |                Function                |
-|:-------------------:|:--------------------------------------:|
-|     FileManager     |            controls file io            |
-|       Window        |          window id of a cafe           |
-|        Card         |         stores campusCard data         |
-|       Account       |              stores cards              |
-|    BaseOperation    |           sortable operation           |
-| CardManageOperation |   management card related operations   |
-|     Consumption     |  a data bound to a card and a window   |
-|       Consume       | construct a consume data into database |
-|      DataStore      |   stores windows, accounts, consumes   |
-|     CardManage      |     manage card relative operation     |
-|   CardDataAnalyze   |              analyze data              |
+|        Name         |                Function                 |
+|:-------------------:|:---------------------------------------:|
+|     FileManager     |            controls file io             |
+|        Card         |         stores campusCard data          |
+|       Account       |              stores cards               |
+|    BaseOperation    |           sortable operation            |
+| CardManageOperation |   management card related operations    |
+|     Consumption     |   a data bound to a card and a window   |
+|       Consume       | construct a consume data into dataStore |
+|      DataStore      |  stores windows, accounts and consumes  |
+|     CardManage      |     manage card relative operation      |
+|   CardDataAnalyze   |              analyze data               |
 
 ```mermaid
 graph TB

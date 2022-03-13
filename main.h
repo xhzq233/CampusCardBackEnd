@@ -8,7 +8,7 @@
 #include "lib/FileManager/FileManager.h"
 #include "lib/DataStore/DataStore.h"
 #include "lib/CardManage/CardManage.h"
-#include "lib/Consume/Consume.h"
+#include "lib/CardManage/Consume/Consume.h"
 #include "lib/Utils/MergeSort.h"
 #include "lib/DataAnalyze/DataAnalyze.h"
 

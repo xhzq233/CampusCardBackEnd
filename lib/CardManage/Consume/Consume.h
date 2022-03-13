@@ -5,8 +5,8 @@
 #ifndef CAMPUSCARDBACKEND_CONSUME_H
 #define CAMPUSCARDBACKEND_CONSUME_H
 
-#include "../DataStore/Operation/Consumption.h"
-#include "../CardManage/CardManage.h"
+#include "../../DataStore/Operation/Consumption.h"
+#include "../CardManage.h"
 
 
 namespace Consume {
