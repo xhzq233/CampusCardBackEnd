@@ -63,6 +63,7 @@ k_min_students_res DataAnalyze::analyze(unsigned int uid) {
                         }
                         int current =
                                 (int) index + student < 0 ? consumptions_in_window.size + student : index + student;
+                        if(consumptions_in_window[current] == nullptr) continue;
                         auto &cur_cid = consumptions_in_window[current]->cid;
                         if (map.count(cur_cid) == 0)
                             continue;

@@ -50,7 +50,7 @@ int Consume::consume(const Window &window, unsigned int cid, const float &price)
     } else if (account->balance < price) {
         Consume::log(time, cid, window, price, "failed");
         return 2;
-    } else if (hour >= 7 && hour <= 9 || hour >= 11 && hour <= 13 || hour >= 17 && hour <= 19) {
+    } else if (hour >= 7 && hour <= 23) {
         //当前时间段内消费超过20,则需要输入密码
         if (time - account->lastTimeEnterPasswd < GAP_TIME && account->totalConsumptionFromLastTime + price > 20) {
             if (checkPasswd(card)) {

@@ -227,7 +227,7 @@ int main() {
                         auto results = DataAnalyze::analyze(uid);
                         printf("Here are the probable friends:\n");
                         for (auto &&result: results) {
-                            printf("count: %d, id: %d ", result.count,result.student_id);
+                            printf("count: %d, id: %d ", result.count, result.student_id);
                         }
                         printf("\n");
                         break;
@@ -250,7 +250,8 @@ int main() {
                         printf("Input the uid:");
                         scanf("%s", str);
                         uid = std::stol(str);
-                        DataAnalyze::mostFrequentWindowOfSomeone(uid);
+                        auto r = DataAnalyze::mostFrequentWindowOfSomeone(uid);
+                        printf("window: %u,count: %u\n", r.first, r.second);
                         break;
                     }
                     case -1: {

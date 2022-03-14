@@ -88,7 +88,7 @@ Card-->CON
 ```c 
 typedef unsigned int Window;
 //唯一辨识id 表现为窗口号
- ```
+```
 
 ### Account
 
