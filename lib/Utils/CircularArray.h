@@ -68,14 +68,11 @@ public:
         _data[current_index] = value;
     }
 
-    /**
-     * return subscript meet the conditions
-     *
-     * for example, compare = 3, array is 0, 1, 2, 2, 3
-     * return 3 which is the subscript of value which **last** less than 3
-     * */
+    /// return subscript meet that condition
+    /// for example, compare = 3, array is 0, 1, 2, 2, 3
+    /// return 3 whose subscript of value **last** less than 3
     template<class value_t>
-    [[nodiscard]] inline Subscript halfSearch(value_t compare) {
+    [[nodiscard]] inline Subscript halfSearch(value_t compare) const {
         if (*top() < compare) {
             return current_index;
         } else if (compare < *bottom()) {
