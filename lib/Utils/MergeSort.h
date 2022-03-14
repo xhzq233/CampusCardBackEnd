@@ -60,31 +60,29 @@ public:
         }
     };
 
+    /* per_indexes represents each array beginning position */
     static void priority_sort(ValueType *begin, const int *per_indexes, int merge_numer) {
         int per_indexes_copy[merge_numer];
         std::copy(per_indexes, per_indexes + merge_numer, per_indexes_copy);//no need the last one
 
-        auto temp_container = new ValueType[per_indexes[merge_numer]];
+        auto temp_container = new ValueType[per_indexes[merge_numer]];//re malloc a space
         std::priority_queue<Compare> queue;
-        for (unsigned int i = 0; i < merge_numer; ++i) {
-            queue.push(Compare{i, *(begin + per_indexes[i])});
+        for (unsigned int each_array_position = 0; each_array_position < merge_numer; ++each_array_position) {
+            queue.push(Compare{each_array_position, *(begin + per_indexes[each_array_position])});//initial values
         }
 
-        auto temp_index = 0;
-        while (!queue.empty()) {
+        auto temp_index = 0;// represents in subscript of the temp_container
+        while (!queue.empty()) {//sort begin
             auto i = queue.top();
             queue.pop();
-            temp_container[temp_index++] = i.value;
+            temp_container[temp_index++] = i.value;// chose the smallest one
             if (per_indexes_copy[i.position] + 1 < per_indexes[i.position + 1])//if still have value
-                queue.push({
-                                   i.position,
-                                   *(begin + (++per_indexes_copy[i.position]))
-                           });
+                queue.push({i.position, *(begin + (++per_indexes_copy[i.position]))});
         }
 
         //赋值回去
         std::copy(temp_container, temp_container + temp_index, begin);
-        delete[] temp_container;
+        delete[] temp_container;//free
     }
 };
 

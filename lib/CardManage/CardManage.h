@@ -27,22 +27,22 @@ namespace CardManage {
     /* default time is now */
 
     /// return card id if success, else zero
-    [[nodiscard]] int openAccount(unsigned int uid, const std::string &name, const Time &time = 0);
+    int openAccount(unsigned int uid, const std::string &name, const Time &time = 0);
 
     /// return cancellation result
-    [[nodiscard]] bool account_cancellation(unsigned int uid, const Time &time = 0);
+    bool account_cancellation(unsigned int uid, const Time &time = 0);
 
     /// 0 if not in sys, 1 if success, 2 if already lost
-    [[nodiscard]] int setLost(unsigned int uid, const Time &time = 0);
+    int setLost(unsigned int uid, const Time &time = 0);
 
     /// 0 if not in sys, 1 if success, 2 if not lost yet
-    [[nodiscard]] int unsetLost(unsigned int uid, const Time &time = 0);
+    int unsetLost(unsigned int uid, const Time &time = 0);
 
     /// return new card id if success, return zero if not in sys, -1 if Reached upper limit
-    [[nodiscard]] int reissue(unsigned int uid, const Time &time = 0);
+    int reissue(unsigned int uid, const Time &time = 0);
 
     /// return updated balance if success, return zero if not in sys, -1 if Reached upper limit
-    [[nodiscard]] int recharge(unsigned int uid, int amount, const Time &time = 0);
+    int recharge(unsigned int uid, int amount, const Time &time = 0);
 }
 
 #endif // CAMPUSCARDBACKEND_CARDMANAGE_H
