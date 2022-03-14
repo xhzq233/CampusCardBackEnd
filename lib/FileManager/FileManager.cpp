@@ -27,18 +27,10 @@ const std::string &FileManager::refreshedStartUpTime() {
 
 FileManager &FileManager::shared_init() {
     static FileManager instance;
-    auto s = DEFAULT_LOG_PATH + FileManager::refreshedStartUpTime() + ".log";
-    std::ifstream ifs(s);
+    std::ifstream ifs(DEFAULT_LOG_PATH);
     if (!ifs.is_open()) {/* check the param [path] , auto mkdir if not exist */
         ifs.close();
-        system((std::string ("mkdir ") + DEFAULT_LOG_PATH).c_str());
-        ifs.open(s);
-        if (!ifs.is_open()) {
-            //read failed
-            ifs.close();
-            printf("log path mk failed\n");
-            throw;
-        }
+        system((std::string("mkdir ") + DEFAULT_LOG_PATH).c_str());
     }
     return instance;
 }
