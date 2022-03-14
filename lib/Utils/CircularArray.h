@@ -18,7 +18,7 @@ class CircularArray {
     static_assert(std::is_pointer<ValueType>(), "ValueType must be a pointer");
 public:
     typedef unsigned int Size;
-    typedef std::function<void(const unsigned int &, const ValueType &value)> Range;
+    typedef std::function<void(const unsigned int &index, const ValueType &value)> Range;
 
     Size size;
     /* current data index , always have value */
@@ -30,7 +30,7 @@ public:
         if (start >= size)
             throw;
         current_index = start;
-        data = new ValueType[size]{nullptr};
+        _data = new ValueType[size];
     };
 
     // delete copy methods
@@ -44,28 +44,28 @@ public:
     }
 
     [[nodiscard]] inline ValueType &operator[](Subscript subscript) const {
-        return data[subscript];
+        return _data[subscript];
     }
 
     [[nodiscard]] inline const ValueType *operator()() const {
-        return data;
+        return _data;
     }
 
     [[nodiscard]] inline ValueType top() const {
-        return data[current_index];
+        return _data[current_index];
     }
 
     [[nodiscard]] inline ValueType bottom() const {
-        return data[(start_index + 1) % size];
+        return _data[(start_index + 1) % size];
     }
 
     inline void push_back(ValueType value) {
         current_index = (current_index + 1) % size;
         if (current_index == start_index) {
             start_index = (start_index + 1) % size;
-            delete data[start_index]; // reserve one place
+            delete _data[start_index]; // reserve one place
         }
-        data[current_index] = value;
+        _data[current_index] = value;
     }
 
     /**
@@ -86,7 +86,7 @@ public:
                 //half search
                 while (left <= right) {
                     mid = (left + right) / 2;
-                    if (compare < *data[mid % size]) {
+                    if (compare < *_data[mid % size]) {
                         right = mid - 1;
                     } else {
                         left = mid + 1;
@@ -98,7 +98,7 @@ public:
                 //half search
                 while (left <= right) {
                     mid = (left + right) / 2;
-                    if (compare < *data[mid]) {
+                    if (compare < *_data[mid]) {
                         right = mid - 1;
                     } else {
                         left = mid + 1;
@@ -114,16 +114,16 @@ public:
 
         if (*value > *top()) {
             current_index = (current_index + 1) % size;
-            data[current_index] = value;
+            _data[current_index] = value;
             if (current_index == start_index) {
                 start_index = (start_index + 1) % size; // forward one step
-                delete data[start_index];// reserve one place
+                delete _data[start_index];// reserve one place
             }
         } else if (*value < *bottom()) {
-            data[start_index] = value;
+            _data[start_index] = value;
             start_index = start_index == 0 ? size - 1 : start_index - 1;
             if (current_index == start_index) {
-                delete data[current_index];// reserve one place
+                delete _data[current_index];// reserve one place
                 current_index = current_index == 0 ? size - 1 : start_index - 1; // back one step
             }
         } else {// value ranged from bottom to top
@@ -134,7 +134,7 @@ public:
                 //half search
                 while (left <= right) {
                     mid = (left + right) / 2;
-                    if (*(data[mid % size]) > *value) {
+                    if (*(_data[mid % size]) > *value) {
                         right = mid - 1;
                     } else {
                         left = mid + 1;
@@ -146,7 +146,7 @@ public:
                 //half search
                 while (left <= right) {
                     mid = (left + right) / 2;
-                    if (*(data[mid]) > *value) {
+                    if (*(_data[mid]) > *value) {
                         right = mid - 1;
                     } else {
                         left = mid + 1;
@@ -157,15 +157,15 @@ public:
 
             //movement
             while (move_index > mid) {
-                std::swap(data[move_index % size], data[(move_index - 1) % size]);
+                std::swap(_data[move_index % size], _data[(move_index - 1) % size]);
                 move_index--;
             }
 
-            data[move_index % size] = value;
+            _data[move_index % size] = value;
             current_index = (current_index + 1) % size;
             if (current_index == start_index) {
                 start_index = (start_index + 1) % size; // forward one step
-                delete data[start_index];// reserve one place
+                delete _data[start_index];// reserve one place
             }
         }
     }
@@ -175,11 +175,11 @@ public:
         for_loop([](auto _, auto value) {
             delete value; //must add this, otherwise it can't be deleted correctly
         });
-        delete[] data;
+        delete[] _data;
     }
 
 private:
-    ValueType *data{nullptr};
+    ValueType *_data{nullptr};
 public:
     // only iterate none null values
     void for_loop(const Range &range) const {
@@ -187,12 +187,12 @@ public:
         if (current_index < start_index) {
             last = current_index + size + 1;
             for (int i = start_index + 1; i < last; ++i) {
-                range(i % size, data[i % size]);
+                range(i % size, _data[i % size]);
             }
         } else {
             last = current_index + 1;
             for (int i = (start_index + 1) % size; i < last; ++i) {
-                range(i, data[i]);
+                range(i, _data[i]);
             }
         }
     }
@@ -201,11 +201,11 @@ public:
         if (end < start) {
             Subscript last = end + size + 1;
             for (unsigned int i = start + 1; i < last; ++i) {
-                range(i % size, data[i % size]);
+                range(i % size, _data[i % size]);
             }
         } else {
             for (unsigned int i = (start + 1) % size; i < end + 1; ++i) {
-                range(i, data[i]);
+                range(i, _data[i]);
             }
         }
     }
