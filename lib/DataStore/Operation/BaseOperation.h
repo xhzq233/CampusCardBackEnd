@@ -8,10 +8,10 @@
 #include "../../FileManager/FileManager.h"
 
 class BaseOperation {
-protected:
+public:
     using Time = FileManager::Time;
     Time time;
-public:
+
     explicit BaseOperation(Time time) : time(time) {}
 
     [[nodiscard]] virtual std::string to_string() const {

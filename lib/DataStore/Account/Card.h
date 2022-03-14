@@ -102,9 +102,11 @@ public:
     // to string
     [[nodiscard]] std::string to_string() const {
         std::string res(card.to_string());
+        CardList* next_t = this->next;
         res.push_back('\n');
-        while (next) {
-            res.append(next->card.to_string());
+        while (next_t) {
+            res.append(next_t->card.to_string());
+            next_t = next_t->next;
         }
         return res;
     }

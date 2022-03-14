@@ -227,7 +227,7 @@ int main() {
                         auto results = DataAnalyze::analyze(uid);
                         printf("Here are the probable friends:\n");
                         for (auto &&result: results) {
-                            printf("%d ", result);
+                            printf("count: %d, id: %d ", result.count,result.student_id);
                         }
                         printf("\n");
                         break;
