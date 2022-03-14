@@ -62,7 +62,7 @@ public:
         return res;
     }
 
-    [[nodiscard]] unsigned long long hash_value() const override{
+    [[nodiscard]] unsigned long long hash_value() const override {
         return BaseOperation::hash_value() ^ operationName ^ uid;
     }
 };

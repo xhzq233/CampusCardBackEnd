@@ -8,17 +8,17 @@
 
 
 class Card {
-    // card expired after this date
+    // card expired after this expire_date
     constexpr static const unsigned int DEFAULT_EXPIRE_DATE = 20240715U;
     // default passwd before changed
     constexpr static const unsigned int DEFAULT_PASSWORD = 123456U; //默认的密码
 
 private:
-    unsigned int password; //密码
+    unsigned int password = DEFAULT_PASSWORD; //密码
 
 public:
     /* expire time */
-    unsigned int date;
+    unsigned int expire_date = DEFAULT_EXPIRE_DATE;
 
     /* card id */
     unsigned int cid;
@@ -29,8 +29,7 @@ public:
     /* true represents valid, false represents invalid */
     bool condition;
 
-    Card(unsigned int uid, unsigned int serialNumber) : uid(uid), date(DEFAULT_EXPIRE_DATE), condition(true),
-                                                        password(DEFAULT_PASSWORD) {
+    Card(unsigned int uid, unsigned int serialNumber) : uid(uid), condition(true) {
         unsigned int checkNode = 0, tmp = serialNumber;
         //校验码,卡号校验码的计算规则：前6位数字相加的和再模10，得到一个0-9的数，然后用9减去这个数，就是最后一位校验码
         for (int i = 0; i < 5; ++i) {

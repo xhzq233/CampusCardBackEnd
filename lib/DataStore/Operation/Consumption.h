@@ -47,7 +47,7 @@ public:
                                                                                                std::stof(strings[3])) {}
 
     // to string
-    // date + cid + window + price
+    // expire_date + cid + window + price
     [[nodiscard]] std::string to_string() const override {
         auto &&res = BaseOperation::to_string();
         res.push_back(' ');

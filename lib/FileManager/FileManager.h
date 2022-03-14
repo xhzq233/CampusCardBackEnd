@@ -69,6 +69,8 @@ public:
     typedef const std::function<void(std::fstream &stream)> &StreamCallBack;
     typedef std::vector<std::vector<std::string>> CSV;
     typedef std::vector<std::string> Strings;
+
+    // 观察源数据表示的日期，认为用ull来表示最为合适
     typedef unsigned long long Time;
 private:
     /* type of std::ios::openmode, different os have different type */
