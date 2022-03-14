@@ -63,7 +63,7 @@ G-->I
 
 ```
 
-#### Card
+### Card
 ```mermaid
 graph TB
 
@@ -84,13 +84,13 @@ Card-->CON
 |     uid     |                   student id                    |
 |  condition  | true represents valid, false represents invalid |
 
-#### Window
+### Window
 ```c 
 typedef unsigned int Window;
 //唯一辨识id 表现为窗口号
  ```
 
-#### Account
+### Account
 
 ```mermaid
 graph TB
@@ -109,7 +109,7 @@ CD-->C1
 C1-->C2
 ```
 
-#### CardManageOperation
+### CardManageOperation
 
 > enum OperationName: char
 > { 充值, 挂失, 解挂, 销户, 补卡 }
@@ -120,9 +120,9 @@ C1-->C2
 ```mermaid
 graph TB
 
-T((Time))
+T((time))
 uid((uid))
-ON((OperationName))
+ON((name))
 
 CardManageOperation-->BaseOperation
 BaseOperation-->T
@@ -132,25 +132,24 @@ CardManageOperation-->ON
 ```
 > Note: CardManageOperation指向BaseOperation的箭头并非表示继承
 > 而是表示拥有父类的字段名，下同
-#### Consumption
+### Consumption
 
 ```mermaid
 graph TB
 
-BO((BaseOperation))
-T((Time))
+T((time))
 cid((cid))
 W((Window))
 P((Price))
 
-Consumption-->BO
-BO-->T
+Consumption-->BaseOperation
+BaseOperation-->T
 Consumption-->cid
 Consumption-->W
 Consumption-->P
 
 ```
-#### DataStore
+### DataStore
 
 ```mermaid
 graph TB
@@ -170,4 +169,57 @@ Methods-->push
 Methods-->insert
 Methods-->query
 Methods-->localize
+```
+
+### Utils
+#### MergeSort
+对任意值类型comparable的pointer类型进行排序
+
+实现了两种方法
++ 分治归并：
+  
+  将 k 个数组配对并将同一对中的数组合并，
+  第一轮合并以后， k 个数组被合并成了 k / 2 个数组，
+  平均长度为 2n / k ，然后是 k / 4 个数组， k / 8 个数组等等，
+  重复这一过程，直到得到了最终的有序数组
++ 多路归并：
+
+  维护当前每个数组没有被合并的元素的最前面一个，k 个数组就最多有 k 个满足这样条件的元素，
+  每次在这些元素里面选取 val 属性最小的元素合并到答案中，使用优先队列来优化
+#### CircularArray
+对任意pointer类型进行循环储存，未装填的位置为`nullptr`，constructor如下
+```c++
+inline explicit CircularArray(Size size, Subscript start = 0) : size(size), start_index(start) {
+    if (start >= size)
+        throw;
+    current_index = start;
+    _data = new ValueType[size];
+};
+```
+`start_index`为循环数组开始装填的位置，系统中对应为窗口起始位置
+自定义循环数组折半查找
+```c++
+/// return subscript meet that condition
+/// for example, compare = 3, array is 0, 1, 2, 2, 3
+/// return 3 whose subscript of value **last** less than 3
+template<class value_t>/// value_t must comparable with value type of the pointer
+[[nodiscard]] inline Subscript halfSearch(value_t compare) const
+```
+自定义循环数组插入（先折半查找，再移动后续元素，再插入）
+```c++
+/* Massive memory movement, ValueType must comparable */
+inline void insert(ValueType value)
+```
+自定义了for_loop函数用于遍历数组内非null值
+```c++
+typedef std::function<void(const unsigned int &index, const ValueType &value)> Range;
+// only iterate none null values
+void for_loop(const Range &range) const
+```
+#### JoinableMultiWork
+用于初始化数据，将已分成多个文件的消费等数据多线程读入内存，constructor如下
+```c++
+typedef std::function<void(void)>* Tasks;
+/* no lock, so each work should not affect others */
+JoinableMultiWork(size_t thread_count, int work_count, Tasks tasks)
 ```
