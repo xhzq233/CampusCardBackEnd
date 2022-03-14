@@ -120,7 +120,7 @@ public:
     static FileManager &getInstance();
 
     /* default logger */
-    static std::ofstream &getLogger();
+    static std::ofstream &getLogger(bool reset = false);
 
     /* IO */
     std::fstream IOStream;
@@ -172,6 +172,7 @@ public:
     /* log的简便形式 */
     friend void operator<<(FileManager &o, const std::string &content);
 
+    /* 转成标准日志格式 */
     static std::string toStandardLogString(const char *title, const char *content);
 
     static std::string toStandardLogString(const char *title, const std::string &content);

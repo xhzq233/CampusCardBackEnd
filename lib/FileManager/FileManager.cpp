@@ -11,7 +11,7 @@ FileManager &FileManager::getInstance() {
     return instance;
 }
 
-const std::string& FileManager::refreshedStartUpTime() {
+const std::string &FileManager::refreshedStartUpTime() {
     static unsigned int count = 0;
     static std::string startUpTime;
     startUpTime.clear();
@@ -27,14 +27,25 @@ const std::string& FileManager::refreshedStartUpTime() {
 
 FileManager &FileManager::shared_init() {
     static FileManager instance;
-    auto _ = instance.refreshedStartUpTime();
+    auto s = DEFAULT_LOG_PATH + FileManager::refreshedStartUpTime() + ".log";
+    std::ifstream ifs(s);
+    if (!ifs.is_open()) {/* check the param [path] , auto mkdir if not exist */
+        ifs.close();
+        system((std::string ("mkdir ") + DEFAULT_LOG_PATH).c_str());
+        ifs.open(s);
+        if (!ifs.is_open()) {
+            //read failed
+            ifs.close();
+            printf("log path mk failed\n");
+            throw;
+        }
+    }
     return instance;
 }
 
 bool FileManager::prepareIOStream(StreamCallBack func, const std::string &path,
                                   const std::string &source,
                                   const openmode mode) {
-#ifndef __WIN64
     IOStream.open(path + source, mode);
     if (!IOStream.is_open()) {/* check the param [path] , auto mkdir if not exist */
         IOStream.close();
@@ -47,22 +58,6 @@ bool FileManager::prepareIOStream(StreamCallBack func, const std::string &path,
             return false;
         }
     }
-#else // windows amd64
-    std::string file = path + source;
-    IOStream.open(file, mode);
-    if (!IOStream.is_open()) {/* check the param [path] , auto mkdir if not exist */
-        IOStream.close();
-        system(("mkdir " + path.substr(0, path.size() - 1)).c_str());
-        IOStream.open(file, mode);
-        if (!IOStream.is_open()) {
-            //read failed
-            IOStream.close();
-//            std::cout << file << " read failed" << std::endl;
-            printf("%s load failed.", file.c_str());
-            return false;
-        }
-    }
-#endif //__WIN64
 
     func(IOStream);
 
@@ -170,21 +165,18 @@ bool FileManager::writeCSVData(const CSV &container, const std::string &sourceNa
 }
 
 void operator<<(FileManager &o, const std::string &content) {
-//    if (content.empty()) return; // return directly if empty
-//
-//    static unsigned int length = 0;
-//
-//    FileManager::getLogger() << content << '\n';
-//
-//    length++;
-//
-//    if (length > FileManager::MAX_LINE_PER_LOG) {
-//        FileManager::getLogger().close(); //remake
-//        FileManager::getLogger().open(
-//                FileManager::DEFAULT_LOG_PATH + FileManager::refreshedStartUpTime() + ".log",
-//                std::ios::trunc);
-//        length = 0;
-//    }
+    if (content.empty()) return; // return directly if empty
+
+    static unsigned int length = 0;
+
+    FileManager::getLogger() << content << '\n';
+
+    length++;
+
+    if (length > FileManager::MAX_LINE_PER_LOG) {
+        FileManager::getLogger(true); //remake
+        length = 0;
+    }
 }
 
 std::string FileManager::toStandardLogString(const char *title, const char *content) {
@@ -237,7 +229,7 @@ std::string FileManager::toStandardLogString(const char *title, const char *cont
 }
 
 void FileManager::append_standard_time(std::string &container, const Time &time) {
-    char buf [23];
+    char buf[23];
     typedef unsigned char sub_time;
 
     sprintf(buf, "%d-%02d-%02d-%02d:%02d:%02d:%02d",
@@ -251,7 +243,13 @@ void FileManager::append_standard_time(std::string &container, const Time &time)
     container.append(buf);
 }
 
-std::ofstream &FileManager::getLogger() {
+std::ofstream &FileManager::getLogger(bool reset) {
     static std::ofstream logger(DEFAULT_LOG_PATH + FileManager::refreshedStartUpTime() + ".log", std::ios::trunc);
+    if (reset) {
+        logger.close();
+        logger.open(
+                FileManager::DEFAULT_LOG_PATH + FileManager::refreshedStartUpTime() + ".log",
+                std::ios::trunc);
+    }
     return logger;
 }
